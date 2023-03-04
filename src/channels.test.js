@@ -12,16 +12,18 @@ describe('Checking input error cases for channelsCreateV1', () => {
   });
 
   test('Invalid authUserId', () => {
-    let result = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    const result = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
 
-    expect(channelsCreateV1(result + 1, 'validChannel', true)).toStrictEqual({ERROR});
+    expect(channelsCreateV1(result.authUserId + 1, 'validChannel', true)).toStrictEqual({ERROR});
   });
 });
 
 describe('Checking valid input for channelsCreateV1', () => {
   
   test('correct input', () => {
-    expect(channelsCreateV1(1, 'validChannel', true)).toStrictEqual(expect.any(Number));
+    
+    const result = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    expect(channelsCreateV1(result.authUserId, 'validChannel', true)).toStrictEqual(expect.any(Number));
   });
 
 });
