@@ -1,13 +1,14 @@
 ```javascript
 let data = {
     // TODO: insert your data structure that contains
+    globalowner = -1;
     user [
         {
             userId: 45178283,
             nameFirst: 'John',
             nameLast: 'Acer',
             email: 'jacer@gmailcom',
-            handleStr: 'jacer',
+            handleStr: 'johnacer',
             password: 'jacer4517',
         }
     ]
