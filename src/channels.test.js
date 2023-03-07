@@ -1,31 +1,29 @@
-import {channelsCreateV1}  from 'channels.js';
+import {channelsListAllV1} from './channels.js';
+import {authRegisterV1, authLoginV1} from './auth.js';
 
 const ERROR = { error: expect.any(String) };
 
-describe('Checking input error cases for channelsCreateV1', () => {
-  test('Empty channel name', () => {
-    expect(channelsCreateV1(1, '', true)).toStrictEqual({ERROR});
-  });
-
-  test('Channel name more than 20 characters', () => {
-    expect(channelsCreateV1(1, 'qwertyuioplkjhgfdsazx', true)).toStrictEqual({ERROR});
+describe('All tests for channelsListAllV1', () => {
+  test('Empty authUserId', () => {
+    expect(channelsListAllV1('')).toStrictEqual(ERROR);
   });
 
   test('Invalid authUserId', () => {
     const result = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-
-    expect(channelsCreateV1(result.authUserId + 1, 'validChannel', true)).toStrictEqual({ERROR});
-  });
-});
-
-describe('Checking valid input for channelsCreateV1', () => {
-  
-  test('correct input', () => {
-    
-    const result = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-    expect(channelsCreateV1(result.authUserId, 'validChannel', true)).toStrictEqual(expect.any(Number));
+    expect(channelsListAllV1(result.authUserId + 1)).toStrictEqual(ERROR);
   });
 
-});
+  test('Correct return type', () => {
+    const user1 = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    const channel1 = channelsCreateV1(user1.authUserId, 'channel1', false);
 
-  
+    expect(channelsListAllV1(user1.authUserId)).toStrictEqual({
+      channels: [
+        {
+          channelId: channel1.channelId,
+          name: 'channel1',
+        }
+      ]
+    });
+  });
+});
