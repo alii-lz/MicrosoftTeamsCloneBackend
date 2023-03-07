@@ -34,4 +34,12 @@ function setData(newData) {
   data = newData;
 }
 
-export { getData, setData };
+function resetData () {
+
+  data.users = [];
+  data.channels = [];
+
+  return {};
+}
+
+export { getData, setData, resetData };
