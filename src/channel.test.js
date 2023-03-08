@@ -333,18 +333,18 @@ describe('channelMessagesV1', () => {
   test('Working Case', () =>  {
       //Test will fail regardless. No function to make messages have been made so a real working case cannot be made. 
       expect(channelMessagesV1(authId1.userId,channelId1.channelId,1)).toStrictEqual({
-          '1': [
+          '1': {
               messageId: 1,
               uId: authId1.userId,
               message: expect.any(String),
               timeSent: expect.any(Number),
-          ],
-          '2': [
+          },
+          '2': {
               messageId: 2,
               uId: authId1.userId,
               message: expect.any(String),
               timeSent: expect.any(Number),
-          ],
+          },
           start: 1,
           end: -1,
       })
