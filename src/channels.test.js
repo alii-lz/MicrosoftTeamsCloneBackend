@@ -70,17 +70,31 @@ describe('All tests for channelsListAllV1', () => {
   });
 
   test('Correct return type', () => {
-    const user1 = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-    const channel1 = channelsCreateV1(user1.authUserId, 'channel1', false);
+    //const user1 = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    //const channel1 = channelsCreateV1(user1.authUserId, 'channel1', false);
 
+    //expect(channelsListAllV1(user1.authUserId)).toStrictEqual({
+      //channels: [
+        //{
+          //channelId: channel1.channelId,
+          //name: 'channel1',
+        //}
+      //
+    const user1 = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    const channel1 = channelsCreateV1(user1.authUserId, 'channel1', true);
+    const user2 = authRegisterV1('matthew@gmail.com', '123456', 'Matthew', 'Ieong');
+    const channel2 = channelsCreateV1(user2.authUserId, 'channel2', false);
     expect(channelsListAllV1(user1.authUserId)).toStrictEqual({
       channels: [
         {
           channelId: channel1.channelId,
           name: 'channel1',
+        },
+        {
+          channelId: channel2.channelId,
+          name: 'channel2',
         }
       ]
     });
   });
-
 });
