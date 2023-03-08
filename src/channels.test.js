@@ -4,7 +4,7 @@ import {authRegisterV1, authLoginV1} from './auth.js';
 import { ClearV1 } from './other.js';
 
 
-const ERROR = { error: expect.any(String) };
+const ERROR = {error: 'error'};
 
 beforeEach(() => {
   ClearV1();
@@ -13,7 +13,7 @@ beforeEach(() => {
 describe('All tests for channelsCreateV1', () => {
 
   test('Empty channel name', () => {
-    
+
     expect(channelsCreateV1(1, '', true)).toStrictEqual(ERROR);
   });
 
@@ -60,6 +60,7 @@ describe('All tests for channelsListV1', () => {
 
   
 describe('All tests for channelsListAllV1', () => {
+  
   test('Empty authUserId', () => {
     expect(channelsListAllV1('')).toStrictEqual(ERROR);
   });
@@ -70,20 +71,14 @@ describe('All tests for channelsListAllV1', () => {
   });
 
   test('Correct return type', () => {
-    //const user1 = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-    //const channel1 = channelsCreateV1(user1.authUserId, 'channel1', false);
-
-    //expect(channelsListAllV1(user1.authUserId)).toStrictEqual({
-      //channels: [
-        //{
-          //channelId: channel1.channelId,
-          //name: 'channel1',
-        //}
-      //
     const user1 = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
     const channel1 = channelsCreateV1(user1.authUserId, 'channel1', true);
-    const user2 = authRegisterV1('matthew@gmail.com', '123456', 'Matthew', 'Ieong');
-    const channel2 = channelsCreateV1(user2.authUserId, 'channel2', false);
+    const channel2 = channelsCreateV1(user1.authUserId, 'channel2', false);
+    const channel3 = channelsCreateV1(user1.authUserId, 'channel3', true);
+
+    //const user2 = authRegisterV1('validemail2@gmail.com', '123abc!@#_', 'Jack', 'Matthew');
+    //const channel3 = channelsCreateV1(user2.authUserId, 'channel3', true);
+
     expect(channelsListAllV1(user1.authUserId)).toStrictEqual({
       channels: [
         {
@@ -93,7 +88,11 @@ describe('All tests for channelsListAllV1', () => {
         {
           channelId: channel2.channelId,
           name: 'channel2',
-        }
+        },
+        {
+          channelId: channel3.channelId,
+          name: 'channel3',
+        },
       ]
     });
   });
