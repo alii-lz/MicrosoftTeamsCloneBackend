@@ -26,16 +26,16 @@ let data = {
                 ownerId: 43478283,
                 nameFirst: 'Jane',
                 nameLast: 'Acer',
-                email: 'jaacer@gmailcom',
+                email: 'janeacer@gmailcom',
                 handleStr: 'j2acer',
                 }
             ],
             allMembers[
                 {
-                ownerId: 43478283,
+                userId: 43478283,
                 nameFirst: 'Jane',
                 nameLast: 'Acer',
-                email: 'jaacer@gmailcom',
+                email: 'janeacer@gmailcom',
                 handleStr: 'j2acer',
                 }
             ],
