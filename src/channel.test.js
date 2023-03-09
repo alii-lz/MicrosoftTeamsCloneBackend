@@ -3,12 +3,16 @@ import {
   channelJoinV1,
   channelInviteV1,
   channelMessagesV1,
-} from './channel'
+} from './channel';
+
+import {
+  ClearV1,
+} from './other';
 
 import {
   authRegisterV1,
   channelsCreateV1,
-} from './channels'
+} from './channels';
 
 const ERROR = { error: expect.any(String) };
 //////// channelDetailsV1 ////////
@@ -20,7 +24,7 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
     let ChannelId2;
     let ChannelId3;
     beforeEach(() => {
-      clearV1();
+      ClearV1();
       AuthUserId1 = authRegisterV1('harry.potter@gmail.com', 'quidditch', 'Harry', 'Potter');
       AuthUserId2 = authRegisterV1('ron.weasley@gmail.com', 'flying car', 'Ron', 'Weasley');
       AuthUserId3 = authRegisterV1('hermione.granger@gmail.com', 'reading', 'Hermione', 'Granger');
@@ -52,7 +56,7 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
     let ChannelId2;
     let ChannelId3;
     beforeEach(() => {
-      clear();
+      ClearV1();
       AuthUserId1 = authRegisterV1('harry.potter@gmail.com', 'quidditch', 'Harry', 'Potter');
       AuthUserId2 = authRegisterV1('ron.weasley@gmail.com', 'flying car', 'Ron', 'Weasley');
       AuthUserId3 = authRegisterV1('hermione.granger@gmail.com', 'reading', 'Hermione', 'Granger');
@@ -141,7 +145,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
   let ChannelId2;
   let ChannelId3;
   beforeEach(() => {
-    clearV1();
+    ClearV1();
     AuthUserId1 = authRegisterV1('harry.potter@gmail.com', 'quidditch', 'Harry', 'Potter');
     AuthUserId2 = authRegisterV1('ron.weasley@gmail.com', 'flying car', 'Ron', 'Weasley');
     AuthUserId3 = authRegisterV1('hermione.granger@gmail.com', 'reading', 'Hermione', 'Granger');
@@ -177,7 +181,7 @@ describe('channelJoinV1(authUserId, channelId): Correct Results', () => {
   let ChannelId2;
   let ChannelId3;
   beforeEach(() => {
-    clearV1();
+    ClearV1();
     AuthUserId1 = authRegisterV1('harry.potter@gmail.com', 'quidditch', 'Harry', 'Potter');
     AuthUserId2 = authRegisterV1('ron.weasley@gmail.com', 'flying car', 'Ron', 'Weasley');
     AuthUserId3 = authRegisterV1('hermione.granger@gmail.com', 'reading', 'Hermione', 'Granger');
@@ -283,7 +287,7 @@ describe('channelJoinV1(authUserId, channelId): Correct Results', () => {
 });
 describe('channelInviteV1', () => {
   beforeEach(() => {
-      clear();
+      ClearV1();
       const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
       const authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
       const authId3 = authRegisterV1('email3@outlook.com', 'Password3', 'Dell', 'IsGarbage')
@@ -301,10 +305,10 @@ describe('channelInviteV1', () => {
       expect(channelInviteV1(authId1.userId,channelId1.channelId,(authId2.userId)*-1)).toStrictEqual(ERROR);
   })
   test('Missing channelId', () => {
-      expect(channelInviteV1(authId1.userId,,authId2.userId)).toStrictEqual(ERROR);
+      expect(channelInviteV1(authId1.userId,null,authId2.userId)).toStrictEqual(ERROR);
   })
   test('Missing authId', () => {
-      expect(channelInviteV1(,channelId1.channelId,authId2.userId)).toStrictEqual(ERROR);
+      expect(channelInviteV1(null,channelId1.channelId,authId2.userId)).toStrictEqual(ERROR);
   })
   test('Missing  uId', () => {
       expect(channelInviteV1(authId1.userId,channelId1.channelId,)).toStrictEqual(ERROR);
@@ -323,7 +327,7 @@ describe('channelInviteV1', () => {
 
 describe('channelMessagesV1', () => {
   beforeEach(() => {
-      clear();
+      ClearV1();
       const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
       const authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
       const authId3 = authRegisterV1('email3@outlook.com', 'Password3', 'Dell', 'IsGarbage')
@@ -354,7 +358,7 @@ describe('channelMessagesV1', () => {
       expect(channelMessagesV1(authId1.userId,(channelId1.channelId)*-1,1)).toStrictEqual(ERROR);
   })
   test('Missing channelId', () => {
-      expect(channelMessagesV1(authId1.userId,,1)).toStrictEqual(ERROR);
+      expect(channelMessagesV1(authId1.userId,null,1)).toStrictEqual(ERROR);
   })
   //start>total messages.
   test('Start message more than total messages', () => {
@@ -369,6 +373,6 @@ describe('channelMessagesV1', () => {
       expect(channelMessagesV1(authId10.userId,channelId1.channelId,1)).toStrictEqual(ERROR);
   })
   test('authId not missing', () => {
-      expect(channelMessagesV1(,channelId1.channelId,1)).toStrictEqual(ERROR);
+      expect(channelMessagesV1(null,channelId1.channelId,1)).toStrictEqual(ERROR);
   })
 })
