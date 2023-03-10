@@ -33,22 +33,26 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
       ChannelId3 = channelsCreateV1(AuthUserId3, 'Hermione Fan Club', true);
     });
     test('Missing AuthUserId1', () => {
-      expect(channelDetailsV1('', ChannelId1.channelId)).toStrictEqual(ERROR);
+      expect(channelJoinV1('', ChannelId1.channelId)).toStrictEqual(ERROR);
     });
     test('Missing ChannelId1', () => {
-      expect(channelDetailsV1(AuthUserId1.userId, '')).toStrictEqual({ERROR});
+      expect(channelJoinV1(AuthUserId1.userId, '')).toStrictEqual({ERROR});
     });
     test('Invalid AuthUserId (not in storeData)', () => {
-      expect(channelDetailsV1(10101010, ChannelId1.channelId)).toStrictEqual({ERROR});
+      expect(channelJoinV1(10101010, ChannelId1.channelId)).toStrictEqual({ERROR});
     });
     test('Invalid ChannelId (not in storeData)', () => {
-      expect(channelDetailsV1(AuthUserId1.userId, 1010)).toStrictEqual({ERROR});
+      expect(channelJoinV1(AuthUserId1.userId, 1010)).toStrictEqual({ERROR});
     });
-    test('AuthUserId is not a member of the channel', () => {
-      expect(channelDetailsV1(AuthUserId2.userId, ChannelId3.channelId)).toStrictEqual({ERROR});
+    test('AuthUserId cannot join the channel because it is a private channel', () => {
+      expect(channelJoinV1(AuthUserId3.userId, ChannelId2.channelId)).toStrictEqual({ERROR});
     });
-
-  describe('channelDetailsV1: Correct Results', () => {
+    test('AuthUserId is already a member of the channel', () => {
+      expect(channelJoinV1(AuthUserId1.userId, ChannelId1.channelId)).toStrictEqual({ERROR});
+    });
+  });
+  
+  describe('channelJoinV1(authUserId, channelId): Correct Results', () => {
     let AuthUserId1;
     let AuthUserId2;
     let AuthUserId3;
@@ -65,8 +69,10 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
       ChannelId3 = channelsCreateV1(AuthUserId3, 'Hermione Fan Club', true);
     });
     test('channelDetailsV1(authUserId, channelId): Harry Potter', () => {
+      channelJoinV1(AuthUserId3.userId, ChannelId1.channelId);
       expect(channelDetailsV1(AuthUserId1.userId, ChannelId1.channelId)).toStrictEqual({
-        name: 'Harry',
+        name: 'Quidditch League',
+        isPublic: true,
         ownerMembers: [
           {
             uId: expect.any(Number),
@@ -83,13 +89,23 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
             nameFirst: 'Harry',
             nameLast: 'Potter',
             handleStr: 'harrypotter',
-          }
+          },
+          {
+            uId: expect.any(Number),
+            email: 'hermione.granger@gmail.com',
+            nameFirst: 'Hermione',
+            nameLast: 'Granger',
+            handleStr: 'hermionegranger',
+          },
         ],
       });
     });
+    // harry is allowed to join a private channel because he is the globalowner
     test('channelDetailsV1(authUserId, channelId): Ron Weasley', () => {
-      expect(channelDetailsV1(AuthUserId1.userId, ChannelId1.channelId)).toStrictEqual({
-        name: 'Ron',
+      channelJoinV1(AuthUserId1.userId, ChannelId2.channelId);
+      expect(channelDetailsV1(AuthUserId1.userId, ChannelId2.channelId)).toStrictEqual({
+        name: 'The Weasleys',
+        isPublic: false,
         ownerMembers: [
           {
             uId: expect.any(Number),
@@ -106,30 +122,47 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
             nameFirst: 'Ron',
             nameLast: 'Weasley',
             handleStr: 'ronweasley',
-          }
+          },
+          {
+            uId: expect.any(Number),
+            email: 'harry.potter@gmail.com',
+            nameFirst: 'Harry',
+            nameLast: 'Potter',
+            handleStr: 'harrypotter',
+          },
         ],
       });
     });
+    // Hermione joins Quiddich League channel
     test('channelDetailsV1(authUserId, channelId): Hermione Granger', () => {
-      expect(channelDetailsV1(AuthUserId3.userId, ChannelId3.channelId)).toStrictEqual({
-        name: 'Hermione',
+      channelJoinV1(AuthUserId3.userId, ChannelId1.channelId);
+      expect(channelDetailsV1(AuthUserId3.userId, ChannelId1.channelId)).toStrictEqual({
+        name: 'Quidditch League',
+        isPublic: true,
         ownerMembers: [
           {
             uId: expect.any(Number),
-            email: 'hermione.granger@gmail.com',
-            nameFirst: 'Hermione',
-            nameLast: 'Granger',
-            handleStr: 'hermionegranger',
-          }
+            email: 'harry.potter@gmail.com',
+            nameFirst: 'Harry',
+            nameLast: 'Potter',
+            handleStr: 'harrypotter',
+          },
         ],
         allMembers: [
           {
             uId: expect.any(Number),
+            email: 'harry.potter@gmail.com',
+            nameFirst: 'Harry',
+            nameLast: 'Potter',
+            handleStr: 'harrypotter',
+          },
+          {
+            uId: expect.any(Number),
             email: 'hermione.granger@gmail.com',
             nameFirst: 'Hermione',
             nameLast: 'Granger',
             handleStr: 'hermionegranger',
-          }
+          },
         ],
       });
     });
@@ -375,4 +408,4 @@ describe('channelMessagesV1', () => {
   test('authId not missing', () => {
       expect(channelMessagesV1(null,channelId1.channelId,1)).toStrictEqual(ERROR);
   })
-})
+  
