@@ -10,9 +10,18 @@ import {
 } from './other';
 
 import {
-  authRegisterV1,
   channelsCreateV1,
+  channelsListV1,
+  channelsListAllV1,
 } from './channels';
+import {
+  authRegisterV1,
+  authLoginV1,
+} from './auth'
+
+import {
+  getData,
+} from './dataStore'
 
 const ERROR = { error: expect.any(String) };
 //////// channelDetailsV1 ////////
@@ -318,94 +327,130 @@ describe('channelJoinV1(authUserId, channelId): Correct Results', () => {
     });
   });
 });
+
+
+
 describe('channelInviteV1', () => {
-  beforeEach(() => {
-      ClearV1();
-      const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
-      const authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
-      const authId3 = authRegisterV1('email3@outlook.com', 'Password3', 'Dell', 'IsGarbage')
-      const channelId1 = channelsCreateV1(authId1, 'Group_1', true);
-  });
   //Tests to see if it works.
   test('Working case', () => {
-      expect(channelInviteV1(authId1,channelId1.channelId,authId2)).toStrictEqual({})    
+      ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelInviteV1(authId1.authUserId,channelId1.channelId,authId2.authUserId)).toStrictEqual({})    
   })
   //Tests for missing or invalid parameters. 
   test('Invalid authId', () => {
-      expect(channelInviteV1((authId1.userId)*-1,channelId1.channelId,authId2.userId)).toStrictEqual(ERROR);
+    ClearV1();
+      let authId = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let invitedUser = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
+      let channelId1 = channelsCreateV1(authId.authUserId, 'Group_1', true);
+      expect(channelInviteV1((authId.authUserId)*-1,channelId1.channelId,invitedUser.authUserId)).toStrictEqual(ERROR);
   })
   test('Invalid  uId', () => {
-      expect(channelInviteV1(authId1.userId,channelId1.channelId,(authId2.userId)*-1)).toStrictEqual(ERROR);
+    ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
+      let authId3 = authRegisterV1('email3@outlook.com', 'Password3', 'Dell', 'IsGarbage')
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelInviteV1(authId1.authUserId,channelId1.channelId,(authId2.authUserId)*-1)).toStrictEqual(ERROR);
   })
   test('Missing channelId', () => {
-      expect(channelInviteV1(authId1.userId,null,authId2.userId)).toStrictEqual(ERROR);
+    ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
+      expect(channelInviteV1(authId1.authUserId,null,authId2.authUserId)).toStrictEqual(ERROR);
   })
   test('Missing authId', () => {
-      expect(channelInviteV1(null,channelId1.channelId,authId2.userId)).toStrictEqual(ERROR);
+    ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelInviteV1(null,channelId1.channelId,authId2.authUserId)).toStrictEqual(ERROR);
   })
   test('Missing  uId', () => {
-      expect(channelInviteV1(authId1.userId,channelId1.channelId,)).toStrictEqual(ERROR);
+    ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelInviteV1(authId1.authUserId,channelId1.channelId,)).toStrictEqual(ERROR);
   })
   test('Invalid channelId', () => {
-      expect(channelInviteV1(authId1.userId,(channelId1.channelId)*-1,authId2.userId)).toStrictEqual(ERROR);
+    ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelInviteV1(authId1.authUserId,(channelId1.channelId)*-1,authId2.authUserId)).toStrictEqual(ERROR);
   })
   // Tests for either Ids, not having permission or inviting iDs that have already been invited. 
   test('authId not part of channel', () => {
-      expect(channelInviteV1(authId2.userId,channelId1.channelId,authId3.userId)).toStrictEqual(ERROR);
+    ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
+      let authId3 = authRegisterV1('email3@outlook.com', 'Password3', 'Dell', 'IsGarbage')
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelInviteV1(authId2.authUserId,channelId1.channelId,authId3.authUserId)).toStrictEqual(ERROR);
   })
   test('uId already part of channel', () => {
-      expect(channelInviteV1(authId1.userId,channelId1.channelId,authId1.userId)).toStrictEqual(ERROR);
+    ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelInviteV1(authId1.authUserId,channelId1.channelId,authId1.authUserId)).toStrictEqual(ERROR);
   })
 })
 
 describe('channelMessagesV1', () => {
-  beforeEach(() => {
-      ClearV1();
-      const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
-      const authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
-      const authId3 = authRegisterV1('email3@outlook.com', 'Password3', 'Dell', 'IsGarbage')
-      const channelId1 = channelsCreateV1(authId1, 'Group_1', true);
-  });
+  let data = getData()
   //Need a working case
   test('Working Case', () =>  {
-      //Test will fail regardless. No function to make messages have been made so a real working case cannot be made. 
-      expect(channelMessagesV1(authId1.userId,channelId1.channelId,1)).toStrictEqual({
-          '1': {
-              messageId: 1,
-              uId: authId1.userId,
-              message: expect.any(String),
-              timeSent: expect.any(Number),
-          },
-          '2': {
-              messageId: 2,
-              uId: authId1.userId,
-              message: expect.any(String),
-              timeSent: expect.any(Number),
-          },
-          start: 1,
+      ClearV1();
+      let authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelMessagesV1(authId1.authUserId,channelId1.channelId,0)).toStrictEqual({
+          messages: [
+          ],
+          start: 0,
           end: -1,
       })
   })
   //chanID not valid/missing
   test('Invalid channelId', () => {
-      expect(channelMessagesV1(authId1.userId,(channelId1.channelId)*-1,1)).toStrictEqual(ERROR);
+      ClearV1();
+      const user = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let channelId1 = channelsCreateV1(user.authUserId, 'Group_1', true);
+      expect(channelMessagesV1(user.authUserId,(channelId1.channelId)*-1,0)).toStrictEqual(ERROR);
   })
   test('Missing channelId', () => {
-      expect(channelMessagesV1(authId1.userId,null,1)).toStrictEqual(ERROR);
+      ClearV1();
+      const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      expect(channelMessagesV1(authId1.authUserId,null,0)).toStrictEqual(ERROR);
   })
   //start>total messages.
   test('Start message more than total messages', () => {
-      expect(channelMessagesV1(authId1.userId,channelId1.channelId,100)).toStrictEqual(ERROR);
+      ClearV1();
+      const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelMessagesV1(authId1.authUserId,channelId1.channelId,100)).toStrictEqual(ERROR);
   })
   //channelId valid but authId not in there
   test('authId not registered',() => {
-      expect(channelMessagesV1(authId2.userId,channelId1.channelId,1)).toStrictEqual(ERROR);
+      ClearV1();
+      const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let authId2 = authRegisterV1('email2@outlook.com', 'Password2', 'Tom', 'S');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      expect(channelMessagesV1(authId2.authUserId,channelId1.channelId,1)).toStrictEqual(ERROR);
   })
   //authId not valid/missing
   test('authId not valid', () => {
-      expect(channelMessagesV1(authId10.userId,channelId1.channelId,1)).toStrictEqual(ERROR);
+      ClearV1();
+      const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
+      let invalidId = authId1.authUserId + 10;
+      expect(channelMessagesV1(invalidId,channelId1.channelId,1)).toStrictEqual(ERROR);
   })
-  test('authId not missing', () => {
+  test('authId missing', () => {
+      ClearV1();
+      const authId1 = authRegisterV1('email@outlook.com', 'Password', 'Sam', 'R');
+      let channelId1 = channelsCreateV1(authId1.authUserId, 'Group_1', true);
       expect(channelMessagesV1(null,channelId1.channelId,1)).toStrictEqual(ERROR);
   })
 })
