@@ -1,4 +1,3 @@
-
 describe('All tests for channelsListAllV1', () => {
 
   test('Empty authUserId', () => {
