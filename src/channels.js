@@ -145,8 +145,8 @@ function channelsListAllV1(authUserId) {
   // the case when the authUserId (input) is empty
   if (authUserId === '') {
     return { error: 'empty authUserId' };
-  } 
-  // error checking for if authUserId is valid
+  }
+  // the case when the authUserId is invalid
   // if the authUserId is not valid, return an error message
   else if (found === false) {
     return { error: 'invalid authUserId' };
