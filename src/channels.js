@@ -84,6 +84,14 @@ function channelsCreateV1(authUserId, name, isPublic) {
     // }
   }
 
+/**
+  * <makes an array of objects where each object is either a public or private channel
+  * and returns this array of channel objects >
+  * 
+  * @param {number} authUserId - iD of user whos making the new channel
+  * 
+  * @returns {channels: []} - returns channelId when new channel is created successfully
+*/
 function channelsListAllV1(authUserId) {
   const data = getData();
   const channels = [];
