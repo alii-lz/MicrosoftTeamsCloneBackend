@@ -119,7 +119,7 @@ export function channelMessagesV1( authUserId, channelId, start ) {
   return{
     messageArrayTemp,
     'start': start,
-    'end': start+50,
+    'end': end,
   }
 }
   
