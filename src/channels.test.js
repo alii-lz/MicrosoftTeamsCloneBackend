@@ -2,6 +2,7 @@ import {channelsCreateV1, channelsListV1, channelsListAllV1}  from './channels.j
 
 import {authRegisterV1, authLoginV1} from './auth.js';
 import { ClearV1 } from './other.js';
+import { getData } from './dataStore.js';
 
 
 const ERROR = { error: expect.any(String) };
@@ -13,7 +14,6 @@ beforeEach(() => {
 describe('All tests for channelsCreateV1', () => {
 
   test('Empty channel name', () => {
-    
     expect(channelsCreateV1(1, '', true)).toStrictEqual(ERROR);
   });
 
@@ -22,14 +22,13 @@ describe('All tests for channelsCreateV1', () => {
   });
 
   test('Invalid authUserId', () => {
-    const result = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-    expect(channelsCreateV1(result.authUserId + 1, 'validChannel', true)).toStrictEqual(ERROR);
+    const user = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    expect(channelsCreateV1(user.authUserId + 1, 'validChannel', true)).toStrictEqual(ERROR);
   });
 
   test('Correct return type', () => {
-    
-    const result = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
-    expect(channelsCreateV1(result.authUserId, 'validChannel', true)).toStrictEqual({channelId: expect.any(Number)});
+    const user = authRegisterV1('validemail@gmail.com', '123abc!@#', 'Jake', 'Renzella');
+    expect(channelsCreateV1(user.authUserId, 'validChannel', true)).toStrictEqual({channelId: expect.any(Number)});
   });
 
 });
