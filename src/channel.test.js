@@ -167,7 +167,7 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
       });
     });
   });
-});
+
 
 //////// channelJoinV1 ////////
 describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
@@ -408,4 +408,4 @@ describe('channelMessagesV1', () => {
   test('authId not missing', () => {
       expect(channelMessagesV1(null,channelId1.channelId,1)).toStrictEqual(ERROR);
   })
-  
+})
