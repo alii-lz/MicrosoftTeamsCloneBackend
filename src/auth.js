@@ -66,5 +66,29 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
 
 
 }
-export { authRegisterV1 }
+
+function authLoginV1(email, password){
+   let data = getData();
+   if (data.users.length === 0){
+      return {
+         error: 'Email not found',
+      }
+   }
+   let user = data.users.find(user => user.email === email);
+   if (!user){
+      return {
+         error: 'Email not found',
+      }
+   }
+
+   if (user.password !== password){
+      return{
+         error: 'Invalid password',
+      }
+   }
+   return {
+      authUserId: user.uId,
+   }
+}
+export { authRegisterV1, authLoginV1 }
 
