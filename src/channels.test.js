@@ -8,7 +8,7 @@ const ERROR = { error: expect.any(String) };
 beforeEach(() => {
   ClearV1();
 }); 
-
+//////// channelsCreateV1 tests ////////
 describe('All tests for channelsCreateV1', () => {
 
   test('Empty channel name', () => {
@@ -33,7 +33,7 @@ describe('All tests for channelsCreateV1', () => {
 
 });
 
-
+//////// channelsListV1 tests ////////
 describe('All tests for channelsListV1', () => {
 
   test('Invalid authUserId', () => {
@@ -57,7 +57,7 @@ describe('All tests for channelsListV1', () => {
 
 });
 
-  
+//////// channelsListAllV1 tests //////// 
 describe('All tests for channelsListAllV1', () => {
 
   test('Empty authUserId', () => {
