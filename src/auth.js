@@ -1,6 +1,6 @@
 import { getData } from './dataStore'
 import { setData } from './dataStore'
-import validator from 'validator'
+import  validator  from 'validator'
 
 function authRegisterV1(email, password, nameFirst, nameLast) {
 
@@ -10,7 +10,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
 
    let invalidPassword = (password.length < 6)
 
-   let invalidEmail = (validator.isEmail(email))
+   let invalidEmail = (!validator.isEmail(email))
 
    if (invalidFirstName || invalidLastName || invalidPassword || invalidEmail) {
       return { error: 'One or more invalid inputs' }
@@ -56,7 +56,6 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
       nameLast: nameLast,
       handleStr: handleStr,
    }
-
 
    data.users.push(newUser);
 
