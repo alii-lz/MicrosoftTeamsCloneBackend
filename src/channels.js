@@ -50,6 +50,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
     owners: [
       {
         uId: channelOwner.uId,
+        email: channelOwner.email,
         nameFirst: channelOwner.nameFirst,
         nameLast: channelOwner.nameLast,
         handleStr: channelOwner.handleStr
@@ -58,6 +59,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
     allMembers: [
       {
         uId: channelOwner.uId,
+        email: channelOwner.email,
         nameFirst: channelOwner.nameFirst,
         nameLast: channelOwner.nameLast,
         handleStr: channelOwner.handleStr
@@ -77,7 +79,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
   * 
   * @param {number} authUserId - iD of user whos making the new channel
   * 
-  * @returns {channels: []} - returns channelId when new channel is created successfully
+  * @returns {channels: []} - returns an array of channels that the given user is part of
 */
 function channelsListV1(authUserId) {
 
@@ -88,7 +90,7 @@ function channelsListV1(authUserId) {
   // loop to see if authUserId is valid
   for (let i = 0; i < data.users.length; i++) {
     
-    if (data.users[i].uId === authUserId) {
+    if (data.users[i].uId == authUserId) {
       user = data.users[i];
       found = true;
       break;
@@ -118,15 +120,53 @@ function channelsListV1(authUserId) {
   return {channels: channels};
 }
 
-function channelsListAllV1(authUserId) {  
-  return {
-    channels: [
-      {
-        channelId: 1,
-        name: 'My Channel',
-      }
-    ],
+
+/**
+  * <makes an array of objects where each object is either a public or private channel
+  * and returns this array of channel objects >
+  * 
+  * @param {number} authUserId - iD of user whos making the new channel
+  * 
+  * @returns {channels: []} - returns an array of all channels including public channels and private channels
+*/
+function channelsListAllV1(authUserId) {
+  const data = getData();
+  const channels = [];
+  let user;
+  let found = false;
+  
+  // loop to see if authUserId is valid
+  for (let i = 0; i < data.users.length; i++) {
+    if (data.users[i].uId === authUserId) {
+      user = data.users[i];
+      found = true;
+      break;
+    }
+  }
+
+  // the case when the authUserId (input) is empty
+  if (authUserId === '') {
+    return { error: 'empty authUserId' };
+  }
+  // the case when the authUserId is invalid
+  // if the authUserId is not valid, return an error message
+  else if (found === false) {
+    return { error: 'invalid authUserId' };
+  } 
+  // the case when the authUserId is valid
+  else {
+    for (const channel of data.channels) {
+      // loop through the list of channels from dataStore 
+      // and add them to the newly created channels array
+      const current_channel = {
+        channelId: channel.channelId,
+        name: channel.name,
+      };
+      channels.push(current_channel);
+    }
+    // return the newly created channels array
+    return { channels : channels };
   }
 }
 
-export {channelsCreateV1, channelsListAllV1, channelsListV1};
+export {channelsListAllV1, channelsListV1, channelsCreateV1};
