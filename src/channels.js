@@ -40,6 +40,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
     owners: [
       {
         uId: channelOwner.uId,
+        email: channelOwner.email,
         nameFirst: channelOwner.nameFirst,
         nameLast: channelOwner.nameLast,
         handleStr: channelOwner.handleStr
@@ -48,6 +49,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
     allMembers: [
       {
         uId: channelOwner.uId,
+        email: channelOwner.email,
         nameFirst: channelOwner.nameFirst,
         nameLast: channelOwner.nameLast,
         handleStr: channelOwner.handleStr
@@ -70,7 +72,7 @@ function channelsListV1(authUserId) {
   // loop to see if authUserId is valid
   for (let i = 0; i < data.users.length; i++) {
     
-    if (data.users[i].uId === authUserId) {
+    if (data.users[i].uId == authUserId) {
       user = data.users[i];
       found = true;
       break;

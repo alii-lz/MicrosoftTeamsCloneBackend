@@ -1,6 +1,6 @@
-import { getData } from "./dataStore";
+import { getData, setData } from "./dataStore";
 
-function channelDetailsV1(authUserId, channelId) {
+export function channelDetailsV1(authUserId, channelId) {
   let dataStore = getData()
   // No Arugment Case:
   if (authUserId === undefined || authUserId === null || authUserId === ''
@@ -16,7 +16,7 @@ function channelDetailsV1(authUserId, channelId) {
   // Invalid case: Invalid authUserId argument
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
     // breaks when user argument matches with dataStore
-    if (UserId === dataStore.users[i].UserId) {
+    if (authUserId === dataStore.users[i].uId) {
       break;
     // return error when it reaches the end of the list
     } else if (i == Object.keys(dataStore.users).length - 1) {
@@ -27,7 +27,7 @@ function channelDetailsV1(authUserId, channelId) {
   let Channel_Pointer;
   // breaks when channel argument matches with dataStore
   for (let i = 0; i < Object.keys(dataStore.channels).length; i++) {
-    if (courseId === dataStore.channels[i].channelId) {
+    if (channelId === dataStore.channels[i].channelId) {
       Channel_Pointer = dataStore.channels[i];
       break;
        // return error when it reaches the end of the list
@@ -36,24 +36,26 @@ function channelDetailsV1(authUserId, channelId) {
     }
   }
   // Not member Case: User is not a member of the channel
-  for (i in Channel_Pointer.allMembers) {
-    if (authUserId == Channel_Pointer.allMembers.userId) {
+  for (let i in Channel_Pointer.allMembers) {
+    if (authUserId == Channel_Pointer.allMembers[i].uId) {
       break;
-    } else if (i == Object.keys(dataStore.channels.allMembers).length - 1) {
+    } else if (i == Object.keys(dataStore.channels[i].allMembers).length) {
+      // console.log(authUserId);
+      // console.log(dataStore.users[i].uId);
       return {error: "User is not a member of the channel"};
     }
   }
   // stores users and channels into an array(s)
   const ownerMembersArray = [];
   const allMembersArray = [];
-  for (let i in Channel_Pointer.ownerMembers) {
-    ownerMembersArray.push(Channel_Pointer.ownerMembers[i]);
+  for (let i in Channel_Pointer.owners) {
+    ownerMembersArray.push(Channel_Pointer.owners[i]);
   }
   for (let i in Channel_Pointer.allMembers) {
     allMembersArray.push(Channel_Pointer.allMembers[i]);
   }
   return {
-      name: Channel_Pointer.channelName,
+      name: Channel_Pointer.name,
       isPublic: Channel_Pointer.isPublic,
       ownerMembers: ownerMembersArray,
       allMembers:allMembersArray
@@ -82,9 +84,10 @@ function channelDetailsV1(authUserId, channelId) {
     //     ],
     //   };
 //////////////////////////////////////////////////////////
-function channelJoinV1(authUserId, channelId) {
-// No Arugment Case:
-if (authUserId === undefined || authUserId === null || authUserId === ''
+export function channelJoinV1(authUserId, channelId) {
+  let dataStore = getData();
+  // No Arugment Case:
+  if (authUserId === undefined || authUserId === null || authUserId === ''
   || channelId === undefined || channelId === null || channelId === '') {
    return {error: "Incorrect Arugment use"};
  }
@@ -97,18 +100,18 @@ if (authUserId === undefined || authUserId === null || authUserId === ''
   // Invalid case: Invalid authUserId argument
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
     // breaks when user argument matches with dataStore
-    if (UserId === dataStore.users[i].UserId) {
+    if (authUserId === dataStore.users[i].uId) {
       break;
     // return error when it reaches the end of the list
     } else if (i == Object.keys(dataStore.users).length - 1) {
       return { error: "Invalid authUserId"};
     }
   }
-  // Invalid case: Invalid Channel argument
+  // Invalid case: Invalid channelId argument
   let Channel_Pointer;
   // breaks when channel argument matches with dataStore
   for (let i = 0; i < Object.keys(dataStore.channels).length; i++) {
-    if (courseId === dataStore.channels[i].channelId) {
+    if (channelId === dataStore.channels[i].channelId) {
       Channel_Pointer = dataStore.channels[i];
       break;
        // return error when it reaches the end of the list
@@ -117,35 +120,35 @@ if (authUserId === undefined || authUserId === null || authUserId === ''
     }
   }
   // Private channel Case: cannot join private channel unless global owner
-  if (Channel_Pointer.isPublic === false && authUserId != dataStore.globalowner) {
-    return { error: 'Cannot join private channel'}
+  if (Channel_Pointer.isPublic === false && authUserId != dataStore.users[0].uId) {
+    return { error: 'Cannot join private channel'};
   }
   // Member is in channel Case: returns error when member is already in channel
-  for (i in Channel_Pointer.allMembers) {
-    if (authUserId == Channel_Pointer.allMembers.userId) {
+  for (let i in Channel_Pointer.allMembers) {
+    if (authUserId == Channel_Pointer.allMembers[i].uId) {
       return { error: 'Member is already in the channel'};
     } 
   }
 
   let User_Pointer;
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
-    if (UserId === dataStore.users[i].UserId) {
-      User_Pointer = dataStore.user[i];
+    if (authUserId === dataStore.users[i].uId) {
+      User_Pointer = dataStore.users[i];
       break;
     }
   }
   // formatting user information
   let Incomming_User = {
-    userId: User_Pointer.userId,
+    uId: User_Pointer.uId,
+    email: User_Pointer.email,
     nameFirst: User_Pointer.nameFirst,
     nameLast: User_Pointer.nameLast,
-    email: User_Pointer.email,
     handleStr: User_Pointer.handleStr,
   }
 
   Channel_Pointer.allMembers.push(Incomming_User);
   setData(dataStore);
-    return {};
+  return {};
 }
 
 export function channelInviteV1( authUserId, channelId, uId ) {
@@ -244,7 +247,9 @@ export function channelMessagesV1( authUserId, channelId, start ) {
     'end': end,
   }
 }
-  
+
+
+
 
 
 
