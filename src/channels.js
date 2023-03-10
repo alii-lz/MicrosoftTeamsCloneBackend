@@ -1,5 +1,15 @@
 import { getData, setData } from "./dataStore.js";
 
+
+/**
+  * <Creates a new channel and returns it's channelId>
+  * 
+  * @param {number} authUserId - iD of user whos making the new channel
+  * @param {string} name - name of new channel
+  * @param {boolean} isPublic - whether the channel is public or not
+  * 
+  * @returns {channelId: number} - returns channelId when new channel is created successfully
+*/
 function channelsCreateV1(authUserId, name, isPublic) {  
   
   // error checking length of name
@@ -61,6 +71,14 @@ function channelsCreateV1(authUserId, name, isPublic) {
   return {channelId: newChannel.channelId};
 }
 
+/**
+  * <makes an array of objects where each object is a channel that the given user is part of
+  * and returns this array of channel objects >
+  * 
+  * @param {number} authUserId - iD of user whos making the new channel
+  * 
+  * @returns {channels: []} - returns channelId when new channel is created successfully
+*/
 function channelsListV1(authUserId) {
 
   let found = false;
@@ -92,7 +110,7 @@ function channelsListV1(authUserId) {
       if (data.channels[i].allMembers[j].uId === authUserId) {
 
         channels.push({channelId: data.channels[i].channelId, name: data.channels[i].name});
-        break;
+        break; // break so it goes to the next channel
       }
     }
   }
