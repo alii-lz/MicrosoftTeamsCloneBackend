@@ -5,7 +5,7 @@ import { ClearV1 } from './other';
 // Tests for AuthLoginV1
 test('Test Case 1: Successful Login ', () => {
     ClearV1();
-    const registeredUser = authRegisterV1('rudie@gmail.com', 'soccer7');
+    const registeredUser = authRegisterV1('rudie@gmail.com', 'soccer7', 'rudie', 'tate');
     const loginUser = authLoginV1('rudie@gmail.com', 'soccer7');
 
     expect(registeredUser).toStrictEqual(loginUser);
@@ -13,7 +13,7 @@ test('Test Case 1: Successful Login ', () => {
 
 test('Test Case 2: Unsuccessful Login : Invalid Email ', () => {
     ClearV1();
-    authRegisterV1('rudie@gmail.com', 'soccer7');
+    authRegisterV1('rudie@gmail.com', 'soccer7', 'rudie', 'tate');
     const loginUser = authLoginV1('rudie07@gmail.com', 'soccer7');
 
     expect(loginUser).toHaveProperty('error');
@@ -21,7 +21,7 @@ test('Test Case 2: Unsuccessful Login : Invalid Email ', () => {
 
 test('Test Case 3: Unsuccessful Login : Invalid Password ', () => {
     ClearV1();
-    authRegisterV1('rudie@gmail.com', 'soccer7');
+    authRegisterV1('rudie@gmail.com', 'soccer7', 'rudie', 'tate');
     const loginUser = authLoginV1('rudie@gmail.com', 'Soccer7');
 
     expect(loginUser).toHaveProperty('error');
