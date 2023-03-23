@@ -2,7 +2,10 @@ import { getData } from './dataStore'
 import { setData } from './dataStore'
 import  validator  from 'validator'
 
-function authRegisterV1(email, password, nameFirst, nameLast) {
+import {error, authUserId} from './interfaces'
+
+
+function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string): error | authUserId {
 
    let invalidFirstName = (nameFirst.length < 1 || nameFirst.length > 50)
 
@@ -66,7 +69,7 @@ function authRegisterV1(email, password, nameFirst, nameLast) {
 
 }
 
-function authLoginV1(email, password){
+function authLoginV1(email: string, password: string): error | authUserId{
    let data = getData();
    if (data.users.length === 0){
       return {

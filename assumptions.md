@@ -8,3 +8,10 @@ Assumptions for channelMessagesV1
 Since there are no way to create messages, the following assumptions were made:
 - If no messages exist and the array is undefined, the function will return an empty array instead. 
 
+
+
+
+
+
+ASSUMPTION FOR INPUT IN CHANNEL.TS.
+assume user only inputs valid types. i.e. doesnt input string for prefix id.
