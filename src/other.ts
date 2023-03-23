@@ -1,9 +1,9 @@
 import { resetData} from "./dataStore";
 
-function ClearV1 () {
+function clearV1 (): {} {
     resetData();
     return {};
 }
 
 
-export {ClearV1};
+export {clearV1};

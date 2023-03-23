@@ -1,4 +1,7 @@
-import { getData, setData } from "./dataStore.js";
+import { getData, setData } from "./dataStore";
+
+import {error, authUserId, channelDetails, channelMessages, channelId, channels, channelsTemp, user} from './interfaces'
+
 
 /**
   * <returns information about user with given uId, but without the password>
@@ -9,7 +12,7 @@ import { getData, setData } from "./dataStore.js";
   * @returns {user} - returns a user with uId, but without the password. 
 */
 
-function userProfileV1 ( authUserId, uId ) {
+function userProfileV1 ( authUserId: number, uId: number ): error | {user: user} {
 
   let data = getData();
 

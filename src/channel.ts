@@ -1,10 +1,12 @@
 import { getData, setData } from "./dataStore";
 
-export function channelDetailsV1(authUserId, channelId) {
+import {error, authUserId, channelDetails, channelMessages} from './interfaces'
+
+
+export function channelDetailsV1(authUserId: number, channelId: number): error | channelDetails {
   let dataStore = getData()
   // No Arugment Case:
-  if (authUserId === undefined || authUserId === null || authUserId === ''
-  || channelId === undefined || channelId === null || channelId === '') {
+  if (authUserId === undefined || authUserId === null || channelId === undefined || channelId === null ) {
    return {error: "Incorrect Arugment use"};
  }
   // No case: zero User or Channel
@@ -39,7 +41,7 @@ export function channelDetailsV1(authUserId, channelId) {
   for (let i in Channel_Pointer.allMembers) {
     if (authUserId == Channel_Pointer.allMembers[i].uId) {
       break;
-    } else if (i == Object.keys(dataStore.channels[i].allMembers).length) {
+    } else if (i == dataStore.channels[i].allMembers.length) {
       // console.log(authUserId);
       // console.log(dataStore.users[i].uId);
       return {error: "User is not a member of the channel"};
@@ -58,9 +60,10 @@ export function channelDetailsV1(authUserId, channelId) {
       name: Channel_Pointer.name,
       isPublic: Channel_Pointer.isPublic,
       ownerMembers: ownerMembersArray,
-      allMembers:allMembersArray
+      allMembers: allMembersArray
     }
   };
+
 //////////////     RETURN REFERENCE       ////////////////
     // return {
     //     name: 'Hayden',
@@ -84,11 +87,10 @@ export function channelDetailsV1(authUserId, channelId) {
     //     ],
     //   };
 //////////////////////////////////////////////////////////
-export function channelJoinV1(authUserId, channelId) {
+export function channelJoinV1(authUserId: number, channelId: number): error | {} {
   let dataStore = getData();
   // No Arugment Case:
-  if (authUserId === undefined || authUserId === null || authUserId === ''
-  || channelId === undefined || channelId === null || channelId === '') {
+  if (authUserId === undefined || authUserId === null || channelId === undefined || channelId === null) {
    return {error: "Incorrect Arugment use"};
  }
   // No case: zero User or Channel
@@ -162,7 +164,7 @@ export function channelJoinV1(authUserId, channelId) {
   * @returns {null} - This function returns null.
 */
 
-export function channelInviteV1( authUserId, channelId, uId ) {
+export function channelInviteV1(authUserId: number, channelId: number, uId:number): error | {} {
   let data = getData()
   // These if statements check to see if the parameters exist. 
   if (authUserId == null || channelId == null || uId == null) {
@@ -193,11 +195,15 @@ export function channelInviteV1( authUserId, channelId, uId ) {
       channelIndex = i;
     }
   }
-  const authIdInChannel = data.channels[channelIndex].allMembers.some(d => d.uId === authUserId)
+
+
+
+  const authIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId)
   if (authIdInChannel == false) {
     return ({"error": "You are not in this group. You cannot invite others in."})
   }
-  const uIdInChannel = data.channels[channelIndex].allMembers.some(d => d.uId === uId)
+
+  const uIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId)
   if (uIdInChannel == true) {
     return ({"error": "Member already in group."})
   }
@@ -226,7 +232,7 @@ export function channelInviteV1( authUserId, channelId, uId ) {
   *                                   start + 50. If less, it will equal -1. 
 */
 
-export function channelMessagesV1( authUserId, channelId, start ) {
+export function channelMessagesV1(authUserId: number, channelId: number, start: number): error | channelMessages {
   let data = getData()
   // Check if the parameters have been entered.
   if (authUserId == null || channelId == null || start == null) {

@@ -1,5 +1,6 @@
 import { getData, setData } from "./dataStore.js";
 
+import {error, authUserId, channelDetails, channelMessages, channelId, channels, channelsTemp} from './interfaces'
 
 /**
   * <Creates a new channel and returns it's channelId>
@@ -10,7 +11,7 @@ import { getData, setData } from "./dataStore.js";
   * 
   * @returns {channelId: number} - returns channelId when new channel is created successfully
 */
-function channelsCreateV1(authUserId, name, isPublic) {  
+function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): error | channelId {  
   
   // error checking length of name
   if (name.length > 20 || name.length < 1) {
@@ -36,7 +37,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
   }
   
   // creates a unique channelId
-  let newChannelId;
+  let newChannelId: number;
   do {
     newChannelId = Math.floor(Math.random() * 10);
   } while (data.channels.some((channel) => channel.channelId === newChannelId));
@@ -81,7 +82,7 @@ function channelsCreateV1(authUserId, name, isPublic) {
   * 
   * @returns {channels: []} - returns an array of channels that the given user is part of
 */
-function channelsListV1(authUserId) {
+function channelsListV1(authUserId: number): error | channels {
 
   let found = false;
   let data = getData();
@@ -129,7 +130,7 @@ function channelsListV1(authUserId) {
   * 
   * @returns {channels: []} - returns an array of all channels including public channels and private channels
 */
-function channelsListAllV1(authUserId) {
+function channelsListAllV1(authUserId: number | string): error | channels {
   const data = getData();
   const channels = [];
   let user;
