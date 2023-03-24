@@ -1,19 +1,18 @@
-import { getData, setData } from "./dataStore";
+import { getData, setData } from './dataStore';
 
-import {error, authUserId, channelDetails, channelMessages} from './interfaces'
-
+import { error, channelDetails, channelMessages } from './interfaces';
 
 export function channelDetailsV1(authUserId: number, channelId: number): error | channelDetails {
-  let dataStore = getData()
+  const dataStore = getData();
   // No Arugment Case:
-  if (authUserId === undefined || authUserId === null || channelId === undefined || channelId === null ) {
-   return {error: "Incorrect Arugment use"};
- }
+  if (authUserId === undefined || authUserId === null || channelId === undefined || channelId === null) {
+    return { error: 'Incorrect Arugment use' };
+  }
   // No case: zero User or Channel
-  if (Object.keys(dataStore.users).length  < 1) {
-    return { error: "no User in dataStore"};
-  } else if (Object.keys(dataStore.channels).length  < 1) {
-    return { error: "no channel in dataStore"};
+  if (Object.keys(dataStore.users).length < 1) {
+    return { error: 'no User in dataStore' };
+  } else if (Object.keys(dataStore.channels).length < 1) {
+    return { error: 'no channel in dataStore' };
   }
   // Invalid case: Invalid authUserId argument
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
@@ -21,83 +20,83 @@ export function channelDetailsV1(authUserId: number, channelId: number): error |
     if (authUserId === dataStore.users[i].uId) {
       break;
     // return error when it reaches the end of the list
-    } else if (i == Object.keys(dataStore.users).length - 1) {
-      return { error: "Invalid authUserId"};
+    } else if (i === Object.keys(dataStore.users).length - 1) {
+      return { error: 'Invalid authUserId' };
     }
   }
   // Invalid case: Invalid channelId argument
-  let Channel_Pointer;
+  let channelPointer;
   // breaks when channel argument matches with dataStore
   for (let i = 0; i < Object.keys(dataStore.channels).length; i++) {
     if (channelId === dataStore.channels[i].channelId) {
-      Channel_Pointer = dataStore.channels[i];
+      channelPointer = dataStore.channels[i];
       break;
-       // return error when it reaches the end of the list
-    } else if (i == Object.keys(dataStore.channels).length - 1) {
-      return { error: "Invalid channelId"};
+      // return error when it reaches the end of the list
+    } else if (i === Object.keys(dataStore.channels).length - 1) {
+      return { error: 'Invalid channelId' };
     }
   }
   // Not member Case: User is not a member of the channel
-  for (let i in Channel_Pointer.allMembers) {
-    if (authUserId == Channel_Pointer.allMembers[i].uId) {
+  for (const i in channelPointer.allMembers) {
+    if (authUserId === channelPointer.allMembers[i].uId) {
       break;
-    } else if (i == dataStore.channels[i].allMembers.length) {
+    } else if (i === dataStore.channels[i].allMembers.length) {
       // console.log(authUserId);
       // console.log(dataStore.users[i].uId);
-      return {error: "User is not a member of the channel"};
+      return { error: 'User is not a member of the channel' };
     }
   }
   // stores users and channels into an array(s)
   const ownerMembersArray = [];
   const allMembersArray = [];
-  for (let i in Channel_Pointer.owners) {
-    ownerMembersArray.push(Channel_Pointer.owners[i]);
+  for (const i in channelPointer.owners) {
+    ownerMembersArray.push(channelPointer.owners[i]);
   }
-  for (let i in Channel_Pointer.allMembers) {
-    allMembersArray.push(Channel_Pointer.allMembers[i]);
+  for (const i in channelPointer.allMembers) {
+    allMembersArray.push(channelPointer.allMembers[i]);
   }
   return {
-      name: Channel_Pointer.name,
-      isPublic: Channel_Pointer.isPublic,
-      ownerMembers: ownerMembersArray,
-      allMembers: allMembersArray
-    }
+    name: channelPointer.name,
+    isPublic: channelPointer.isPublic,
+    ownerMembers: ownerMembersArray,
+    allMembers: allMembersArray
   };
+}
 
-//////////////     RETURN REFERENCE       ////////////////
-    // return {
-    //     name: 'Hayden',
-    //     ownerMembers: [
-    //       {
-    //         uId: 1,
-    //         email: 'example@gmail.com',
-    //         nameFirst: 'Hayden',
-    //         nameLast: 'Jacobs',
-    //         handleStr: 'haydenjacobs',
-    //       }
-    //     ],
-    //     allMembers: [
-    //       {
-    //         uId: 1,
-    //         email: 'example@gmail.com',
-    //         nameFirst: 'Hayden',
-    //         nameLast: 'Jacobs',
-    //         handleStr: 'haydenjacobs',
-    //       }
-    //     ],
-    //   };
-//////////////////////////////////////////////////////////
-export function channelJoinV1(authUserId: number, channelId: number): error | {} {
-  let dataStore = getData();
+/// ///////////     RETURN REFERENCE       ////////////////
+// return {
+//     name: 'Hayden',
+//     ownerMembers: [
+//       {
+//         uId: 1,
+//         email: 'example@gmail.com',
+//         nameFirst: 'Hayden',
+//         nameLast: 'Jacobs',
+//         handleStr: 'haydenjacobs',
+//       }
+//     ],
+//     allMembers: [
+//       {
+//         uId: 1,
+//         email: 'example@gmail.com',
+//         nameFirst: 'Hayden',
+//         nameLast: 'Jacobs',
+//         handleStr: 'haydenjacobs',
+//       }
+//     ],
+//   };
+/// ///////////////////////////////////////////////////////
+export function channelJoinV1(authUserId: number, channelId: number): error | object {
+  const dataStore = getData();
   // No Arugment Case:
   if (authUserId === undefined || authUserId === null || channelId === undefined || channelId === null) {
-   return {error: "Incorrect Arugment use"};
- }
+    return { error: 'Incorrect Arugment use' };
+  }
   // No case: zero User or Channel
-  if (Object.keys(dataStore.users).length  < 1) {
-    return { error: "no User in dataStore"};
-  } else if (Object.keys(dataStore.channels).length  < 1) {
-    return { error: "no channel in dataStore"};
+  if (Object.keys(dataStore.users).length < 1) {
+    return { error: 'no User in dataStore' };
+  } else if (Object.keys(dataStore.channels).length < 1) {
+    return { error: 'no channel in dataStore' };
   }
   // Invalid case: Invalid authUserId argument
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
@@ -105,87 +104,87 @@ export function channelJoinV1(authUserId: number, channelId: number): error | {}
     if (authUserId === dataStore.users[i].uId) {
       break;
     // return error when it reaches the end of the list
-    } else if (i == Object.keys(dataStore.users).length - 1) {
-      return { error: "Invalid authUserId"};
+    } else if (i === Object.keys(dataStore.users).length - 1) {
+      return { error: 'Invalid authUserId' };
     }
   }
   // Invalid case: Invalid channelId argument
-  let Channel_Pointer;
+  let channelPointer;
   // breaks when channel argument matches with dataStore
   for (let i = 0; i < Object.keys(dataStore.channels).length; i++) {
     if (channelId === dataStore.channels[i].channelId) {
-      Channel_Pointer = dataStore.channels[i];
+      channelPointer = dataStore.channels[i];
       break;
-       // return error when it reaches the end of the list
-    } else if (i == Object.keys(dataStore.channels).length - 1) {
-      return { error: "Invalid channelId"};
+      // return error when it reaches the end of the list
+    } else if (i === Object.keys(dataStore.channels).length - 1) {
+      return { error: 'Invalid channelId' };
     }
   }
   // Private channel Case: cannot join private channel unless global owner
-  if (Channel_Pointer.isPublic === false && authUserId != dataStore.users[0].uId) {
-    return { error: 'Cannot join private channel'};
+  if (channelPointer.isPublic === false && authUserId !== dataStore.users[0].uId) {
+    return { error: 'Cannot join private channel' };
   }
   // Member is in channel Case: returns error when member is already in channel
-  for (let i in Channel_Pointer.allMembers) {
-    if (authUserId == Channel_Pointer.allMembers[i].uId) {
-      return { error: 'Member is already in the channel'};
-    } 
+  for (const i in channelPointer.allMembers) {
+    if (authUserId === channelPointer.allMembers[i].uId) {
+      return { error: 'Member is already in the channel' };
+    }
   }
 
-  let User_Pointer;
+  let userPointer;
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
     if (authUserId === dataStore.users[i].uId) {
-      User_Pointer = dataStore.users[i];
+      userPointer = dataStore.users[i];
       break;
     }
   }
   // formatting user information
-  let Incomming_User = {
-    uId: User_Pointer.uId,
-    email: User_Pointer.email,
-    nameFirst: User_Pointer.nameFirst,
-    nameLast: User_Pointer.nameLast,
-    handleStr: User_Pointer.handleStr,
-  }
+  const incommingUser = {
+    uId: userPointer.uId,
+    email: userPointer.email,
+    nameFirst: userPointer.nameFirst,
+    nameLast: userPointer.nameLast,
+    handleStr: userPointer.handleStr,
+  };
 
-  Channel_Pointer.allMembers.push(Incomming_User);
+  channelPointer.allMembers.push(incommingUser);
   setData(dataStore);
   return {};
 }
 
 /**
-  * ChannelIviteV1 takes the first user Id and will invites a second Id into the provided channelId. 
-  * 
+  * ChannelIviteV1 takes the first user Id and will invites a second Id into the provided channelId.
+  *
   * @param {integer} authUserId - The user Id of the member who is already in the group. This Id is the inviting the second Id into the group.
-  * @param {integer} uId - The Id being invited into the group. This Id is not in the group before this function is run. 
-  * @param {integer} channelId - The Id for the channel which authUserId is trying to invite uId into. 
+  * @param {integer} uId - The Id being invited into the group. This Id is not in the group before this function is run.
+  * @param {integer} channelId - The Id for the channel which authUserId is trying to invite uId into.
   * ...
-  * 
+  *
   * @returns {null} - This function returns null.
 */
 
-export function channelInviteV1(authUserId: number, channelId: number, uId:number): error | {} {
-  let data = getData()
-  // These if statements check to see if the parameters exist. 
+export function channelInviteV1(authUserId: number, channelId: number, uId:number): error | object {
+  const data = getData();
+  // These if statements check to see if the parameters exist.
   if (authUserId == null || channelId == null || uId == null) {
-    return({"error": "Please fill in all fields."})
+    return ({ error: 'Please fill in all fields.' });
   }
-  const foundAuthId = data.users.some(a => a.uId === authUserId)
-  if (foundAuthId == false) {
-    return ({"error": "Please enter valid inviter userId."})
+  const foundAuthId = data.users.some(a => a.uId === authUserId);
+  if (foundAuthId === false) {
+    return ({ error: 'Please enter valid inviter userId.' });
   }
-  const foundUId = data.users.some(b => b.uId === uId)
-  if (foundUId == false) {
-    return ({"error": "Please enter valid invitee userId."})
+  const foundUId = data.users.some(b => b.uId === uId);
+  if (foundUId === false) {
+    return ({ error: 'Please enter valid invitee userId.' });
   }
   let key = false;
-  for (let a = 0; a < data.channels.length; a ++) {
+  for (let a = 0; a < data.channels.length; a++) {
     if (data.channels[a].channelId === channelId) {
       key = true;
     }
   }
   if (key === false) {
-    return ({"error": "Please enter valid channelId."})
+    return ({ error: 'Please enter valid channelId.' });
   }
   // These if statements check to see if the Id's entered are already apart
   // of the group.
@@ -196,103 +195,93 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
     }
   }
 
-
-
-  const authIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId)
-  if (authIdInChannel == false) {
-    return ({"error": "You are not in this group. You cannot invite others in."})
+  const authIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId);
+  if (authIdInChannel === false) {
+    return ({ error: 'You are not in this group. You cannot invite others in.' });
   }
 
-  const uIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId)
-  if (uIdInChannel == true) {
-    return ({"error": "Member already in group."})
+  const uIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId);
+  if (uIdInChannel === true) {
+    return ({ error: 'Member already in group.' });
   }
   // All error cases have been sorted. Function will continue beneath.
-  let newUser = data.users.find(o => o.userId === uId);
+  const newUser = data.users.find(o => o.userId === uId);
   let i = 0;
-  while (data.channels[i].channelId != channelId) {
-    i ++;
+  while (data.channels[i].channelId !== channelId) {
+    i++;
   }
-  data.channels[i].allMembers.push(newUser); 
+  data.channels[i].allMembers.push(newUser);
   return {};
 }
 
 /**
-  * ChannelIviteV1 takes the first user Id and will invites a second Id into the provided channelId. 
-  * 
-  * @param {integer} authUserId - The user Id of the member who is already in the group and wants to view the messages. 
-  * @param {integer} channelId - The Id for the channel which authUserId is trying view messages from.  
-  * @param {integer} start - An integer indicating the message, authUserId wants to start looking from.  
+  * ChannelIviteV1 takes the first user Id and will invites a second Id into the provided channelId.
+  *
+  * @param {integer} authUserId - The user Id of the member who is already in the group and wants to view the messages.
+  * @param {integer} channelId - The Id for the channel which authUserId is trying view messages from.
+  * @param {integer} start - An integer indicating the message, authUserId wants to start looking from.
   * ...
-  * 
+  *
   * @returns {messages, start, end} - This function returns messages which is an array of objects containing information about a message
   *                                   such as its location in the array of messages, the message, the Id of the user who posted it and the timestamp.
-  *                                   'start' is the starting index where the list of messages to display will start from. 
+  *                                   'start' is the starting index where the list of messages to display will start from.
   *                                   'end' is the end index. If there are more than 50 messages from where the user indicated 'start', end will equal
-  *                                   start + 50. If less, it will equal -1. 
+  *                                   start + 50. If less, it will equal -1.
 */
 
 export function channelMessagesV1(authUserId: number, channelId: number, start: number): error | channelMessages {
-  let data = getData()
+  const data = getData();
   // Check if the parameters have been entered.
   if (authUserId == null || channelId == null || start == null) {
-    return({error: "Please fill in all fields."})
+    return ({ error: 'Please fill in all fields.' });
   }
   // Check if the IDs are valid (must exist or are the correct type.)
-  // If the type was incorrect, it will still be invalid because all IDs are integers. 
-  // Whatever is entered can be compared to an existing Id. 
-  let channelOwner;
+  // If the type was incorrect, it will still be invalid because all IDs are integers.
+  // Whatever is entered can be compared to an existing Id.
   let found = false;
   // loop to see if authUserId is valid
   for (let i = 0; i < data.users.length; i++) {
-
     if (data.users[i].uId === authUserId) {
-      channelOwner = data.users[i];
       found = true;
       break;
     }
   }
   // error checking for if authUserId is valid
   if (found === false) {
-    return {error: 'authUserId is invalid'};
+    return { error: 'authUserId is invalid' };
   }
 
-  let channelValid;
   let found2 = false;
   // loop to see if channelId is valid
   for (let j = 0; j < data.channels.length; j++) {
     if (data.channels[j].channelId === channelId) {
-      channelValid = data.channels[j];
       found2 = true;
       break;
     }
   }
   if (found2 === false) {
-    return ({error: "Please enter valid channelId."})
+    return ({ error: 'Please enter valid channelId.' });
   }
   // check if start is greater than the number of messages.
-  let numberOfMessages = 0;
-  let channelPassed = data.channels.find(i => i.channelId === channelId);
-  // This assumes each messaage cannot be an empty string. 
+  const numberOfMessages = 0;
+  const channelPassed = data.channels.find(i => i.channelId === channelId);
+  // This assumes each messaage cannot be an empty string.
   let nullArray = false;
-  if (channelPassed.messages == undefined) {
+  if (channelPassed.messages === undefined) {
     nullArray = true;
     if (start > 0) {
-      return ({error: "Message number entered exceeds the number of messages in this channel."})
-    } 
+      return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
+    }
   }
   if (nullArray === false) {
     if (channelPassed.messages.length <= start) {
-      return ({error: "Message number entered exceeds the number of messages in this channel."})
+      return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
     }
     // authUserId not in channelId
-    let channelExist;
-    let data3 = getData();
     let found3 = false;
     // loop to see if authUserId is valid
     for (let k = 0; k < data.channels.length; k++) {
       if (data.channels[k].channelId === channelId) {
-        channelOwner = data.channels[k];
         found3 = true;
         break;
       }
@@ -300,11 +289,11 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
 
     // error checking for if authUserId is valid
     if (found3 === false) {
-      return {error: 'channelId is invalid'};
+      return { error: 'channelId is invalid' };
     }
     // Create end number and completesfunctions. .
-    let channelIndex = data.channels.indexOf(channelId);
-    let messageArrayTemp = [];
+    const channelIndex = data.channels.indexOf(channelId);
+    const messageArrayTemp = [];
     let end;
     if (start + 50 < numberOfMessages) {
       end = start + 50;
@@ -313,36 +302,26 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
         messageArrayTemp.push(data.channels[channelIndex].message[inc]);
         inc++;
       }
-    }
-    else {
+    } else {
       end = -1;
       let inc = start;
-      let lastMessageIndex = data.channels[channelIndex].message.length;
+      const lastMessageIndex = data.channels[channelIndex].message.length;
       while (inc <= lastMessageIndex) {
         messageArrayTemp.push(data.channels[channelIndex].message[inc]);
         inc++;
       }
     }
 
-    return{
+    return {
       messages: messageArrayTemp,
       start: start,
       end: end,
-    }
-  }
-  else {
-    return{
+    };
+  } else {
+    return {
       messages: [],
       start: start,
       end: -1,
-    }
+    };
   }
 }
-
-
-
-
-
-
-    
- 
