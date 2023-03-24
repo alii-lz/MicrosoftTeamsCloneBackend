@@ -1,25 +1,22 @@
-import { getData, setData } from "./dataStore";
+import { getData } from './dataStore';
 
-import {error, authUserId, channelDetails, channelMessages, channelId, channels, channelsTemp, user} from './interfaces'
-
+import { error, user } from './interfaces';
 
 /**
   * <returns information about user with given uId, but without the password>
-  * 
+  *
   * @param {number} authUserId - iD of user whos calling the function
   * @param {number} uId - uId of user who's profile details we want
-  * 
-  * @returns {user} - returns a user with uId, but without the password. 
+  *
+  * @returns {user} - returns a user with uId, but without the password.
 */
 
-function userProfileV1 ( authUserId: number, uId: number ): error | {user: user} {
-
-  let data = getData();
+function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
+  const data = getData();
 
   let found = false;
   // loop to see if authUserId is valid
   for (let i = 0; i < data.users.length; i++) {
-
     if (data.users[i].uId === authUserId) {
       found = true;
       break;
@@ -28,7 +25,7 @@ function userProfileV1 ( authUserId: number, uId: number ): error | {user: user}
 
   // error checking for if authUserId is valid
   if (found === false) {
-    return {error: 'authUserId is invalid'};
+    return { error: 'authUserId is invalid' };
   }
 
   found = false;
@@ -37,9 +34,7 @@ function userProfileV1 ( authUserId: number, uId: number ): error | {user: user}
 
   // loop to see if uId is valid
   for (let i = 0; i < data.users.length; i++) {
-
     if (data.users[i].uId === uId) {
-      
       userToFind = data.users[i];
       found = true;
       break;
@@ -47,7 +42,7 @@ function userProfileV1 ( authUserId: number, uId: number ): error | {user: user}
   }
 
   if (found === false) {
-    return {error: 'authUserId is invalid'};
+    return { error: 'authUserId is invalid' };
   }
 
   // clones userToFind, but without their password
@@ -59,7 +54,7 @@ function userProfileV1 ( authUserId: number, uId: number ): error | {user: user}
     handleStr: userToFind.handleStr,
   };
 
-  return {user: userToReturn};
+  return { user: userToReturn };
 }
 
-export {userProfileV1};
+export { userProfileV1 };

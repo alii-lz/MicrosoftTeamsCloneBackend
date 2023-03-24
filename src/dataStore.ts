@@ -41,8 +41,7 @@ function setData(newData: any) {
   data = newData;
 }
 
-function resetData (): {} {
-
+function resetData (): object {
   data.users = [];
   data.channels = [];
 
