@@ -46,7 +46,7 @@ function setData(newData: any) {
 function resetData (): object {
   data.users = [];
   data.channels = [];
-
+  data.tokens = [];
   return {};
 }
 
