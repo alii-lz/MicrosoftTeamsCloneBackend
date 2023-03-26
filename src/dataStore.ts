@@ -3,13 +3,15 @@
 interface dataStore {
 
   users: any[],
-  channels: any[]
+  channels: any[],
+  tokens: any[]
 }
 
 let data: dataStore = {
 
   users: [],
-  channels: []
+  channels: [],
+  tokens: []
 };
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
@@ -44,7 +46,7 @@ function setData(newData: any) {
 function resetData (): object {
   data.users = [];
   data.channels = [];
-
+  data.tokens = [];
   return {};
 }
 
