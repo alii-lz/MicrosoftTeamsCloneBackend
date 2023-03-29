@@ -1,52 +1,31 @@
-// YOU SHOULD MODIFY THIS OBJECT BELOW
 
-interface dataStore {
+import fs from 'fs';
+import { DataStore } from './interfaces';
 
-  users: any[],
-  channels: any[],
-  tokens: any[]
-}
 
-let data: dataStore = {
-
+const initialData: DataStore = {
   users: [],
   channels: [],
   tokens: []
 };
 
-// YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
-
-/*
-Example usage
-    let store = getData()
-    console.log(store) # Prints { 'names': ['Hayden', 'Tam', 'Rani', 'Giuliana', 'Rando'] }
-
-    names = store.names
-
-    names.pop()
-    names.push('Jake')
-
-    console.log(store) # Prints { 'names': ['Hayden', 'Tam', 'Rani', 'Giuliana', 'Jake'] }
-    setData(store)
-*/
-
-// Use get() to access the data
-function getData(): dataStore {
-  return data;
+function getData(): DataStore {
+  if (fs.existsSync('data.json')) {
+    const dbstr = fs.readFileSync('data.json', 'utf-8');
+    const data = JSON.parse(dbstr) as DataStore;
+    return data;
+  }
+  fs.writeFileSync('data.json', JSON.stringify(initialData), { flag: 'w' });
+  return initialData;
 }
 
-// Use set(newData) to pass in the entire data object, with modifications made
-// - Only needs to be used if you replace the data store entirely
-// - Javascript uses pass-by-reference for objects... read more here: https://stackoverflow.com/questions/13104494/does-javascript-pass-by-reference
-// Hint: this function might be useful to edit in iteration 2
-function setData(newData: any) {
-  data = newData;
+function setData(newData: DataStore) {
+  const jsonstr = JSON.stringify(newData);
+  fs.writeFileSync('data.json', jsonstr, { flag: 'w' });
 }
 
-function resetData (): object {
-  data.users = [];
-  data.channels = [];
-  data.tokens = [];
+function resetData(){
+  fs.writeFileSync('data.json', JSON.stringify(initialData), { flag: 'w' });
   return {};
 }
 
