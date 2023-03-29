@@ -2,7 +2,6 @@
 import fs from 'fs';
 import { DataStore } from './interfaces';
 
-
 const initialData: DataStore = {
   users: [],
   channels: [],
@@ -24,7 +23,7 @@ function setData(newData: DataStore) {
   fs.writeFileSync('data.json', jsonstr, { flag: 'w' });
 }
 
-function resetData(){
+function resetData() {
   fs.writeFileSync('data.json', JSON.stringify(initialData), { flag: 'w' });
   return {};
 }

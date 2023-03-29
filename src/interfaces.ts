@@ -6,7 +6,7 @@ export interface User{
     email: string,
     handleStr: string,
     globalOwner: boolean
-
+    tokens: string[];
 }
 export interface Channels{
     channelId: number,

@@ -28,14 +28,11 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
 });
 
 app.post('/auth/register/v2', (req: Request, res: Response) => {
-  interface AuthRegisterInput{
-    email: string,
-    password: string,
-    nameFirst: string,
-    nameLast: string
-  }
-  const data = req.body.data as AuthRegisterInput;
-  return res.json(authRegisterV1(data.email, data.password, data.nameFirst, data.nameLast));
+  const email = req.body.email as string;
+  const password = req.body.password as string;
+  const nameFirst = req.body.nameFirst as string;
+  const nameLast = req.body.nameLast as string;
+  return res.json(authRegisterV1(email, password, nameFirst, nameLast));
 });
 
 // start server
