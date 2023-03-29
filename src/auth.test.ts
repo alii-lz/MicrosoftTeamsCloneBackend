@@ -1,4 +1,4 @@
-import { requestAuthLogout, requestAuthRegister } from './authRequesters';
+import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';
 const OK = 200;
 
@@ -80,6 +80,4 @@ describe('auth/regiter/V2 failure tests', () => {
     expect(result.returnObj).toStrictEqual({ error: expect.any(String) });
     expect(result.status).toBe(OK);
   });
-
-  
 });

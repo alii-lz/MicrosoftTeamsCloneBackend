@@ -3,7 +3,6 @@ import { setData } from './dataStore';
 import validator from 'validator';
 import { Data } from './interfaces';
 
-
 function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
   const invalidFirstName = (nameFirst.length < 1 || nameFirst.length > 50);
 
@@ -20,9 +19,9 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   const data: Data = getData();
   const ifDataStoreEmpty = (data.users.length === 0);
   let globalOwner = false;
-  if (ifDataStoreEmpty){
-     globalOwner = true;
-  } 
+  if (ifDataStoreEmpty) {
+    globalOwner = true;
+  }
 
   if (!ifDataStoreEmpty) {
     const registeredUser = data.users.find((user) => user.email === email);
@@ -63,13 +62,13 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   data.tokens.push({
     token: newToken,
     active: true
-  })
+  });
 
   setData(data);
-  return { authUserId: uId, token: newToken};
+  return { authUserId: uId, token: newToken };
 }
 
-function authLoginV1(email: string, password: string){
+function authLoginV1(email: string, password: string) {
   const data: Data = getData();
   if (data.users.length === 0) {
     return {
@@ -89,11 +88,11 @@ function authLoginV1(email: string, password: string){
     };
   }
   const newToken = (data.tokens.length + 1).toString();
-  user.tokens.push(newToken)
+  user.tokens.push(newToken);
   data.tokens.push({
     token: newToken,
     active: true
-  })
+  });
   return {
     authUserId: user.uId,
     token: newToken
