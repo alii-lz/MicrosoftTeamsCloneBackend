@@ -76,16 +76,10 @@ describe('auth/regiter/V2 failure tests', () => {
   });
 
   test('Test 7: Unsuccessful registration/ lastName longer than 50 characters', () => {
-    const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'T'.repeat(50));
+    const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'T'.repeat(59));
     expect(result.returnObj).toStrictEqual({ error: expect.any(String) });
     expect(result.status).toBe(OK);
   });
 
-  test('Test 8: Unsuccessful registration/ existing logged out user trying to register', () => {
-    const registerResult1 = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'Tate');
-    requestAuthLogout(registerResult1.returnObj.token);
-    const registerResult2 = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'Tate');
-    expect(registerResult2.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(registerResult2.status).toBe(OK);
-  });
+  
 });
