@@ -3,6 +3,8 @@ import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
+import { authRegisterV1 } from './auth';
+import { clearV1 } from './other';
 
 // Set up web app
 const app = express();
@@ -17,9 +19,23 @@ const PORT: number = parseInt(process.env.PORT || config.port);
 const HOST: string = process.env.IP || 'localhost';
 
 // Example get request
-app.get('/echo', (req: Request, res: Response, next) => {
+app.get('/echo', (req: Request, res: Response) => {
   const data = req.query.echo as string;
   return res.json(echo(data));
+});
+app.delete('/clear/v1', (req: Request, res: Response) => {
+  return res.json(clearV1());
+});
+
+app.post('/auth/register/v2', (req: Request, res: Response) => {
+  interface AuthRegisterInput{
+    email: string,
+    password: string,
+    nameFirst: string,
+    nameLast: string
+  }
+  const data = req.body.data as AuthRegisterInput;
+  return res.json(authRegisterV1(data.email, data.password, data.nameFirst, data.nameLast));
 });
 
 // start server
