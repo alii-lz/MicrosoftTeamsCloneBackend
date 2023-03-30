@@ -6,7 +6,7 @@ describe('auth/authregisterV2 success tests', () => {
   beforeEach(() => {
     requestClear();
   });
-  
+
   test('Test 1: Successful registration/should return token and authUserID', () => {
     const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'Tate');
     expect(result.returnObj).toStrictEqual({ token: (expect.any(String)), authUserId: (expect.any(Number)) });
@@ -131,7 +131,6 @@ describe('auth/Login/V2 success tests', () => {
     expect(loginResult2.returnObj).toStrictEqual({ token: expect.any(String), authUserId: expect.any(Number) });
     expect(loginResult2.status).toBe(OK);
   });
-
 });
 
 describe(' auth/Login/V2 failure tests', () => {
@@ -151,7 +150,6 @@ describe(' auth/Login/V2 failure tests', () => {
     expect(loginResult.returnObj).toStrictEqual({ error: expect.any(String) });
     expect(loginResult.status).toBe(OK);
   });
-
 });
 
 describe(' auth/Logout/V1 success tests', () => {
@@ -187,5 +185,4 @@ describe(' auth/Logout/V1 faiure tests', () => {
     expect(logout.returnObj).toStrictEqual({ error: expect.any(String) });
     expect(logout.status).toBe(OK);
   });
-
 });

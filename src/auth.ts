@@ -100,20 +100,17 @@ function authLoginV1(email: string, password: string) {
   };
 }
 
-function authLogoutV1(token: string){
- 
-  if (getId(token) === -1){
+function authLogoutV1(token: string) {
+  if (getId(token) === -1) {
     return {
       error: 'invalid token'
-    }
+    };
   }
-  let data: Data = getData();
-    const tokenFinder = data.tokens.findIndex((item) => item.token === token);
-    data.tokens[tokenFinder].active = false;
-    setData(data)
-    return {};
-    
-
+  const data: Data = getData();
+  const tokenFinder = data.tokens.findIndex((item) => item.token === token);
+  data.tokens[tokenFinder].active = false;
+  setData(data);
+  return {};
 }
 
 export { authRegisterV1, authLoginV1, authLogoutV1 };
