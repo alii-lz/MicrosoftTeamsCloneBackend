@@ -24,6 +24,7 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
   let AuthUserId2;
   let AuthUserId3;
   let ChannelId1;
+  let ChannelId2;
   let ChannelId3;
   beforeEach(() => {
     ClearV1();
@@ -31,6 +32,7 @@ describe('channelDetailsV1(authUserId, channelId): Invalid Inputs', () => {
     AuthUserId2 = authRegisterV1('ron.weasley@gmail.com', 'flying car', 'Ron', 'Weasley');
     AuthUserId3 = authRegisterV1('hermione.granger@gmail.com', 'reading', 'Hermione', 'Granger');
     ChannelId1 = channelsCreateV1(AuthUserId1.uId, 'Quidditch League', true);
+    ChannelId2 = channelsCreateV1(AuthUserId2.uId, 'Quidditch League', true);
     ChannelId3 = channelsCreateV1(AuthUserId3.uId, 'Hermione Fan Club', true);
   });
   test('Missing AuthUserId1', () => {
