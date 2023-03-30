@@ -2,6 +2,7 @@ import { getData } from './dataStore';
 import { setData } from './dataStore';
 import validator from 'validator';
 import { Data } from './interfaces';
+import { getId } from './other';
 
 function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
   const invalidFirstName = (nameFirst.length < 1 || nameFirst.length > 50);
@@ -98,4 +99,21 @@ function authLoginV1(email: string, password: string) {
     token: newToken
   };
 }
-export { authRegisterV1, authLoginV1 };
+
+function authLogoutV1(token: string){
+ 
+  if (getId(token) === -1){
+    return {
+      error: 'invalid token'
+    }
+  }
+  let data: Data = getData();
+    const tokenFinder = data.tokens.findIndex((item) => item.token === token);
+    data.tokens[tokenFinder].active = false;
+    setData(data)
+    return {};
+    
+
+}
+
+export { authRegisterV1, authLoginV1, authLogoutV1 };
