@@ -211,7 +211,7 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
 
   const authIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId);
   if (authIdInChannel === false) {
-    return ({ error: 'You are not in this group. You cannot invite others in.' });
+    return ({ error: 'You are not part of this channel.' });
   }
   //////////////////////////////////////
   let channelPointer;
@@ -230,7 +230,7 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
   
   const uIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId);
   if (uIdInChannel === true) {
-    return ({ error: 'Member already in group.' });
+    return ({ error: 'Member already in channel.' });
   }
   // All error cases have been sorted. Function will continue beneath.
   const newUser = data.users.find(o => o.userId === uId);
@@ -243,7 +243,7 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
 }
 
 /**
-  * ChannelIviteV1 takes the first user Id and will invites a second Id into the provided channelId.
+  * channelMessagesV1 takes the first user Id, channelId and an integer to display the messages in a channel.
   *
   * @param {integer} authUserId - The user Id of the member who is already in the group and wants to view the messages.
   * @param {integer} channelId - The Id for the channel which authUserId is trying view messages from.
@@ -276,7 +276,7 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   }
   // error checking for if authUserId is valid
   if (found === false) {
-    return { error: 'authUserId is invalid' };
+    return { error: 'User not part of channel.' };
   }
 
   let found2 = false;
@@ -357,11 +357,17 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
 
 export function channelInviteV2(token: string, channelId: number, uId: number): error | object {
   const id = getId(token);
+  if (id == -1) {
+    return {error: "Invalid token."}
+  }
   return channelInviteV1(id, channelId, uId);
 }
 
 export function channelMessagesV2(token: string, channelId: number, start: number): error | channelMessages {
   const id = getId(token);
+  if (id == -1) {
+    return {error: "Invalid token."}
+  }
   return channelMessagesV1(id, channelId, start);
 }
 

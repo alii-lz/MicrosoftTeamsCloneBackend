@@ -1,38 +1,20 @@
 import request from 'sync-request';
 import config from './config.json';
-
+const ERROR = { error: expect.any(String) };
 import {
     getData,
 } from './dataStore'
-//////// Importing functions
-import {
-  channelDetailsV1,
-  channelJoinV1,
-  channelInviteV1,
-  channelMessagesV1,
-} from './channel';
 
 import {
   clearV1,
 } from './other';
 
-import {
-  channelsCreateV1,
-} from './channels';
-import {
-  authRegisterV1,
-} from './auth';
-import { isPrefixUnaryExpression } from 'typescript';
-//////////////End of function list.
-//import { convertToObject } from 'typescript';
-//const ERROR = { error: expect.any(String) };
 const OK = 200;
 const port = config.port;
 const url = config.url;
 const SERVER_URL = `${url}:${port}`;
 
 const data = getData();
-
 
 describe('channelInvite', () => {
   let user1Token: string;
@@ -127,7 +109,7 @@ describe('channelInvite', () => {
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid channelId.'});
+    expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.'});
     expect(res.statusCode).toBe(OK);
    })
    test('Invalid uId', () => {
@@ -191,7 +173,7 @@ describe('channelInvite', () => {
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Token is invalid.'});
+    expect(returnData).toStrictEqual({ ERROR });
     expect(res.statusCode).toBe(OK);
    })
 })

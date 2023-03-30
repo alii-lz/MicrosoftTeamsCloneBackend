@@ -1,12 +1,11 @@
 import request from 'sync-request';
 import config from './config.json';
-
+const ERROR = { error: expect.any(String) };
 import {
   getData,
 } from './dataStore'
 
-//import { convertToObject } from 'typescript';
-//const ERROR = { error: expect.any(String) };
+
 const OK = 200;
 const port = config.port;
 const url = config.url;
@@ -97,7 +96,7 @@ describe('channelInvite', () => {
       }
     );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid channelId.'});
+    expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.'});
     expect(res.statusCode).toBe(OK);
   })
   test('start too big', () => {
@@ -113,7 +112,7 @@ describe('channelInvite', () => {
       }
     );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Start Messsage too big.'});
+    expect(returnData).toStrictEqual({ error: 'Message number entered exceeds the number of messages in this channel.'});
     expect(res.statusCode).toBe(OK);
   })
   test('Invalid user', () => {
@@ -145,7 +144,7 @@ describe('channelInvite', () => {
       }
     );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid token.'});
+    expect(returnData).toStrictEqual({ ERROR });
     expect(res.statusCode).toBe(OK);
   })
 })

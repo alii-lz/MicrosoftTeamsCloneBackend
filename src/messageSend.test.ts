@@ -159,7 +159,7 @@ describe('messageSendV1', () => {
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Token is invalid.'});
+    expect(returnData).toStrictEqual({ error: 'Invalid token.'});
     expect(res.statusCode).toBe(OK);
    })
 

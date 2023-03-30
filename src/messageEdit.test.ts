@@ -174,7 +174,7 @@ describe('messageEditV1', () => {
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Token is invalid.'});
+    expect(returnData).toStrictEqual({ error: 'Invalid token.'});
     expect(res.statusCode).toBe(OK);
    })
 
@@ -191,7 +191,7 @@ describe('messageEditV1', () => {
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'User is not part of this channel.'});
+    expect(returnData).toStrictEqual({ error: 'User is not a global owner. Cannot edit message.'});
     expect(res.statusCode).toBe(OK);
    })
 

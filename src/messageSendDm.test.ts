@@ -160,13 +160,13 @@ describe('messageSendDM', () => {
       {
         json: {
             token: user1Token,
-            dmId: dmId,
+            dmId: dmId+1,
             message: "DM MESSAGE 1"
         }
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual(ERROR);
+    expect(returnData).toStrictEqual({error: 'Invalid dmId.'});
     expect(res.statusCode).toBe(OK);
    })
   
@@ -183,7 +183,7 @@ describe('messageSendDM', () => {
         }
         );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual(ERROR);
+    expect(returnData).toStrictEqual({error: 'Invalid token.'});
     expect(res.statusCode).toBe(OK);
    })
 
@@ -200,7 +200,7 @@ describe('messageSendDM', () => {
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual(ERROR);
+    expect(returnData).toStrictEqual({error: 'User is not part of DM.'});
     expect(res.statusCode).toBe(OK);
    })
 
@@ -217,7 +217,7 @@ describe('messageSendDM', () => {
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual(ERROR);
+    expect(returnData).toStrictEqual({error: 'Message too short.'});
     expect(res.statusCode).toBe(OK);
    })
 
@@ -234,7 +234,7 @@ describe('messageSendDM', () => {
       }
       );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual(ERROR);
+    expect(returnData).toStrictEqual({error: 'Message too long.'});
     expect(res.statusCode).toBe(OK);
    })
 })
