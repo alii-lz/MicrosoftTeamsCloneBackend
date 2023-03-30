@@ -5,7 +5,8 @@ import { DataStore } from './interfaces';
 const initialData: DataStore = {
   users: [],
   channels: [],
-  tokens: []
+  tokens: [],
+  messages: [],
 };
 
 function getData(): DataStore {
