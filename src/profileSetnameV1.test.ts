@@ -10,7 +10,7 @@ describe('Incorrect testCases', () => {
 
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
-		'POST',
+		'PUT',
 		SERVER_URL + '/auth/register/v2',
 		{
 			json: {
@@ -28,7 +28,7 @@ describe('Incorrect testCases', () => {
 //////////////////////////////////////////////////////////
 test('undefined token', () => {
   const res = request(
-    'POST',
+    'PUT',
     SERVER_URL + '/user/profile/setname/v1',
     {	
       json: {
@@ -45,7 +45,7 @@ test('undefined token', () => {
 
 test('undefined first name', () => {
   const res = request(
-    'POST',
+    'PUT',
     SERVER_URL + '/user/profile/setname/v1',
     {	
       json: {
@@ -61,7 +61,7 @@ test('undefined first name', () => {
 
   test('undefined last name', () => {
     const res = request(
-      'POST',
+      'PUT',
       SERVER_URL + '/user/profile/setname/v1',
       {	
         json: {
@@ -76,7 +76,7 @@ test('undefined first name', () => {
 
   test('invalid token', () => {
     const res = request(
-      'POST',
+      'PUT',
       SERVER_URL + '/user/profile/setname/v1',
       {	
         json: {
@@ -93,7 +93,7 @@ test('undefined first name', () => {
 
   test('long first name', () => {
     const res = request(
-      'POST',
+      'PUT',
       SERVER_URL + '/user/profile/setname/v1',
       {	
         json: {
@@ -108,7 +108,7 @@ test('undefined first name', () => {
 
   test('long last name', () => {
     const res = request(
-      'POST',
+      'PUT',
       SERVER_URL + '/user/profile/setname/v1',
       {	
         json: {
@@ -133,7 +133,7 @@ describe('Incorrect testCases', () => {
   
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
-		'POST',
+		'PUT',
 		SERVER_URL + '/auth/register/v2',
 		{
 			json: {
@@ -147,7 +147,7 @@ describe('Incorrect testCases', () => {
 	AuthUserId1 = JSON.parse(res1.getBody() as string);
 
   const res2 = request(
-		'POST',
+		'PUT',
 		SERVER_URL + '/auth/register/v2',
 		{
 			json: {
@@ -165,7 +165,7 @@ describe('Incorrect testCases', () => {
 //////////////////////////////////////////////////////////
   test('successful first-last name change', () => {
   const res = request(
-    'POST',
+    'PUT',
     SERVER_URL + '/user/profile/setname/v1',
     {	
       json: {
@@ -181,7 +181,7 @@ describe('Incorrect testCases', () => {
 
   test('successful test first name change', () => {
     const res = request(
-      'POST',
+      'PUT',
       SERVER_URL + '/user/profile/setname/v1',
       {	
         json: {
