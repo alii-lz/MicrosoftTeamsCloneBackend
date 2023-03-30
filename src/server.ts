@@ -3,7 +3,7 @@ import { echo } from './echo';
 import morgan from 'morgan';
 import config from './config.json';
 import cors from 'cors';
-import { authRegisterV1 } from './auth';
+import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 
 // Set up web app
@@ -33,6 +33,17 @@ app.post('/auth/register/v2', (req: Request, res: Response) => {
   const nameFirst = req.body.nameFirst as string;
   const nameLast = req.body.nameLast as string;
   return res.json(authRegisterV1(email, password, nameFirst, nameLast));
+});
+
+app.post('/auth/login/v2', (req: Request, res: Response) => {
+  const email = req.body.email as string;
+  const password = req.body.password as string;
+  return res.json(authLoginV1(email, password));
+});
+
+app.post('/auth/logout/v1', (req: Request, res: Response) => {
+  const token = req.body.token as string;
+  return res.json(authLogoutV1(token));
 });
 
 // start server
