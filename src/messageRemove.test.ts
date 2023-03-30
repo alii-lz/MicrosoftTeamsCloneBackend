@@ -6,22 +6,9 @@ import {
 } from './dataStore'
 
 import {
-  channelDetailsV1,
-  channelJoinV1,
-  channelInviteV1,
-  channelMessagesV1,
-} from './channel';
-
-import {
   clearV1,
 } from './other';
 
-import {
-  channelsCreateV1,
-} from './channels';
-import {
-  authRegisterV1,
-} from './auth';
 import { isPrefixUnaryExpression } from 'typescript';
 import { token } from 'morgan';
 
@@ -52,7 +39,7 @@ describe('messageRemoveV1', () => {
       {
         json: {
           email: 'user1@hotmail.com',
-          password: 'p1',
+          password: 'p123445P',
           nameFirst: 'A',
           nameLast: 'S',
           }
@@ -82,7 +69,7 @@ describe('messageRemoveV1', () => {
       {
         json: {
           email: 'user2@hotmail.com',
-          password: 'p2',
+          password: 'p123445P',
           nameFirst: 'B',
           nameLast: 'S',
         }

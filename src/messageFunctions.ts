@@ -6,6 +6,16 @@ let data = getData();
 setData(data);
 import { error, channelDetails, channelDetailsWithMessages, messageDetails } from './interfaces';
 
+/**
+  * messageSendV1 sends a messsage to a channel. The message is sent by the uId who owns the token.
+  *
+  * @param {string} token - The token belonging to the user who wants to send the message. They must be apart of the channel. 
+  * @param {integer} channelId - The Id for the channel which the user is trying send messages to.
+  * @param {string} message - The message.
+  * ...
+  *
+  * @returns {messageId} - Returns a number. 
+*/
 export function messageSendV1(token: string, channelId: number, message: string):Number | error {
   let data = getData();
   // Check if empty values were entered. 
@@ -69,6 +79,17 @@ export function messageSendV1(token: string, channelId: number, message: string)
   return messageId;
 }
 
+/**
+  * messageEditV1 edits a messsage in a channel. The message is sent by the uId
+  * who owns the token or the uId is a global owner.
+  *
+  * @param {string} token - The token belonging to the user who wants to send the message. They must be apart of the channel. 
+  * @param {integer} messageId - The Id for the message which the user is trying to edit.
+  * @param {string} message - The new message.
+  * ...
+  *
+  * @returns {} - Returns nothing if successful. 
+*/
 export function messageEditV1(token: string, messageId: number, message: string): any|error {
   let data = getData();
   // Check if empty values were entered.
@@ -127,6 +148,17 @@ export function messageEditV1(token: string, messageId: number, message: string)
   return {}
 }
 
+/**
+  * messageRemoveV1 edits a messsage in a channel. The message is sent by the uId
+  * who owns the token or the uId is a global owner.
+  *
+  * @param {string} token - The token belonging to the user who wants to remove the message. They must be apart of the channel. 
+  * @param {integer} messageId - The Id for the message which the user is trying to remove.
+  * 
+  * ...
+  *
+  * @returns {} - Returns nothing if successful. 
+*/
 export function messageRemoveV1(token: string, messageId: number): any|error {
   let data = getData();
   // Check for missing variables
@@ -177,6 +209,17 @@ export function messageRemoveV1(token: string, messageId: number): any|error {
   return {}
 }
 
+/**
+  * messageSenddmV1 edits a messsage to a dm. The message is sent by the uId
+  * who owns the token and is a part of the dm or the uId is a global owner.
+  *
+  * @param {string} token - The token belonging to the user who wants to remove the message. They must be apart of the channel. 
+  * @param {integer} dmId - The Id for the dm which the user is trying to send messages to.
+  * @param {string} message - The message the user is sending. 
+  * ...
+  *
+  * @returns {messageId} - Returns Id of new message if successful. 
+*/
 export function messageSenddmV1(token: string, dmId: number, message: string) {
   let data = getData();
   // Check if empty values were entered.

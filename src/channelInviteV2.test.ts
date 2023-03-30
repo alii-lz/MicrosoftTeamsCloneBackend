@@ -31,7 +31,7 @@ describe('channelInvite', () => {
       {
         json: {
           email: 'user1@hotmail.com',
-          password: 'p1',
+          password: 'p123445P',
           nameFirst: 'A',
           nameLast: 'S',
           }
@@ -61,7 +61,7 @@ describe('channelInvite', () => {
       {
         json: {
           email: 'user2@hotmail.com',
-          password: 'p2',
+          password: 'p123445P',
           nameFirst: 'B',
           nameLast: 'S',
         }
