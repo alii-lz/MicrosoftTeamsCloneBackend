@@ -33,6 +33,8 @@ export interface Data {
   users: User[];
   channels: Channel[];
   tokens: Token[];
+  messages: channelMessages[],
+  messageDetails: messageDetails[],
 }
 export interface error {
   error: string
@@ -57,6 +59,21 @@ export interface channelDetails {
   isPublic: string,
   ownerMembers: any[],
   allMembers: any[]
+}
+
+export interface channelDetailsWithMessages {
+  name: string,
+  isPublic: string,
+  ownerMembers: any[],
+  allMembers: any[],
+  messages: any[],
+}
+
+export interface messageDetails {
+  messageId: number,
+  uId: number,
+  channelId: number, 
+  dmId: number, 
 }
 
 export interface channelMessages {
@@ -90,5 +107,6 @@ export interface DataStore {
   users: any[],
   channels: any[],
   tokens: any[],
-  messages: any[]
+  messages: channelMessages[],
+  messageDetails: messageDetails[],
 }

@@ -7,6 +7,7 @@ const initialData: DataStore = {
   channels: [],
   tokens: [],
   messages: [],
+  messageDetails: [],
 };
 
 function getData(): DataStore {
