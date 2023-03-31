@@ -2,10 +2,12 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 import { error, channelDetails, channelMessages } from './interfaces';
 
-export function channelDetailsV1(authUserId: number, channelId: number): error | channelDetails {
+import { getUser} from './getUser'
+
+export function channelDetailsV2(token: string, channelId: number): error | channelDetails {
   const dataStore = getData();
   // No Arugment Case:
-  if (authUserId === undefined || authUserId === null || channelId === undefined || channelId === null) {
+  if (token === undefined || token === null || channelId === undefined || channelId === null) {
     return { error: 'Incorrect Arugment use' };
   }
   // No case: zero User or Channel
@@ -14,14 +16,14 @@ export function channelDetailsV1(authUserId: number, channelId: number): error |
   } else if (Object.keys(dataStore.channels).length < 1) {
     return { error: 'no channel in dataStore' };
   }
-  // Invalid case: Invalid authUserId argument
+  // Invalid case: Invalid token argument
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
     // breaks when user argument matches with dataStore
-    if (authUserId === dataStore.users[i].uId) {
+    if (token === dataStore.users[i].uId) {
       break;
     // return error when it reaches the end of the list
     } else if (i === Object.keys(dataStore.users).length - 1) {
-      return { error: 'Invalid authUserId' };
+      return { error: 'Invalid token' };
     }
   }
   // Invalid case: Invalid channelId argument
@@ -36,6 +38,13 @@ export function channelDetailsV1(authUserId: number, channelId: number): error |
       return { error: 'Invalid channelId' };
     }
   }
+  // get User index from token
+  const userIndex = getUser(token);
+  if (userIndex === -1) {
+    return { error: 'Invalid token' };
+  }
+  const authUserId = dataStore.users[userIndex].uId;
+
   // Not member Case: User is not a member of the channel
   for (const i in channelPointer.allMembers) {
     if (authUserId === channelPointer.allMembers[i].uId) {
@@ -47,8 +56,8 @@ export function channelDetailsV1(authUserId: number, channelId: number): error |
     }
   }
   // stores users and channels into an array(s)
-  const ownerMembersArray = [];
-  const allMembersArray = [];
+  const ownerMembersArray: string[] = [];
+  const allMembersArray: string[] = [];
   for (const i in channelPointer.owners) {
     ownerMembersArray.push(channelPointer.owners[i]);
   }
@@ -86,10 +95,10 @@ export function channelDetailsV1(authUserId: number, channelId: number): error |
 //     ],
 //   };
 /// ///////////////////////////////////////////////////////
-export function channelJoinV1(authUserId: number, channelId: number): error | object {
+export function channelJoinV2(token: string, channelId: number): error | object {
   const dataStore = getData();
   // No Arugment Case:
-  if (authUserId === undefined || authUserId === null || channelId === undefined || channelId === null) {
+  if (token === undefined || token === null || channelId === undefined || channelId === null) {
     return { error: 'Incorrect Arugment use' };
   }
   // No case: zero User or Channel
@@ -98,7 +107,14 @@ export function channelJoinV1(authUserId: number, channelId: number): error | ob
   } else if (Object.keys(dataStore.channels).length < 1) {
     return { error: 'no channel in dataStore' };
   }
-  // Invalid case: Invalid authUserId argument
+  // get User index from token
+  const userIndex = getUser(token);
+  if (userIndex === -1) {
+    return { error: 'Invalid token' };
+  }
+  const authUserId = dataStore.users[userIndex].uId;
+
+  // Invalid case: Invalid token argument
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
     // breaks when user argument matches with dataStore
     if (authUserId === dataStore.users[i].uId) {
@@ -163,7 +179,7 @@ export function channelJoinV1(authUserId: number, channelId: number): error | ob
   * @returns {null} - This function returns null.
 */
 
-export function channelInviteV1(authUserId: number, channelId: number, uId:number): error | object {
+export function channelInviteV2(authUserId: number, channelId: number, uId:number): error | object {
   const data = getData();
   // These if statements check to see if the parameters exist.
   if (authUserId == null || channelId == null || uId == null) {
@@ -257,7 +273,7 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
   *                                   start + 50. If less, it will equal -1.
 */
 
-export function channelMessagesV1(authUserId: number, channelId: number, start: number): error | channelMessages {
+export function channelMessagesV2(authUserId: number, channelId: number, start: number): error | channelMessages {
   const data = getData();
   // Check if the parameters have been entered.
   if (authUserId == null || channelId == null || start == null) {
