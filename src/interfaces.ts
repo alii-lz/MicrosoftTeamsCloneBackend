@@ -65,7 +65,7 @@ export interface message {
 
 export interface channelDetails {
   name: string,
-  isPublic: string,
+  isPublic: boolean,
   ownerMembers: any[],
   allMembers: any[]
 }
