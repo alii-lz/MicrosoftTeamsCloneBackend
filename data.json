@@ -1,1 +1,1 @@
-{"users":[],"channels":[],"tokens":[],"dm":[],"messageDetails":[]}
+{"users":[{"uId":1,"email":"ali@gmail.com","password":"validPassword","nameFirst":"ali","nameLast":"ahmed","handleStr":"aliahmed","globalOwner":true,"tokens":["1"]}],"channels":[],"tokens":[{"token":"1","active":true}],"dm":[],"messageDetails":[]}

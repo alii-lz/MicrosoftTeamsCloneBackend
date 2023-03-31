@@ -15,6 +15,9 @@ import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
 import { channelsCreateV2, channelsListV2 } from './channels';
+import { userProfileV2 } from './users';
+import { channelAddOwnerV1 } from './channelAddOwner';
+import { channelLeaveV1 } from './channelLeave';
 
 // Set up web app
 const app = express();
@@ -68,11 +71,32 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
   res.json(channelsListV2(token));
 });
 
-// start server
-const server = app.listen(PORT, HOST, () => {
-  // DO NOT CHANGE THIS LINE
-  console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
+app.get('/user/profile/v2', (req: Request, res: Response) => {
+  
+  const token = req.query.token as string;
+  const uId = req.query.authUserId as string
+
+  res.json(userProfileV2(token, parseInt(uId)));
 });
+
+app.post('/channel/leave/v1', (req: Request, res: Response) => {
+
+  const token = req.body.token as string;
+  const channelId = req.body.channelId as number;
+
+  res.json(channelLeaveV1(token, channelId));
+});
+
+app.post('/channel/addowner/v1', (req: Request, res: Response) => {
+
+  const token = req.body.token as string;
+  const channelId = req.body.channelId as number;
+  const uId = req.body.uId as number
+  
+  res.json(channelAddOwnerV1(token, channelId, uId));
+});
+
+
 
 // channelDetailsV2
 app.get('/channel/details/v2', (req: Request, res: Response) => {
@@ -174,4 +198,10 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   console.log('Message Senddm v1');
   const { token, dmId, message } = req.body;
   res.json(messageSenddmV1(token, dmId, message));
+});
+
+// start server
+const server = app.listen(PORT, HOST, () => {
+  // DO NOT CHANGE THIS LINE
+  console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });

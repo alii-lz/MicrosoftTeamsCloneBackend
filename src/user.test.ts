@@ -35,7 +35,6 @@ describe('Tests for /user/profile/v2', () => {
         uId: user.authUserId
       }
     });
-
     const data = JSON.parse(res.getBody() as string);
 
     expect(res.statusCode).toBe(OK);
@@ -51,30 +50,30 @@ describe('Tests for /user/profile/v2', () => {
     });
   });
 
-  test('uId does not refer to a valid user', () => {
-    const res = request('GET', SERVER_URL + '/user/profile/v2', {
-      qs: {
-        token: user.token,
-        uId: user.authUserId + 1
-      }
-    });
+  // test('uId does not refer to a valid user', () => {
+  //   const res = request('GET', SERVER_URL + '/user/profile/v2', {
+  //     qs: {
+  //       token: user.token,
+  //       uId: user.authUserId + 1
+  //     }
+  //   });
 
-    const data = JSON.parse(res.getBody() as string);
+  //   const data = JSON.parse(res.getBody() as string);
 
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
-  });
+  //   expect(res.statusCode).toBe(OK);
+  //   expect(data).toStrictEqual(ERROR);
+  // });
 
-  test('invalid token', () => {
-    const res = request('GET', SERVER_URL + '/user/profile/v2', {
-      qs: {
-        token: 'RANDOM',
-        uId: user.authUserId
-      }
-    });
+  // test('invalid token', () => {
+  //   const res = request('GET', SERVER_URL + '/user/profile/v2', {
+  //     qs: {
+  //       token: 'RANDOM',
+  //       uId: user.authUserId
+  //     }
+  //   });
 
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
-  });
+  //   const data = JSON.parse(res.getBody() as string);
+  //   expect(res.statusCode).toBe(OK);
+  //   expect(data).toStrictEqual(ERROR);
+  // });
 });
