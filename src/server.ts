@@ -5,6 +5,7 @@ import config from './config.json';
 import cors from 'cors';
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
+import { channelsCreateV2, channelsListV2 } from './channels';
 
 // Set up web app
 const app = express();
@@ -44,6 +45,23 @@ app.post('/auth/login/v2', (req: Request, res: Response) => {
 app.post('/auth/logout/v1', (req: Request, res: Response) => {
   const token = req.body.token as string;
   return res.json(authLogoutV1(token));
+});
+
+app.post('/channels/create/v2', (req: Request, res: Response) => {
+
+  const {token, name, isPublic} = req.body;
+
+  res.json(channelsCreateV2(token, name, isPublic));
+
+});
+
+app.get('/channels/list/v2', (req: Request, res: Response) => {
+
+  const token = req.body.token as string;
+  const uId = req.query.authUserId as string
+
+  res.json(channelsListV2(token, parseInt(uId)));
+
 });
 
 // start server
