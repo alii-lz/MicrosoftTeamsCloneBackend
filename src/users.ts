@@ -2,6 +2,8 @@ import { getData } from './dataStore';
 
 import { error, user } from './interfaces';
 
+import { getId } from './other';
+
 /**
   * <returns information about user with given uId, but without the password>
   *
@@ -55,6 +57,14 @@ function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
   };
 
   return { user: userToReturn };
+}
+
+export function userProfileV2 (token: string, uId: number): error | {user: user} {
+  const id = getId(token);
+  if (id === -1) {
+    return { error: 'token is invalid' };
+  }
+  return userProfileV1(id, uId);
 }
 
 export { userProfileV1 };
