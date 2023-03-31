@@ -99,7 +99,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
 }
 
 
-export function channelsListV2 (token: string, authUserId: number): error | {channels: channel[]} {
+export function channelsListV2 (token: string): error | {channels: channel[]} {
 
   const id = getId (token);
 
@@ -135,7 +135,7 @@ function channelsListV1(authUserId: number): error | {channels: channel[]} {
     return { error: 'authUserId is invalid' };
   }
 
-  let channels: channel[];
+  const channels: channel[] = [];
 
   // this nested loop finds all channels the given user is a part of.
   for (let i = 0; i < data.channels.length; i++) {

@@ -64,10 +64,9 @@ app.post('/channels/create/v2', (req: Request, res: Response) => {
 
 app.get('/channels/list/v2', (req: Request, res: Response) => {
 
-  const token = req.body.token as string;
-  const uId = req.query.authUserId as string
+  const token = req.query.token as string;
 
-  res.json(channelsListV2(token, parseInt(uId)));
+  res.json(channelsListV2(token));
 
 });
 
