@@ -179,7 +179,7 @@ export function channelJoinV2(token: string, channelId: number): error | object 
   * @returns {null} - This function returns null.
 */
 
-export function channelInviteV2(authUserId: number, channelId: number, uId:number): error | object {
+export function channelInviteV1(authUserId: number, channelId: number, uId:number): error | object {
   const data = getData();
   // These if statements check to see if the parameters exist.
   if (authUserId == null || channelId == null || uId == null) {
@@ -273,7 +273,7 @@ export function channelInviteV2(authUserId: number, channelId: number, uId:numbe
   *                                   start + 50. If less, it will equal -1.
 */
 
-export function channelMessagesV2(authUserId: number, channelId: number, start: number): error | channelMessages {
+export function channelMessagesV1(authUserId: number, channelId: number, start: number): error | channelMessages {
   const data = getData();
   // Check if the parameters have been entered.
   if (authUserId == null || channelId == null || start == null) {

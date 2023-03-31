@@ -16,6 +16,9 @@ import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
 import { channelsCreateV2, channelsListV2 } from './channels';
+import { userProfileV2 } from './users';
+import { channelAddOwnerV1 } from './channelAddOwner';
+import { channelLeaveV1 } from './channelLeave';
 
 // Set up web app
 const app = express();
@@ -199,4 +202,10 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
   console.log('Message Senddm v1');
   const { token, dmId, message } = req.body;
   res.json(messageSenddmV1(token, dmId, message));
+});
+
+// start server
+const server = app.listen(PORT, HOST, () => {
+  // DO NOT CHANGE THIS LINE
+  console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });
