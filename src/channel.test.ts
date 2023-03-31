@@ -390,17 +390,18 @@ describe('channelDetailsV1(token, channelId)', () => {
 // 		const data = JSON.parse(res.getBody() as string);
 // 		expect(data).toStrictEqual({})});
 
-// 	test('test successsful 2', () => {
-// 		const res = request(
-// 			'POST',
-// 			SERVER_URL + '/channel/join/v2',
-// 			{	
-// 				qs: {
-// 					token: AuthUserId3.token,
-// 					channelId: ChannelId1.channelId,
-// 				}
-// 			}
-// 		);
-// 		const data = JSON.parse(res.getBody() as string);
-// 		expect(data).toStrictEqual({})});
-// });
+  test('test successsful 2', () => {
+    const res = request(
+      'POST',
+      SERVER_URL + '/channel/join/v2',
+      {
+        qs: {
+          token: AuthUserId3.token,
+          channelId: ChannelId1.channelId,
+        }
+      }
+    );
+    const data = JSON.parse(res.getBody() as string);
+    expect(data).toStrictEqual({});
+  });
+});
