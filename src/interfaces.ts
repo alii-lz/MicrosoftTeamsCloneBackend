@@ -8,12 +8,21 @@ export interface User {
   globalOwner: boolean
   tokens: string[];
 }
-export interface Channels {
+
+export interface user {
+  uId: number,
+  nameFirst: string,
+  nameLast: string,
+  email: string,
+  handleStr: string,
+}
+
+export interface Channel{
   channelId: number,
   name: string,
   isPublic: boolean,
-  owners: object[],
-  allMembers: object[]
+  owners: user[],
+  allMembers: user[]
 }
 
 export interface Token {
@@ -22,20 +31,31 @@ export interface Token {
 }
 export interface Data {
   users: User[];
-  channels: Channels[];
+  channels: Channel[];
   tokens: Token[];
+  messageDetails: messageDetails[],
+  dm: dm[]
 }
+
 export interface error {
   error: string
 }
 
-export interface authUserId {
-  authUserId: number
+export interface dm {
+  dmId: number,
+  users: number[]
+  messages: tempMessage[]
 }
 
-export interface token {
-  token: string,
-  uId: number
+export interface tempMessage {
+  message: string,
+  messageId: number,
+  uId: number,
+  timestamp: number
+}
+
+export interface authUserId {
+  authUserId: number
 }
 
 export interface message {
@@ -48,6 +68,21 @@ export interface channelDetails {
   isPublic: string,
   ownerMembers: any[],
   allMembers: any[]
+}
+
+export interface channelDetailsWithMessages {
+  name: string,
+  isPublic: string,
+  ownerMembers: any[],
+  allMembers: any[],
+  messages: any[],
+}
+
+export interface messageDetails {
+  messageId: number,
+  uId: number,
+  channelId: number, 
+  dmId: number, 
 }
 
 export interface channelMessages {
@@ -75,12 +110,5 @@ export interface user {
   nameFirst: string,
   nameLast: string,
   handleStr: string
-}
-export interface DataStore {
-
-  users: any[],
-  channels: any[],
-  tokens: any[],
-  dm: any[]
 }
 

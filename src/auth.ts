@@ -1,10 +1,10 @@
 import { getData } from './dataStore';
 import { setData } from './dataStore';
 import validator from 'validator';
+import { Data } from './interfaces';
+import { getId } from './other';
 
-import { error, authUserId } from './interfaces';
-
-function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string): error | authUserId {
+function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
   const invalidFirstName = (nameFirst.length < 1 || nameFirst.length > 50);
 
   const invalidLastName = (nameLast.length < 1 || nameLast.length > 50);
@@ -17,8 +17,12 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     return { error: 'One or more invalid inputs' };
   }
 
-  const data = getData();
+  const data: Data = getData();
   const ifDataStoreEmpty = (data.users.length === 0);
+  let globalOwner = false;
+  if (ifDataStoreEmpty) {
+    globalOwner = true;
+  }
 
   if (!ifDataStoreEmpty) {
     const registeredUser = data.users.find((user) => user.email === email);
@@ -34,19 +38,16 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   handleStr = handleStr.replace(/\W/g, '');
 
   if (!ifDataStoreEmpty) {
-    let existingHandle = data.users.find(user => user.handleStr.includes(handleStr));
+    const existingHandle = data.users.find(user => user.handleStr.includes(handleStr));
     if (existingHandle) {
-      existingHandle = existingHandle.handleStr;
+      handleStr = existingHandle.handleStr;
 
-      const endCharacter = existingHandle?.slice(-1);
+      const endCharacter = handleStr.slice(-1);
 
-      existingHandle = endCharacter && !isNaN(parseInt(endCharacter))
-        ? existingHandle.replace(/.$/, parseInt(endCharacter) + 1)
-        : `${existingHandle || ''}0`;
-      handleStr = existingHandle;
+      handleStr = !isNaN(parseInt(endCharacter)) ? handleStr.replace(/.$/, (parseInt(endCharacter) + 1).toString()) : `${handleStr}0`;
     }
   }
-
+  const newToken = (data.tokens.length + 1).toString();
   const newUser = {
     uId: uId,
     email: email,
@@ -54,16 +55,22 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     nameFirst: nameFirst,
     nameLast: nameLast,
     handleStr: handleStr,
+    globalOwner: globalOwner,
+    tokens: [newToken]
   };
 
   data.users.push(newUser);
+  data.tokens.push({
+    token: newToken,
+    active: true
+  });
 
   setData(data);
-  return { authUserId: uId };
+  return { authUserId: uId, token: newToken };
 }
 
-function authLoginV1(email: string, password: string): error | authUserId {
-  const data = getData();
+function authLoginV1(email: string, password: string) {
+  const data: Data = getData();
   if (data.users.length === 0) {
     return {
       error: 'Email not found',
@@ -81,8 +88,29 @@ function authLoginV1(email: string, password: string): error | authUserId {
       error: 'Invalid password',
     };
   }
+  const newToken = (data.tokens.length + 1).toString();
+  user.tokens.push(newToken);
+  data.tokens.push({
+    token: newToken,
+    active: true
+  });
   return {
     authUserId: user.uId,
+    token: newToken
   };
 }
-export { authRegisterV1, authLoginV1 };
+
+function authLogoutV1(token: string) {
+  if (getId(token) === -1) {
+    return {
+      error: 'invalid token'
+    };
+  }
+  const data: Data = getData();
+  const tokenFinder = data.tokens.findIndex((item) => item.token === token);
+  data.tokens[tokenFinder].active = false;
+  setData(data);
+  return {};
+}
+
+export { authRegisterV1, authLoginV1, authLogoutV1 };

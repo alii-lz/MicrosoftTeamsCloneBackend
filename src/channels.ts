@@ -1,6 +1,32 @@
-import { getData, setData } from './dataStore.js';
+import { getData, setData } from './dataStore';
 
-import { error, channelId, channels } from './interfaces';
+import { getId } from './other';
+
+import { Channel, user } from './interfaces';
+
+interface error {
+  error: string;
+}
+
+interface channelId {
+  channelId: number;
+}
+
+interface channel {
+  channelId: number,
+  name: string
+}
+
+export function channelsCreateV2 (token: string, name: string, isPublic: boolean): error | channelId {
+
+  const id = getId(token);
+
+  if (id === -1) {
+    return {error: 'token is invalid'};
+  }
+
+  return channelsCreateV1(id, name, isPublic);
+} 
 
 /**
   * <Creates a new channel and returns it's channelId>
@@ -17,7 +43,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
     return { error: 'name must be between 1 and 20 characters' };
   }
 
-  let channelOwner;
+  let channelOwner: user;
   const data = getData();
   let found = false;
   // loop to see if authUserId is valid
@@ -40,7 +66,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
     newChannelId = Math.floor(Math.random() * 10);
   } while (data.channels.some((channel) => channel.channelId === newChannelId));
 
-  const newChannel = {
+  const newChannel: Channel = {
 
     channelId: newChannelId,
     name: name,
@@ -52,7 +78,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
         email: channelOwner.email,
         nameFirst: channelOwner.nameFirst,
         nameLast: channelOwner.nameLast,
-        handleStr: channelOwner.handleStr
+        handleStr: channelOwner.handleStr,
       }
     ],
     allMembers: [
@@ -72,15 +98,27 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
   return { channelId: newChannel.channelId };
 }
 
+
+export function channelsListV2 (token: string, authUserId: number): error | {channels: channel[]} {
+
+  const id = getId (token);
+
+  if (id === -1) {
+    return {error: 'token is invalid'};
+  }
+
+  return channelsListV1(id);
+}
+
 /**
   * <makes an array of objects where each object is a channel that the given user is part of
   * and returns this array of channel objects >
   *
-  * @param {number} authUserId - iD of user whos making the new channel
+  * @param {number} authUserId - iD of user whos calling the function
   *
   * @returns {channels: []} - returns an array of channels that the given user is part of
 */
-function channelsListV1(authUserId: number): error | channels {
+function channelsListV1(authUserId: number): error | {channels: channel[]} {
   let found = false;
   const data = getData();
 
@@ -97,7 +135,7 @@ function channelsListV1(authUserId: number): error | channels {
     return { error: 'authUserId is invalid' };
   }
 
-  const channels = [];
+  let channels: channel[];
 
   // this nested loop finds all channels the given user is a part of.
   for (let i = 0; i < data.channels.length; i++) {
@@ -120,7 +158,7 @@ function channelsListV1(authUserId: number): error | channels {
   *
   * @returns {channels: []} - returns an array of all channels including public channels and private channels
 */
-function channelsListAllV1(authUserId: number | string): error | channels {
+function channelsListAllV1(authUserId: number | string): error | {channels: channel[]} {
   const data = getData();
   const channels = [];
   let found = false;
