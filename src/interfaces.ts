@@ -33,20 +33,29 @@ export interface Data {
   users: User[];
   channels: Channel[];
   tokens: Token[];
-  messages: channelMessages[],
   messageDetails: messageDetails[],
+  dm: dm[]
 }
+
 export interface error {
   error: string
 }
 
-export interface authUserId {
-  authUserId: number
+export interface dm {
+  dmId: number,
+  users: number[]
+  messages: tempMessage[]
 }
 
-export interface token {
-  token: string,
-  uId: number
+export interface tempMessage {
+  message: string,
+  messageId: number,
+  uId: number,
+  timestamp: number
+}
+
+export interface authUserId {
+  authUserId: number
 }
 
 export interface message {
@@ -101,12 +110,4 @@ export interface user {
   nameFirst: string,
   nameLast: string,
   handleStr: string
-}
-export interface DataStore {
-
-  users: any[],
-  channels: any[],
-  tokens: any[],
-  messages: channelMessages[],
-  messageDetails: messageDetails[],
 }

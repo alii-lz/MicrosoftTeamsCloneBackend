@@ -7,6 +7,7 @@ import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions'
 import { channelInviteV2, channelMessagesV2 } from './channel';
+import { channelsCreateV2, channelsListV2 } from './channels';
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
