@@ -8,6 +8,7 @@ import {
   channelDetailsV2, channelJoinV2,
   channelInviteV2, channelMessagesV2
 } from './channel';
+import { dmCreate, dmLeave, dmList, dmRemove } from './dm';
 import { dmDetailsV1 } from './dmDetailsV1';
 import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
   from './profileUsers';
@@ -66,6 +67,30 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
   const token = req.query.token as string;
 
   res.json(channelsListV2(token));
+});
+
+app.post('/dm/create/v1', (req: Request, res: Response) => {
+  const token = req.body.token as string;
+  const uids = req.body.uids as number[];
+  return res.json(dmCreate(token, uids));
+});
+
+app.get('/dm/list/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+
+  return res.json(dmList(token));
+});
+
+app.delete('/dm/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  return res.json(dmRemove(token, parseInt(dmId)));
+});
+
+app.post('/dm/leave/v1', (req: Request, res: Response) => {
+  const token = req.body.token as string;
+  const dmId = req.body.dmId as string;
+  return res.json(dmLeave(token, parseInt(dmId)));
 });
 
 // start server
