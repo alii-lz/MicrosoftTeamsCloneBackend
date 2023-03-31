@@ -81,8 +81,8 @@ export interface channelDetailsWithMessages {
 export interface messageDetails {
   messageId: number,
   uId: number,
-  channelId: number, 
-  dmId: number, 
+  channelId: number,
+  dmId: number,
 }
 
 export interface channelMessages {
@@ -111,4 +111,3 @@ export interface user {
   nameLast: string,
   handleStr: string
 }
-

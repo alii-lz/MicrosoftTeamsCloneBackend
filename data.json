@@ -1,1 +1,1 @@
-{"users":[{"uId":1,"email":"ali@gmail.com","password":"validPassword","nameFirst":"ali","nameLast":"ahmed","handleStr":"aliahmed","globalOwner":true,"tokens":["1"]}],"channels":[{"channelId":5,"name":"ali","isPublic":true,"owners":[{"uId":1,"email":"ali@gmail.com","nameFirst":"ali","nameLast":"ahmed","handleStr":"aliahmed"}],"allMembers":[{"uId":1,"email":"ali@gmail.com","nameFirst":"ali","nameLast":"ahmed","handleStr":"aliahmed"}]}],"tokens":[{"token":"1","active":true}],"dm":[],"messageDetails":[]}
+{"users":[],"channels":[],"tokens":[],"dm":[],"messageDetails":[]}

@@ -18,15 +18,14 @@ interface channel {
 }
 
 export function channelsCreateV2 (token: string, name: string, isPublic: boolean): error | channelId {
-
   const id = getId(token);
 
   if (id === -1) {
-    return {error: 'token is invalid'};
+    return { error: 'token is invalid' };
   }
 
   return channelsCreateV1(id, name, isPublic);
-} 
+}
 
 /**
   * <Creates a new channel and returns it's channelId>
@@ -98,13 +97,11 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
   return { channelId: newChannel.channelId };
 }
 
-
 export function channelsListV2 (token: string): error | {channels: channel[]} {
-
-  const id = getId (token);
+  const id = getId(token);
 
   if (id === -1) {
-    return {error: 'token is invalid'};
+    return { error: 'token is invalid' };
   }
 
   return channelsListV1(id);

@@ -3,8 +3,7 @@ import config from './config.json';
 const ERROR = { error: expect.any(String) };
 import {
   getData,
-} from './dataStore'
-
+} from './dataStore';
 
 const OK = 200;
 const port = config.port;
@@ -14,7 +13,7 @@ const SERVER_URL = `${url}:${port}`;
 const data = getData();
 
 describe('channelInvite', () => {
-  ////////////////Make the first User    
+  /// /////////////Make the first User
   const user1 = request(
     'POST',
     SERVER_URL + '/auth/register/v2',
@@ -24,13 +23,13 @@ describe('channelInvite', () => {
         password: 'p1',
         nameFirst: 'A',
         nameLast: 'S',
-        }
+      }
     }
-  )
+  );
   const user1data = JSON.parse(user1.getBody() as string);
-  let user1Token = user1data.token;
-  let user1Id = user1data.authUserId;
-  //make a channel
+  const user1Token = user1data.token;
+  const user1Id = user1data.authUserId;
+  // make a channel
   const channel1 = request(
     'POST',
     SERVER_URL + '/channels/create/v2',
@@ -41,10 +40,10 @@ describe('channelInvite', () => {
         isPublic: true,
       }
     }
-  )
+  );
   const channel1data = JSON.parse(channel1.getBody() as string);
-  let channel1Id = channel1data.channelId;
-  //make a user2
+  const channel1Id = channel1data.channelId;
+  // make a user2
   const user2 = request(
     'POST',
     SERVER_URL + '/auth/register/v2',
@@ -56,11 +55,11 @@ describe('channelInvite', () => {
         nameLast: 'S',
       }
     }
-  )
+  );
   const user2data = JSON.parse(user2.getBody() as string);
-  let user2Token = user2data.token;
-  let user2Id = user2data.authUserId
-       /////////////////////////////////////////Actual Test  
+  const user2Token = user2data.token;
+  const user2Id = user2data.authUserId;
+  /// //////////////////////////////////////Actual Test
   test('Success case - channelMessages', () => {
     const res = request(
       'GET',
@@ -78,10 +77,10 @@ describe('channelInvite', () => {
       messages: [
       ],
       start: 0,
-      end: -1,});
+      end: -1
+    });
     expect(res.statusCode).toBe(OK);
-    })
-
+  });
 
   test('Invalid ChannelId', () => {
     const res = request(
@@ -96,9 +95,9 @@ describe('channelInvite', () => {
       }
     );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.'});
+    expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.' });
     expect(res.statusCode).toBe(OK);
-  })
+  });
   test('start too big', () => {
     const res = request(
       'GET',
@@ -112,9 +111,9 @@ describe('channelInvite', () => {
       }
     );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Message number entered exceeds the number of messages in this channel.'});
+    expect(returnData).toStrictEqual({ error: 'Message number entered exceeds the number of messages in this channel.' });
     expect(res.statusCode).toBe(OK);
-  })
+  });
   test('Invalid user', () => {
     const res = request(
       'GET',
@@ -128,9 +127,9 @@ describe('channelInvite', () => {
       }
     );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'User not part of channel.'});
+    expect(returnData).toStrictEqual({ error: 'User not part of channel.' });
     expect(res.statusCode).toBe(OK);
-  })
+  });
   test('Invalid token', () => {
     const res = request(
       'GET',
@@ -146,5 +145,5 @@ describe('channelInvite', () => {
     const returnData = JSON.parse(res.getBody() as string);
     expect(returnData).toStrictEqual({ ERROR });
     expect(res.statusCode).toBe(OK);
-  })
-})
+  });
+});
