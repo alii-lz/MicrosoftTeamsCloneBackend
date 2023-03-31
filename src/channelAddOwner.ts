@@ -9,11 +9,11 @@ interface error {
 }
 
 export function channelAddOwnerV1 (token: string, channelId: number, uId: number): object {
-  let data = getData();
-  
+  const data = getData();
+
   let channelIndex: number;
   const id: number = getId(token);
-  let found: boolean = false;
+  let found = false;
   // check if channelId refers to a valid channel
   for (let i = 0; i < data.channels.length; i++) {
     if (data.channels[i].channelId === channelId) {
@@ -25,19 +25,18 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
   }
 
   if (found === false) {
-    return {error: 'channelId does not refer to a valid channel'};
+    return { error: 'channelId does not refer to a valid channel' };
   }
 
   found = false;
-  let mainUserIndex: number = 0;
-  let userToAddIndex: number = 0;
-  let foundMainUser: boolean = false;
-  let foundUserToAdd: boolean = false;
+  let mainUserIndex = 0;
+  let userToAddIndex = 0;
+  let foundMainUser = false;
+  let foundUserToAdd = false;
 
-  // check if token and uId refers to a valid user 
+  // check if token and uId refers to a valid user
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].uId === id) {
-
       foundMainUser = true;
       mainUserIndex = i;
     }
@@ -50,11 +49,11 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
   }
 
   if (foundMainUser === false) {
-    return {error: 'token is invalid'};
+    return { error: 'token is invalid' };
   }
 
   if (foundUserToAdd === false) {
-    return {error: 'uId does not refer to a valid user'};
+    return { error: 'uId does not refer to a valid user' };
   }
 
   found = false;
@@ -66,13 +65,13 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
       break;
     }
   }
-  
+
   if (found === false) {
-    return {error: 'user to add is not a member of a channel'};
+    return { error: 'user to add is not a member of a channel' };
   }
 
   // search if the user is already an owner
-  let alreadyOwner: boolean = false;
+  let alreadyOwner = false;
   for (let i = 0; i < data.channels[channelIndex].owners.length; i++) {
     if (data.channels[channelIndex].owners[i].uId === uId) {
       alreadyOwner = true;
@@ -80,13 +79,13 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
   }
 
   if (alreadyOwner === true) {
-    return {error: 'user is already a channel owner'};
+    return { error: 'user is already a channel owner' };
   }
 
-  // check to see if user whos calling the function has permissions 
+  // check to see if user whos calling the function has permissions
   // to add someone as channel owner
 
-  let permission: boolean = false;
+  let permission = false;
   for (let i = 0; i < data.channels[channelIndex].owners.length; i++) {
     if (data.channels[channelIndex].owners[i].uId === id) {
       mainUserIndex = i;
@@ -95,17 +94,16 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
   }
 
   if (permission === false) {
-    return {error: 'authorised user does not have owner permissions in the channel'};
+    return { error: 'authorised user does not have owner permissions in the channel' };
   }
 
   if (data.users[mainUserIndex].globalOwner === false) {
-    return {error: 'authorised user does not have owner permissions in the channel'};
+    return { error: 'authorised user does not have owner permissions in the channel' };
   }
 
   data.channels[channelId].owners.push(data.users[userToAddIndex]);
 
   setData(data);
 
-  return {}
+  return {};
 }
-

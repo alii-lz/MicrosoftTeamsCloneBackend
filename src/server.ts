@@ -72,15 +72,13 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {
-  
   const token = req.query.token as string;
-  const uId = req.query.authUserId as string
+  const uId = req.query.uId as string;
 
   res.json(userProfileV2(token, parseInt(uId)));
 });
 
 app.post('/channel/leave/v1', (req: Request, res: Response) => {
-
   const token = req.body.token as string;
   const channelId = req.body.channelId as number;
 
@@ -88,15 +86,12 @@ app.post('/channel/leave/v1', (req: Request, res: Response) => {
 });
 
 app.post('/channel/addowner/v1', (req: Request, res: Response) => {
-
   const token = req.body.token as string;
   const channelId = req.body.channelId as number;
-  const uId = req.body.uId as number
-  
+  const uId = req.body.uId as number;
+
   res.json(channelAddOwnerV1(token, channelId, uId));
 });
-
-
 
 // channelDetailsV2
 app.get('/channel/details/v2', (req: Request, res: Response) => {
