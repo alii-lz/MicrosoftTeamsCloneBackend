@@ -47,6 +47,23 @@ app.post('/auth/logout/v1', (req: Request, res: Response) => {
   return res.json(authLogoutV1(token));
 });
 
+app.post('/channels/create/v2', (req: Request, res: Response) => {
+
+  const {token, name, isPublic} = req.body;
+
+  res.json(channelsCreateV2(token, name, isPublic));
+
+});
+
+app.get('/channels/list/v2', (req: Request, res: Response) => {
+
+  const token = req.body.token as string;
+  const uId = req.query.authUserId as string
+
+  res.json(channelsListV2(token, parseInt(uId)));
+
+});
+
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE

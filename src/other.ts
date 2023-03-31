@@ -10,7 +10,10 @@ function clearV1 (): object {
 function getId(token: string): number {
   const data: Data = getData();
   const validToken = data.tokens.find((item) => {
-    return item.token === token && item.active === true;
+    
+    if (item.token === token && item.active === true) {
+      return 
+    }  
   });
   if (!validToken) {
     return -1;
