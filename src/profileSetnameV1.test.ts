@@ -10,60 +10,59 @@ describe('Incorrect testCases', () => {
 
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
-		'PUT',
-		SERVER_URL + '/auth/register/v2',
-		{
-			json: {
-				email: 'harry.potter@gmail.com',
-				password: 'quidditch',
-				nameFirst: 'Harry',
-				nameLast: 'Potter'
-			}
-		}
-	);
-	AuthUserId1 = JSON.parse(res1.getBody() as string);
-
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-test('undefined token', () => {
-  const res = request(
     'PUT',
-    SERVER_URL + '/user/profile/setname/v1',
-    {	
+    SERVER_URL + '/auth/register/v2',
+    {
       json: {
-        token: undefined,
-        nameFisrt: 'Harvey',
-        nameLast: 'Plotter',
+        email: 'harry.potter@gmail.com',
+        password: 'quidditch',
+        nameFirst: 'Harry',
+        nameLast: 'Potter'
       }
     }
   );
-  const data = JSON.parse(res.getBody() as string);
-  expect(data).toStrictEqual({ERROR})});
+  AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-
-
-test('undefined first name', () => {
-  const res = request(
-    'PUT',
-    SERVER_URL + '/user/profile/setname/v1',
-    {	
-      json: {
-        token: AuthUserId1.token,
-        nameFisrt: undefined,
-        nameLast: 'Plotter',
+  /// ///////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////
+  test('undefined token', () => {
+    const res = request(
+      'PUT',
+      SERVER_URL + '/user/profile/setname/v1',
+      {
+        json: {
+          token: undefined,
+          nameFisrt: 'Harvey',
+          nameLast: 'Plotter',
+        }
       }
-    }
-  );
-  const data = JSON.parse(res.getBody() as string);
-  expect(data).toStrictEqual({ERROR})});
+    );
+    const data = JSON.parse(res.getBody() as string);
+    expect(data).toStrictEqual({ ERROR });
+  });
 
+  test('undefined first name', () => {
+    const res = request(
+      'PUT',
+      SERVER_URL + '/user/profile/setname/v1',
+      {
+        json: {
+          token: AuthUserId1.token,
+          nameFisrt: undefined,
+          nameLast: 'Plotter',
+        }
+      }
+    );
+    const data = JSON.parse(res.getBody() as string);
+    expect(data).toStrictEqual({ ERROR });
+  });
 
   test('undefined last name', () => {
     const res = request(
       'PUT',
       SERVER_URL + '/user/profile/setname/v1',
-      {	
+      {
         json: {
           token: AuthUserId1.token,
           nameFisrt: 'Harvey',
@@ -72,13 +71,14 @@ test('undefined first name', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ERROR})});
+    expect(data).toStrictEqual({ ERROR });
+  });
 
   test('invalid token', () => {
     const res = request(
       'PUT',
       SERVER_URL + '/user/profile/setname/v1',
-      {	
+      {
         json: {
           token: -1,
           nameFisrt: 'Harvey',
@@ -87,15 +87,14 @@ test('undefined first name', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ERROR})});
-
-
+    expect(data).toStrictEqual({ ERROR });
+  });
 
   test('long first name', () => {
     const res = request(
       'PUT',
       SERVER_URL + '/user/profile/setname/v1',
-      {	
+      {
         json: {
           token: AuthUserId1.token,
           nameFisrt: 'Harveyfdsjapiofjjiupdefjapjdfiupasueuipashhuidfsa',
@@ -104,13 +103,14 @@ test('undefined first name', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ERROR})});
+    expect(data).toStrictEqual({ ERROR });
+  });
 
   test('long last name', () => {
     const res = request(
       'PUT',
       SERVER_URL + '/user/profile/setname/v1',
-      {	
+      {
         json: {
           token: AuthUserId1.token,
           nameFisrt: 'Harvey',
@@ -119,71 +119,67 @@ test('undefined first name', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ERROR})});
+    expect(data).toStrictEqual({ ERROR });
+  });
 });
-
-
-
-
-
 
 describe('Incorrect testCases', () => {
   let AuthUserId1: {token: string, authUserId: number};
-	let AuthUserId2: {token: string, authUserId: number};
-  
+  let AuthUserId2: {token: string, authUserId: number};
+
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
-		'PUT',
-		SERVER_URL + '/auth/register/v2',
-		{
-			json: {
-				email: 'harry.potter@gmail.com',
-				password: 'quidditch',
-				nameFirst: 'Harry',
-				nameLast: 'Potter'
-			}
-		}
-	);
-	AuthUserId1 = JSON.parse(res1.getBody() as string);
-
-  const res2 = request(
-		'PUT',
-		SERVER_URL + '/auth/register/v2',
-		{
-			json: {
-				email: 'ron.weasley@gmail.com',
-				password: 'flying car',
-				nameFirst: 'Ron',
-				nameLast: 'Weasley'
-			}
-		}
-	);
-	AuthUserId2 = JSON.parse(res2.getBody() as string);
-
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////
-  test('successful first-last name change', () => {
-  const res = request(
     'PUT',
-    SERVER_URL + '/user/profile/setname/v1',
-    {	
+    SERVER_URL + '/auth/register/v2',
+    {
       json: {
-        token: AuthUserId1.token,
-        nameFisrt: 'Harvey',
-        nameLast: 'Plotter',
+        email: 'harry.potter@gmail.com',
+        password: 'quidditch',
+        nameFirst: 'Harry',
+        nameLast: 'Potter'
       }
     }
   );
-  const data = JSON.parse(res.getBody() as string);
-  expect(data).toStrictEqual({})});
+  AuthUserId1 = JSON.parse(res1.getBody() as string);
 
+  const res2 = request(
+    'PUT',
+    SERVER_URL + '/auth/register/v2',
+    {
+      json: {
+        email: 'ron.weasley@gmail.com',
+        password: 'flying car',
+        nameFirst: 'Ron',
+        nameLast: 'Weasley'
+      }
+    }
+  );
+  AuthUserId2 = JSON.parse(res2.getBody() as string);
+
+  /// ///////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////
+  /// ///////////////////////////////////////////////////////
+  test('successful first-last name change', () => {
+    const res = request(
+      'PUT',
+      SERVER_URL + '/user/profile/setname/v1',
+      {
+        json: {
+          token: AuthUserId1.token,
+          nameFisrt: 'Harvey',
+          nameLast: 'Plotter',
+        }
+      }
+    );
+    const data = JSON.parse(res.getBody() as string);
+    expect(data).toStrictEqual({});
+  });
 
   test('successful test first name change', () => {
     const res = request(
       'PUT',
       SERVER_URL + '/user/profile/setname/v1',
-      {	
+      {
         json: {
           token: AuthUserId2.token,
           nameFisrt: 'Ronnie',
@@ -192,5 +188,6 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({})});
+    expect(data).toStrictEqual({});
+  });
 });

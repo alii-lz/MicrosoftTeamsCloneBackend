@@ -7,7 +7,7 @@ const initialData: Data = {
   channels: [],
   tokens: [],
   dm: [],
-  messageDetails:[],
+  messageDetails: [],
 };
 
 function getData(): Data {

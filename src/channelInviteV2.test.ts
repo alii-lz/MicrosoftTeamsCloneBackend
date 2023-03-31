@@ -2,8 +2,8 @@ import request from 'sync-request';
 import config from './config.json';
 const ERROR = { error: expect.any(String) };
 import {
-    getData,
-} from './dataStore'
+  getData,
+} from './dataStore';
 
 import {
   clearV1,
@@ -24,7 +24,7 @@ describe('channelInvite', () => {
   let channel1Id: number;
   beforeEach(() => {
     clearV1();
-    //////////////Make the first User    
+    /// ///////////Make the first User
     const user1 = request(
       'POST',
       SERVER_URL + '/auth/register/v2',
@@ -34,13 +34,13 @@ describe('channelInvite', () => {
           password: 'p123445P',
           nameFirst: 'A',
           nameLast: 'S',
-          }
+        }
       }
-    )
+    );
     const user1data = JSON.parse(user1.getBody() as string);
-    let user1Token = user1data.token;
-    let user1Id = user1data.authUserId;
-    //make a channel
+    const user1Token = user1data.token;
+    const user1Id = user1data.authUserId;
+    // make a channel
     const channel1 = request(
       'POST',
       SERVER_URL + '/channels/create/v2',
@@ -51,10 +51,10 @@ describe('channelInvite', () => {
           isPublic: true,
         }
       }
-    )
+    );
     const channel1data = JSON.parse(channel1.getBody() as string);
-    let channel1Id = channel1data.channelId;
-    //make a user2
+    const channel1Id = channel1data.channelId;
+    // make a user2
     const user2 = request(
       'POST',
       SERVER_URL + '/auth/register/v2',
@@ -66,15 +66,14 @@ describe('channelInvite', () => {
           nameLast: 'S',
         }
       }
-    )
+    );
     const user2data = JSON.parse(user2.getBody() as string);
-    let user2Token = user2data.token;
-    let user2Id = user2data.authUserId
-    
+    const user2Token = user2data.token;
+    const user2Id = user2data.authUserId;
   });
 
   test('Success case - channelInvite', () => {
-      const res = request(
+    const res = request(
       'POST',
       SERVER_URL + '/channel/invite/v2',
       {
@@ -84,19 +83,19 @@ describe('channelInvite', () => {
           uId: user2Id,
         }
       }
-      );
+    );
     const returnData = JSON.parse(res.getBody() as string);
     expect(returnData).toStrictEqual({});
     expect(res.statusCode).toBe(OK);
-    //check if uId is part of channel.
+    // check if uId is part of channel.
     let finalCheck = false;
     if (data.channels[0].allMembers.includes(user2Id) == true) {
       finalCheck = true;
     }
     expect(finalCheck).toStrictEqual(true);
-    })
+  });
 
-   test('Invalid channelId', () => {
+  test('Invalid channelId', () => {
     const res = request(
       'POST',
       SERVER_URL + '/channel/invite/v2',
@@ -107,12 +106,12 @@ describe('channelInvite', () => {
           uId: user2Id,
         }
       }
-      );
+    );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.'});
+    expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.' });
     expect(res.statusCode).toBe(OK);
-   })
-   test('Invalid uId', () => {
+  });
+  test('Invalid uId', () => {
     const res = request(
       'POST',
       SERVER_URL + '/channel/invite/v2',
@@ -120,15 +119,15 @@ describe('channelInvite', () => {
         json: {
           token: user1Token,
           channelId: channel1Id,
-          uId: user2Id +22,
+          uId: user2Id + 22,
         }
       }
-      );
+    );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid uId.'});
+    expect(returnData).toStrictEqual({ error: 'Invalid uId.' });
     expect(res.statusCode).toBe(OK);
-   })
-   test('uId already member', () => {
+  });
+  test('uId already member', () => {
     const res = request(
       'POST',
       SERVER_URL + '/channel/invite/v2',
@@ -139,12 +138,12 @@ describe('channelInvite', () => {
           uId: user1Id,
         }
       }
-      );
+    );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Member already in channel.'});
+    expect(returnData).toStrictEqual({ error: 'Member already in channel.' });
     expect(res.statusCode).toBe(OK);
-   })
-   test('Authorised user not a member', () => {
+  });
+  test('Authorised user not a member', () => {
     const res = request(
       'POST',
       SERVER_URL + '/channel/invite/v2',
@@ -155,12 +154,12 @@ describe('channelInvite', () => {
           uId: user2Id,
         }
       }
-      );
+    );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'You are not part of this channel.'});
+    expect(returnData).toStrictEqual({ error: 'You are not part of this channel.' });
     expect(res.statusCode).toBe(OK);
-   })
-   test('Invalid token', () => {
+  });
+  test('Invalid token', () => {
     const res = request(
       'POST',
       SERVER_URL + '/channel/invite/v2',
@@ -171,9 +170,9 @@ describe('channelInvite', () => {
           uId: user2Id,
         }
       }
-      );
+    );
     const returnData = JSON.parse(res.getBody() as string);
     expect(returnData).toStrictEqual({ ERROR });
     expect(res.statusCode).toBe(OK);
-   })
-})
+  });
+});
