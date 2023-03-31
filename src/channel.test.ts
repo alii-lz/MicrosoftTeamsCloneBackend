@@ -1,13 +1,17 @@
-
 import request from 'sync-request';
-
 import { port, url } from './config.json';
-const SERVER_URL = `${url}:${port}`;
 
-	
+const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
 describe('channelDetailsV1(token, channelId)', () => {
+	let AuthUserId1: {token: string, authUserId: number};
+	let AuthUserId2: {token: string, authUserId: number};
+	let AuthUserId3: {token: string, authUserId: number};
+	let ChannelId1: {channelId: number};
+	let ChannelId3: {channelId: number};
+
+
 	beforeEach(() => {
 		request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 	});
@@ -24,7 +28,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			}
 		}
 	);
-	const AuthUserId1 = JSON.parse(res1.getBody() as string);
+	AuthUserId1 = JSON.parse(res1.getBody() as string);
 
 	const res2 = request(
 		'POST',
@@ -38,7 +42,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			}
 		}
 	);
-	const AuthUserId2 = JSON.parse(res2.getBody() as string);
+	AuthUserId2 = JSON.parse(res2.getBody() as string);
 
 	const res3 = request(
 		'POST',
@@ -52,7 +56,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			}
 		}
 	);
-	const AuthUserId3 = JSON.parse(res3.getBody() as string);
+	AuthUserId3 = JSON.parse(res3.getBody() as string);
 
 	const res4 = request(
 		'POST',
@@ -65,7 +69,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			}
 		}
 	);
-	const ChannelId1 = JSON.parse(res4.getBody() as string);
+	ChannelId1 = JSON.parse(res4.getBody() as string);
 
 	// const res5 = request(
 	//   'POST',
@@ -85,13 +89,13 @@ describe('channelDetailsV1(token, channelId)', () => {
 		SERVER_URL + '/channels/create/v2',
 			{
 			json: {
-				token: AuthUserId3.token[0],
+				token: AuthUserId3.token,
 				name: 'Hermione Fan Club',
 				isPublic: true,
 			}
 		}
 	);
-	const ChannelId3 = JSON.parse(res6.getBody() as string);
+	ChannelId3 = JSON.parse(res6.getBody() as string);
 
 	////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////
@@ -117,7 +121,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			SERVER_URL + '/channel/details/v2',
 			{	
 				qs: {
-					token: AuthUserId1.token[0],
+					token: AuthUserId1.token,
 					channelId: undefined,
 				}
 			}
@@ -147,7 +151,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			SERVER_URL + '/channel/details/v2',
 			{	
 				qs: {
-					token: AuthUserId1.token[0],
+					token: AuthUserId1.token,
 					channelId: 1010,
 				}
 			}
@@ -162,7 +166,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			SERVER_URL + '/channel/details/v2',
 			{	
 				qs: {
-					token: AuthUserId2.token[0],
+					token: AuthUserId2.token,
 					channelId: ChannelId3.channelId,
 				}
 			}
@@ -177,7 +181,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			SERVER_URL + '/channel/details/v2',
 			{	
 				qs: {
-					token: AuthUserId1.token[0],
+					token: AuthUserId1.token,
 					channelId: ChannelId1.channelId,
 				}
 			}
@@ -214,7 +218,7 @@ describe('channelDetailsV1(token, channelId)', () => {
 			SERVER_URL + '/channel/details/v2',
 			{	
 				qs: {
-					token: AuthUserId3.token[0],
+					token: AuthUserId3.token,
 					channelId: ChannelId3.channelId,
 				}
 			}
@@ -251,6 +255,14 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 	// beforeEach(() => {
 	// 	request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 	// });
+	let AuthUserId1: {token: string, authUserId: number};
+	let AuthUserId2: {token: string, authUserId: number};
+	let AuthUserId3: {token: string, authUserId: number};
+	let ChannelId1: {channelId: number};
+	let ChannelId3: {channelId: number};
+
+	request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
+
 	const res1 = request(
 		'POST',
 		SERVER_URL + '/auth/register/v2',
@@ -263,7 +275,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 			}
 		}
 	);
-	const AuthUserId1 = JSON.parse(res1.getBody() as string);
+	AuthUserId1 = JSON.parse(res1.getBody() as string);
 
 	const res2 = request(
 		'POST',
@@ -277,7 +289,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 			}
 		}
 	);
-	const AuthUserId2 = JSON.parse(res2.getBody() as string);
+	AuthUserId2 = JSON.parse(res2.getBody() as string);
 
 	const res3 = request(
 		'POST',
@@ -291,20 +303,20 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 			}
 		}
 	);
-	const AuthUserId3 = JSON.parse(res3.getBody() as string);
+	AuthUserId3 = JSON.parse(res3.getBody() as string);
 
 	const res4 = request(
 		'POST',
 		SERVER_URL + '/channels/create/v2',
 		{
 			json: {
-				token: AuthUserId1.token[0],
+				token: AuthUserId1.token,
 				name: 'Quidditch League',
 				isPublic: true,
 			}
 		}
 	);
-	const ChannelId1 = JSON.parse(res4.getBody() as string);
+	ChannelId1 = JSON.parse(res4.getBody() as string);
 
 	// const res5 = request(
 	//   'POST',
@@ -324,13 +336,13 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 		SERVER_URL + '/channels/create/v2',
 			{
 			json: {
-				token: AuthUserId3.token[0],
+				token: AuthUserId3.token,
 				name: 'Hermione Fan Club',
 				isPublic: true,
 			}
 		}
 	);
-	const ChannelId3 = JSON.parse(res6.getBody() as string);
+	ChannelId3 = JSON.parse(res6.getBody() as string);
 
 	////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////
@@ -355,7 +367,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 			SERVER_URL + '/channel/join/v2',
 			{	
 				qs: {
-					token: AuthUserId1.token[0],
+					token: AuthUserId1.token,
 					channelId: undefined,
 				}
 			}
@@ -385,7 +397,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 			SERVER_URL + '/channel/join/v2',
 			{	
 				qs: {
-					token: AuthUserId1.token[0],
+					token: AuthUserId1.token,
 					channelId: 1010,
 				}
 			}
@@ -400,7 +412,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 			SERVER_URL + '/channel/join/v2',
 			{	
 				qs: {
-					token: AuthUserId2.token[0],
+					token: AuthUserId2.token,
 					channelId: ChannelId3.channelId,
 				}
 			}
@@ -414,7 +426,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
 			SERVER_URL + '/channel/join/v2',
 			{	
 				qs: {
-					token: AuthUserId3.token[0],
+					token: AuthUserId3.token,
 					channelId: ChannelId1.channelId,
 				}
 			}
