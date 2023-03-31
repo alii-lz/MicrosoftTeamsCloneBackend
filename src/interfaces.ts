@@ -8,12 +8,21 @@ export interface User {
   globalOwner: boolean
   tokens: string[];
 }
-export interface Channels {
+
+export interface user {
+  uId: number,
+  nameFirst: string,
+  nameLast: string,
+  email: string,
+  handleStr: string,
+}
+
+export interface Channel{
   channelId: number,
   name: string,
   isPublic: boolean,
-  owners: object[],
-  allMembers: object[]
+  owners: user[],
+  allMembers: user[]
 }
 
 export interface Token {
@@ -22,7 +31,7 @@ export interface Token {
 }
 export interface Data {
   users: User[];
-  channels: Channels[];
+  channels: Channel[];
   tokens: Token[];
 }
 export interface error {
