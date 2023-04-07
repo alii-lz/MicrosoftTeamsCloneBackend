@@ -8,6 +8,7 @@ import {
   channelDetailsV2, channelJoinV2,
   channelInviteV2, channelMessagesV2
 } from './channel';
+import { dmCreate, dmLeave, dmList, dmRemove } from './dm';
 import { dmDetailsV1 } from './dmDetailsV1';
 import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
   from './profileUsers';
@@ -71,26 +72,34 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
   res.json(channelsListV2(token));
 });
 
-app.get('/user/profile/v2', (req: Request, res: Response) => {
+app.post('/dm/create/v1', (req: Request, res: Response) => {
+  const token = req.body.token as string;
+  const uids = req.body.uids as number[];
+  return res.json(dmCreate(token, uids));
+});
+
+app.get('/dm/list/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
-  const uId = req.query.uId as string;
 
-  res.json(userProfileV2(token, parseInt(uId)));
+  return res.json(dmList(token));
 });
 
-app.post('/channel/leave/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
-  const channelId = req.body.channelId as number;
-
-  res.json(channelLeaveV1(token, channelId));
+app.delete('/dm/remove/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  const dmId = req.query.dmId as string;
+  return res.json(dmRemove(token, parseInt(dmId)));
 });
 
-app.post('/channel/addowner/v1', (req: Request, res: Response) => {
+app.post('/dm/leave/v1', (req: Request, res: Response) => {
   const token = req.body.token as string;
-  const channelId = req.body.channelId as number;
-  const uId = req.body.uId as number;
+  const dmId = req.body.dmId as string;
+  return res.json(dmLeave(token, parseInt(dmId)));
+});
 
-  res.json(channelAddOwnerV1(token, channelId, uId));
+// start server
+const server = app.listen(PORT, HOST, () => {
+  // DO NOT CHANGE THIS LINE
+  console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });
 
 // channelDetailsV2
