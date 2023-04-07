@@ -5,7 +5,7 @@ import { error } from './interfaces';
 import { getId } from './other';
 
 /**
- * <Remove user with user id uId as an owner of the channel>
+ * <remove user with user id uId as an owner of the channel>
  *
  * @param {string} token - The token of the user who is removing the owner.
  * @param {number} channelId - The Id of the channel which the user is trying to remove an owner from.
