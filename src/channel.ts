@@ -227,7 +227,13 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
     }
   }
 
-  const authIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId);
+  let authIdInChannel = false;
+  for (let i = 0; i< data.channels[channelIndex].allMembers.length; i++) {
+    if (data.channels[channelIndex].allMembers[i].uId ===authUserId) {
+      authIdInChannel = true;
+      break;
+    }
+  }
   if (authIdInChannel === false) {
     return ({ error: 'You are not part of this channel.' });
   }
@@ -246,12 +252,17 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
     return { error: 'Cannot join private channel' };
   }
   
-  const uIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId);
+  let uIdInChannel = false
+  for (let i = 0; i < data.channels[channelIndex].allMembers.length; i++){
+    if(data.channels[channelIndex].allMembers[i].uId === uId){
+      uIdInChannel = true;
+    }
+  }
   if (uIdInChannel === true) {
     return ({ error: 'Member already in channel.' });
   }
   // All error cases have been sorted. Function will continue beneath.
-  const newUser = data.users.find(o => o.userId === uId);
+  const newUser = data.users.find(o => o.uId === uId);
   let i = 0;
   while (data.channels[i].channelId !== channelId) {
     i++;
@@ -328,7 +339,7 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
     // loop to see if authUserId is member of channel. 
     const channelIndex = data.channels.indexOf(channelId)
     for (let k = 0; k < data.channels[channelIndex].length; k++) {
-      if (data.channels[channelIndex].allMembers[k] === channelId) {
+      if (data.channels[channelIndex].allMembers[k].uId === channelId) {
         found3 = true;
         break;
       }
