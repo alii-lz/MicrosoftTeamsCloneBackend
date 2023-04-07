@@ -1,9 +1,11 @@
+//Written By Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
 const ERROR = { error: expect.any(String) };
 import {
   getData,
 } from './dataStore';
+
 
 const OK = 200;
 const port = config.port;

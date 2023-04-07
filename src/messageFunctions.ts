@@ -1,3 +1,4 @@
+// Written by Arden Sae-Ueng
 import { channel } from 'diagnostics_channel';
 import { InvalidatedProjectKind } from 'typescript';
 import { getData, setData } from './dataStore';
