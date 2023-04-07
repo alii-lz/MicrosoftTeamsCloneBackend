@@ -8,10 +8,10 @@ const ERROR = { error: expect.any(String) };
 describe('Incorrect testCases', () => {
   let AuthUserId1: {token: string, authUserId: number};
   let AuthUserId2: {token: string, authUserId: number};
-
+beforeEach(() => {
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
-    'PUT',
+    'POST',
     SERVER_URL + '/auth/register/v2',
     {
       json: {
@@ -25,7 +25,7 @@ describe('Incorrect testCases', () => {
   AuthUserId1 = JSON.parse(res1.getBody() as string);
 
   const res2 = request(
-    'PUT',
+    'POST',
     SERVER_URL + '/auth/register/v2',
     {
       json: {
@@ -37,14 +37,14 @@ describe('Incorrect testCases', () => {
     }
   );
   AuthUserId2 = JSON.parse(res2.getBody() as string);
-
+  });
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////
   test('undefined token', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/setemail/v1',
       {
         json: {
           token: undefined,
@@ -53,13 +53,13 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual(ERROR);
   });
 
   test('undefined email', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/setemail/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -68,13 +68,13 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual(ERROR);
   });
 
   test('invalid email', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/setemail/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -83,13 +83,13 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual(ERROR);
   });
 
   test('email is already taken', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/setemail/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -98,17 +98,17 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual(ERROR);
   });
 });
 
 describe('Correct testCases', () => {
   let AuthUserId1: {token: string, authUserId: number};
   let AuthUserId2: {token: string, authUserId: number};
-
+beforeEach(() => {
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
-    'PUT',
+    'POST',
     SERVER_URL + '/auth/register/v2',
     {
       json: {
@@ -122,7 +122,7 @@ describe('Correct testCases', () => {
   AuthUserId1 = JSON.parse(res1.getBody() as string);
 
   const res2 = request(
-    'PUT',
+    'POST',
     SERVER_URL + '/auth/register/v2',
     {
       json: {
@@ -134,14 +134,14 @@ describe('Correct testCases', () => {
     }
   );
   AuthUserId2 = JSON.parse(res2.getBody() as string);
-
+  });
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////
   test('successful test 1', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/setemail/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -156,7 +156,7 @@ describe('Correct testCases', () => {
   test('successful test 2', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/setemail/v1',
       {
         json: {
           token: AuthUserId2.token,

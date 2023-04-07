@@ -2,8 +2,8 @@ import request from 'sync-request';
 import config from './config.json';
 
 import {
-  getData,
-} from './dataStore';
+    getData,
+} from './dataStore'
 
 import {
   clearV1,
@@ -18,9 +18,9 @@ const url = config.url;
 const SERVER_URL = `${url}:${port}`;
 const data = getData();
 
-/* These tests will test the http wrappers for the message/ functions.
+/* These tests will test the http wrappers for the message/ functions. 
 There will not be not tests for the functions themselves because the http
-wrappers will return an error if something is wrong with the functions anyways.
+wrappers will return an error if something is wrong with the functions anyways. 
 */
 // Start of message/remove/v1 tests
 
@@ -32,7 +32,7 @@ describe('messageRemoveV1', () => {
   let channel1Id: number;
   let messageId: number;
   beforeEach(() => {
-    clearV1();
+    clearV1();   
     const user1 = request(
       'POST',
       SERVER_URL + '/auth/register/v2',
@@ -42,13 +42,13 @@ describe('messageRemoveV1', () => {
           password: 'p123445P',
           nameFirst: 'A',
           nameLast: 'S',
-        }
+          }
       }
-    );
+    )
     const user1data = JSON.parse(user1.getBody() as string);
-    const user1Token = user1data.token;
-    const user1Id = user1data.authUserId;
-    // make a channel
+    let user1Token = user1data.token;
+    let user1Id = user1data.authUserId;
+    //make a channel
     const channel1 = request(
       'POST',
       SERVER_URL + '/channels/create/v2',
@@ -59,9 +59,9 @@ describe('messageRemoveV1', () => {
           isPublic: true,
         }
       }
-    );
+    )
     const channel1data = JSON.parse(channel1.getBody() as string);
-    const channel1Id = channel1data.channelId;
+    let channel1Id = channel1data.channelId;
     // make a user2
     const user2 = request(
       'POST',
@@ -74,11 +74,11 @@ describe('messageRemoveV1', () => {
           nameLast: 'S',
         }
       }
-    );
+    )
     const user2data = JSON.parse(user2.getBody() as string);
-    const user2Token = user2data.token;
-    const user2Id = user2data.authUserId;
-    // Make a message.
+    let user2Token = user2data.token;
+    let user2Id = user2data.authUserId
+    // Make a message. 
     const message0 = request(
       'POST',
       SERVER_URL + '/message/send/v1',
@@ -86,15 +86,15 @@ describe('messageRemoveV1', () => {
         json: {
           token: user1Token,
           channelId: channel1Id,
-          message: 'First message is in channel 1',
+          message: "First message is in channel 1",
         }
       }
-    );
+    )
     messageId = JSON.parse(message0.getBody() as string);
   });
 
   test('Success case - MessageRemove', () => {
-    let res = request(
+      let res = request(
       'DELETE',
       SERVER_URL + '/message/remove/v1',
       {
@@ -107,7 +107,7 @@ describe('messageRemoveV1', () => {
     const returnData = JSON.parse(res.getBody() as string);
     expect(returnData).toStrictEqual({});
     expect(res.statusCode).toBe(OK);
-    // Check if message is DELETED.
+    // Check if message is DELETED. 
     res = request(
       'GET',
       SERVER_URL + '/channel/messages/v2',
@@ -118,17 +118,15 @@ describe('messageRemoveV1', () => {
           start: 0,
         }
       }
-    );
+    )
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({
-      messages: [{
-      }],
-      start: 0,
-      end: -1
-    });
-  });
+    expect(data).toStrictEqual({messages: [{
+    }],
+    start: 0,
+    end: -1,});
+    })
 
-  test('Invalid messageId', () => {
+   test('Invalid messageId', () => {
     const res = request(
       'DELETE',
       SERVER_URL + '/message/remove/v1',
@@ -138,13 +136,13 @@ describe('messageRemoveV1', () => {
           messageId: 10,
         }
       }
-    );
+      );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid messageId.' });
+    expect(returnData).toStrictEqual({ error: 'Invalid messageId.'});
     expect(res.statusCode).toBe(OK);
-  });
-
-  test('Invalid token', () => {
+   })
+  
+   test('Invalid token', () => {
     const res = request(
       'DELETE',
       SERVER_URL + '/message/remove/v1',
@@ -154,13 +152,13 @@ describe('messageRemoveV1', () => {
           messageId: messageId,
         }
       }
-    );
+      );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid token.' });
+    expect(returnData).toStrictEqual({ error: 'Invalid token.'});
     expect(res.statusCode).toBe(OK);
-  });
+   })
 
-  test('valid messageId but authuserid not part of channel', () => {
+   test('valid messageId but authuserid not part of channel', () => {
     const res = request(
       'DELETE',
       SERVER_URL + '/message/remove/v1',
@@ -170,13 +168,13 @@ describe('messageRemoveV1', () => {
           messageId: messageId,
         }
       }
-    );
+      );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'User is not a global owner. Cannot remove message.' });
+    expect(returnData).toStrictEqual({ error: 'User is not a global owner. Cannot remove message.'});
     expect(res.statusCode).toBe(OK);
-  });
+   })
 
-  test('Global Owner deleting other messages', () => {
+   test('Global Owner deleting other messages', () => {
     request(
       'POST',
       SERVER_URL + '/channel/invite/v2',
@@ -187,7 +185,7 @@ describe('messageRemoveV1', () => {
           uId: user2Id,
         }
       }
-    );
+    )
     const nonOwnerComment = request(
       'POST',
       SERVER_URL + '/message/send/v1',
@@ -195,11 +193,11 @@ describe('messageRemoveV1', () => {
         json: {
           token: user2Token,
           channelId: channel1Id,
-          message: 'I am not an owner.',
+          message: "I am not an owner.",
         }
       }
-    );
-    const nonOwnerCommentId = JSON.parse(nonOwnerComment.getBody() as string);
+    )
+    let nonOwnerCommentId = JSON.parse(nonOwnerComment.getBody() as string);
     const res = request(
       'DELETE',
       SERVER_URL + '/message/remove/v1',
@@ -209,11 +207,11 @@ describe('messageRemoveV1', () => {
           messageId: nonOwnerCommentId,
         }
       }
-    );
+      );
     const returnData = JSON.parse(res.getBody() as string);
     expect(returnData).toStrictEqual({});
     expect(res.statusCode).toBe(OK);
-    const res2 = request(
+    let res2 = request(
       'GET',
       SERVER_URL + '/channel/messages/v2',
       {
@@ -223,17 +221,15 @@ describe('messageRemoveV1', () => {
           start: 0,
         }
       }
-    );
+    )
     const data = JSON.parse(res2.getBody() as string);
-    expect(data).toStrictEqual({
-      messages: [{
-        messageId: 0,
-        uId: user1Id,
-        message: 'First message is in channel 1',
-        timeSent: expect.any(Number),
-      }],
-      start: 0,
-      end: -1
-    });
-  });
-});
+    expect(data).toStrictEqual({messages: [{
+      messageId: 0,
+      uId: user1Id,
+      message: "First message is in channel 1",
+      timeSent: expect.any(Number),
+    }],
+    start: 0,
+    end: -1,});
+   })
+})

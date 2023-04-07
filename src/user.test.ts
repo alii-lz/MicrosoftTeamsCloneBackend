@@ -29,15 +29,16 @@ describe('Tests for /user/profile/v2', () => {
   });
 
   test('success case', () => {
+    console.log(user);
+
     const res = request('GET', SERVER_URL + '/user/profile/v2', {
       qs: {
         token: user.token,
         uId: user.authUserId
       }
     });
-
     const data = JSON.parse(res.getBody() as string);
-
+    console.log(data);
     expect(res.statusCode).toBe(OK);
     expect(data).toStrictEqual({
 
