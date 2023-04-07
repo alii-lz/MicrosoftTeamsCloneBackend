@@ -1,3 +1,4 @@
+// Written by Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
 const ERROR = { error: expect.any(String) };
@@ -89,8 +90,10 @@ describe('channelInvite', () => {
     expect(res.statusCode).toBe(OK);
     // check if uId is part of channel.
     let finalCheck = false;
-    if (data.channels[0].allMembers.includes(user2Id) == true) {
-      finalCheck = true;
+    for (let i = 0; i < data.channels[0].allMembers.length; i++) {
+      if (data.channels[0].allMembers[i].uId == user2Id) {
+        finalCheck = true;
+      }
     }
     expect(finalCheck).toStrictEqual(true);
   });

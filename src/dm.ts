@@ -6,7 +6,7 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
 
 function dmList(token: string){
   return {
-    dms: [];
+    dms: [],
   };
 }
 
