@@ -295,28 +295,28 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   // Check if the IDs are valid (must exist or are the correct type.)
   // If the type was incorrect, it will still be invalid because all IDs are integers.
   // Whatever is entered can be compared to an existing Id.
-  let found = false;
+  let foundAuthUserId = false;
   // loop to see if authUserId is valid
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].uId === authUserId) {
-      found = true;
+      foundAuthUserId = true;
       break;
     }
   }
   // error checking for if authUserId is valid
-  if (found === false) {
+  if (foundAuthUserId === false) {
     return { error: 'User not part of channel.' };
   }
 
-  let found2 = false;
+  let foundChannel = false;
   // loop to see if channelId is valid
   for (let j = 0; j < data.channels.length; j++) {
     if (data.channels[j].channelId === channelId) {
-      found2 = true;
+      foundChannel = true;
       break;
     }
   }
-  if (found2 === false) {
+  if (foundChannel === false) {
     return ({ error: 'Please enter valid channelId.' });
   }
   // check if start is greater than the number of messages.
@@ -335,37 +335,41 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
       return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
     }
     // authUserId not in channelId
-    let found3 = false;
-    // loop to see if authUserId is member of channel. 
-    const channelIndex = data.channels.indexOf(channelId)
-    for (let k = 0; k < data.channels[channelIndex].length; k++) {
-      if (data.channels[channelIndex].allMembers[k].uId === channelId) {
-        found3 = true;
+    let foundauthinside = false;
+    let channelIndex = 0
+    while(channelIndex < data.channels.length) {
+      if (data.channels[channelIndex].channelId === channelId) {
+        break;
+      }
+      channelIndex ++;
+    }
+    for (let k = 0; k < data.channels[channelIndex].allMembers.length; k++) {
+      if (data.channels[channelIndex].allMembers[k].uId === authUserId) {
+        foundauthinside = true;
         break;
       }
     }
-
-    // error checking for if authUserId is valid
-    if (found3 === false) {
+    // error checking for if channelId is valid
+    if (foundauthinside === false) {
       return { error: 'channelId is invalid' };
     }
-    // Create end number and completesfunctions. .
-    ;
+    // Create end number and completesfunctions. 
+    
     const messageArrayTemp = [];
     let end;
     if (start + 50 < numberOfMessages) {
       end = start + 50;
       let inc = start;
       while (inc < end) {
-        messageArrayTemp.push(data.channels[channelIndex].message[inc]);
+        messageArrayTemp.push(data.channels[channelIndex].messages[inc]);
         inc++;
       }
     } else {
       end = -1;
       let inc = start;
-      const lastMessageIndex = data.channels[channelIndex].message.length;
+      const lastMessageIndex = data.channels[channelIndex].messages.length;
       while (inc <= lastMessageIndex) {
-        messageArrayTemp.push(data.channels[channelIndex].message[inc]);
+        messageArrayTemp.push(data.channels[channelIndex].messages[inc]);
         inc++;
       }
     }
