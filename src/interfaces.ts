@@ -22,7 +22,8 @@ export interface Channel{
   name: string,
   isPublic: boolean,
   owners: user[],
-  allMembers: user[]
+  allMembers: user[],
+  messages: tempMessage[],
 }
 
 export interface Token {
@@ -43,15 +44,15 @@ export interface error {
 
 export interface dm {
   dmId: number,
-  users: number[]
+  users: user[]
   messages: tempMessage[]
 }
 
 export interface tempMessage {
   message: string,
-  messageId: number,
   uId: number,
-  timestamp: number
+  messageId: number,
+  timeSent: number
 }
 
 export interface authUserId {
@@ -81,8 +82,8 @@ export interface channelDetailsWithMessages {
 export interface messageDetails {
   messageId: number,
   uId: number,
-  channelId: number,
-  dmId: number,
+  channelId: number, 
+  dmId: number, 
 }
 
 export interface channelMessages {
@@ -111,3 +112,4 @@ export interface user {
   nameLast: string,
   handleStr: string
 }
+
