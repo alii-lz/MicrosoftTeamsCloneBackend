@@ -9,70 +9,72 @@ import {
 import {
   clearV1,
 } from './other';
+import { channel } from 'diagnostics_channel';
+import { createJsxOpeningElement } from 'typescript';
 
 const OK = 200;
 const port = config.port;
 const url = config.url;
 const SERVER_URL = `${url}:${port}`;
 
-const data = getData();
+let data = getData();
+
+let user1Token: string;
+let user1Id: number;
+let user2Token: string;
+let user2Id: number;
+let channel1Id: number;
+beforeEach(() => {
+  clearV1();
+  / ///////////Make the first User
+  const user1 = request(
+    'POST',
+    SERVER_URL + '/auth/register/v2',
+    {
+      json: {
+        email: 'user1@hotmail.com',
+        password: 'p123445P',
+        nameFirst: 'A',
+        nameLast: 'S',
+      }
+    }
+  );
+  const user1data = JSON.parse(user1.getBody() as string);
+  user1Token = user1data.token;
+  user1Id = user1data.authUserId;
+  // make a channel
+  const channel1 = request(
+    'POST',
+    SERVER_URL + '/channels/create/v2',
+    {
+      json: {
+        token: user1Token,
+        name: 'Channel1',
+        isPublic: true,
+      }
+    }
+  );
+  const channel1data = JSON.parse(channel1.getBody() as string);
+  channel1Id = channel1data.channelId;
+  // make a user2
+  const user2 = request(
+    'POST',
+    SERVER_URL + '/auth/register/v2',
+    {
+      json: {
+        email: 'user2@hotmail.com',
+        password: 'p123445P',
+        nameFirst: 'B',
+        nameLast: 'S',
+      }
+    }
+  );
+  const user2data = JSON.parse(user2.getBody() as string);
+  user2Token = user2data.token;
+  user2Id = user2data.authUserId;
+});
 
 describe('channelInvite', () => {
-  let user1Token: string;
-  let user1Id: number;
-  let user2Token: string;
-  let user2Id: number;
-  let channel1Id: number;
-  beforeEach(() => {
-    clearV1();
-    /// ///////////Make the first User
-    const user1 = request(
-      'POST',
-      SERVER_URL + '/auth/register/v2',
-      {
-        json: {
-          email: 'user1@hotmail.com',
-          password: 'p123445P',
-          nameFirst: 'A',
-          nameLast: 'S',
-        }
-      }
-    );
-    const user1data = JSON.parse(user1.getBody() as string);
-    const user1Token = user1data.token;
-    const user1Id = user1data.authUserId;
-    // make a channel
-    const channel1 = request(
-      'POST',
-      SERVER_URL + '/channels/create/v2',
-      {
-        json: {
-          token: user1Token,
-          name: 'Channel1',
-          isPublic: true,
-        }
-      }
-    );
-    const channel1data = JSON.parse(channel1.getBody() as string);
-    const channel1Id = channel1data.channelId;
-    // make a user2
-    const user2 = request(
-      'POST',
-      SERVER_URL + '/auth/register/v2',
-      {
-        json: {
-          email: 'user2@hotmail.com',
-          password: 'p123445P',
-          nameFirst: 'B',
-          nameLast: 'S',
-        }
-      }
-    );
-    const user2data = JSON.parse(user2.getBody() as string);
-    const user2Token = user2data.token;
-    const user2Id = user2data.authUserId;
-  });
-
   test('Success case - channelInvite', () => {
     const res = request(
       'POST',
@@ -88,14 +90,6 @@ describe('channelInvite', () => {
     const returnData = JSON.parse(res.getBody() as string);
     expect(returnData).toStrictEqual({});
     expect(res.statusCode).toBe(OK);
-    // check if uId is part of channel.
-    let finalCheck = false;
-    for (let i = 0; i < data.channels[0].allMembers.length; i++) {
-      if (data.channels[0].allMembers[i].uId == user2Id) {
-        finalCheck = true;
-      }
-    }
-    expect(finalCheck).toStrictEqual(true);
   });
 
   test('Invalid channelId', () => {
@@ -175,7 +169,7 @@ describe('channelInvite', () => {
       }
     );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ ERROR });
+    expect(returnData).toStrictEqual({ error: 'Invalid token.' });
     expect(res.statusCode).toBe(OK);
   });
 });

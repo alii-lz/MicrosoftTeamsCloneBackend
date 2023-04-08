@@ -96,11 +96,11 @@ app.post('/dm/leave/v1', (req: Request, res: Response) => {
   return res.json(dmLeave(token, parseInt(dmId)));
 });
 
-// start server
-const server = app.listen(PORT, HOST, () => {
-  // DO NOT CHANGE THIS LINE
-  console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
-});
+// // start server
+// const server = app.listen(PORT, HOST, () => {
+//   // DO NOT CHANGE THIS LINE
+//   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
+// });
 
 // channelDetailsV2
 app.get('/channel/details/v2', (req: Request, res: Response) => {

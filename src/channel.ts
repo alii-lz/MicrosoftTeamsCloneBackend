@@ -2,7 +2,7 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 import { error, channelDetails, channelMessages, user } from './interfaces';
 
-import { getUser} from './getUser'
+import { getUser } from './getUser'
 
 export function channelDetailsV2(token: string, channelId: number): error | channelDetails {
   const dataStore = getData();
@@ -21,14 +21,14 @@ export function channelDetailsV2(token: string, channelId: number): error | chan
   if (userIndex === -1) {
     return { error: 'Invalid token' };
   }
-  
+
   // Invalid case: Invalid token argument
   for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
     // breaks when user argument matches with dataStore
 
     if (dataStore.users[userIndex].uId === dataStore.users[i].uId) {
       break;
-    // return error when it reaches the end of the list
+      // return error when it reaches the end of the list
     } else if (i === Object.keys(dataStore.users).length - 1) {
       return { error: 'Invalid token' };
     }
@@ -121,7 +121,7 @@ export function channelJoinV2(token: string, channelId: number): error | object 
     // breaks when user argument matches with dataStore
     if (authUserId === dataStore.users[i].uId) {
       break;
-    // return error when it reaches the end of the list
+      // return error when it reaches the end of the list
     } else if (i === Object.keys(dataStore.users).length - 1) {
       return { error: 'Invalid authUserId' };
     }
@@ -181,16 +181,12 @@ export function channelJoinV2(token: string, channelId: number): error | object 
   * @returns {null} - This function returns null.
 */
 
-export function channelInviteV1(authUserId: number, channelId: number, uId:number): error | object {
+export function channelInviteV1(authUserId: number, channelId: number, uId: number): error | object {
   const data = getData();
   // These if statements check to see if the parameters exist.
   if (authUserId == null || channelId == null || uId == null) {
     return ({ error: 'Please fill in all fields.' });
   }
-  // const foundAuthId = data.users.some(a => a.uId === authUserId);
-  // if (foundAuthId === false) {
-  //   return ({ error: 'Please enter valid inviter userId.' });
-  // }
   let found1 = false;
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].uId === authUserId) {
@@ -198,16 +194,18 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
       break;
     }
   }
-  // const foundUId = data.users.some(b => b.uId === uId);
-  // if (foundUId === false) {
-  //   return ({ error: 'Please enter valid invitee userId.' });
-  // }
+  if (found1 === false) {
+    return ({ error: 'AUthUserId is not in function' })
+  }
   let found2 = false;
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].uId === uId) {
       found2 = true;
       break;
     }
+  }
+  if (!found2) {
+    return ({ error: "Invalid uId." })
   }
   let key = false;
   for (let a = 0; a < data.channels.length; a++) {
@@ -227,7 +225,13 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
     }
   }
 
-  const authIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId);
+  let authIdInChannel = false;
+  for (let i = 0; i < data.channels[channelIndex].allMembers.length; i++) {
+    if (data.channels[channelIndex].allMembers[i].uId === authUserId) {
+      authIdInChannel = true;
+      break;
+    }
+  }
   if (authIdInChannel === false) {
     return ({ error: 'You are not part of this channel.' });
   }
@@ -245,18 +249,36 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
   if (channelPointer.isPublic === false && authUserId !== data.users[0].uId) {
     return { error: 'Cannot join private channel' };
   }
-  
-  const uIdInChannel = data.channels[channelIndex].allMembers.includes(authUserId);
+
+  let uIdInChannel = false
+  for (let i = 0; i < data.channels[channelIndex].allMembers.length; i++) {
+    if (data.channels[channelIndex].allMembers[i].uId === uId) {
+      uIdInChannel = true;
+    }
+  }
   if (uIdInChannel === true) {
     return ({ error: 'Member already in channel.' });
   }
   // All error cases have been sorted. Function will continue beneath.
-  const newUser = data.users.find(o => o.userId === uId);
+  
+  let userIndex2 = 0;
+  while (data.users[userIndex2].uId != uId) {
+    userIndex2 ++;
+  }
+  let newUser = {
+    uId: data.users[userIndex2].uId,
+    email: data.users[userIndex2].email,
+    nameFirst: data.users[userIndex2].nameFirst,
+    nameLast: data.users[userIndex2].nameLast,
+    handleStr: data.users[userIndex2].handleStr,
+  }
   let i = 0;
   while (data.channels[i].channelId !== channelId) {
     i++;
   }
   data.channels[i].allMembers.push(newUser);
+  setData(data);
+
   return {};
 }
 
@@ -281,80 +303,97 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   if (authUserId == null || channelId == null || start == null) {
     return ({ error: 'Please fill in all fields.' });
   }
+  let foundChannel = false;
+  // loop to see if channelId is valid
+  for (let j = 0; j < data.channels.length; j++) {
+    if (data.channels[j].channelId === channelId) {
+      foundChannel = true;
+      break;
+    }
+  }
+  if (foundChannel === false) {
+    return ({ error: 'Please enter valid channelId.' });
+  }
   // Check if the IDs are valid (must exist or are the correct type.)
   // If the type was incorrect, it will still be invalid because all IDs are integers.
   // Whatever is entered can be compared to an existing Id.
-  let found = false;
+  let foundAuthUserId = false;
   // loop to see if authUserId is valid
-  for (let i = 0; i < data.users.length; i++) {
-    if (data.users[i].uId === authUserId) {
-      found = true;
+
+  let channelIndex = 0;
+  while (data.channels[channelIndex].channelId != channelId) {
+    channelIndex++;
+  }
+
+  for (let i = 0; i < data.channels[channelIndex].allMembers.length; i++) {
+    if (data.channels[channelIndex].allMembers[i].uId === authUserId) {
+      foundAuthUserId = true;
       break;
     }
   }
   // error checking for if authUserId is valid
-  if (found === false) {
+  if (foundAuthUserId === false) {
     return { error: 'User not part of channel.' };
   }
 
-  let found2 = false;
-  // loop to see if channelId is valid
-  for (let j = 0; j < data.channels.length; j++) {
-    if (data.channels[j].channelId === channelId) {
-      found2 = true;
-      break;
-    }
-  }
-  if (found2 === false) {
-    return ({ error: 'Please enter valid channelId.' });
-  }
+
   // check if start is greater than the number of messages.
   const numberOfMessages = 0;
-  const channelPassed = data.channels.find(i => i.channelId === channelId);
+  //const channelPassedIndex = data.channels.find(i => i.channelId === channelId);
+  
   // This assumes each messaage cannot be an empty string.
   let nullArray = false;
-  if (channelPassed.messages === undefined) {
+  if (data.channels[channelIndex].messages == undefined) {
     nullArray = true;
     if (start > 0) {
       return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
     }
   }
   if (nullArray === false) {
-    if (channelPassed.messages.length <= start) {
-      return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
+    let ci = 0;
+    while(data.channels[ci].channelId != channelId) {
+      ci ++;
+    }
+    if (data.channels[ci].messages.length <= start && start != 0) {
+      const display = data.channels[ci].messages.length
+      return ({ error: 'Message number entered exceeds the number of messages in this channel. ' });
     }
     // authUserId not in channelId
-    let found3 = false;
-    // loop to see if authUserId is member of channel. 
-    const channelIndex = data.channels.indexOf(channelId)
-    for (let k = 0; k < data.channels[channelIndex].length; k++) {
-      if (data.channels[channelIndex].allMembers[k] === channelId) {
-        found3 = true;
+    let foundauthinside = false;
+    let channelIndex = 0
+    while (channelIndex < data.channels.length) {
+      if (data.channels[channelIndex].channelId === channelId) {
+        break;
+      }
+      channelIndex++;
+    }
+    for (let k = 0; k < data.channels[channelIndex].allMembers.length; k++) {
+      if (data.channels[channelIndex].allMembers[k].uId === authUserId) {
+        foundauthinside = true;
         break;
       }
     }
-
-    // error checking for if authUserId is valid
-    if (found3 === false) {
+    // error checking for if channelId is valid
+    if (foundauthinside === false) {
       return { error: 'channelId is invalid' };
     }
-    // Create end number and completesfunctions. .
-    ;
+    // Create end number and completesfunctions. 
+
     const messageArrayTemp = [];
     let end;
     if (start + 50 < numberOfMessages) {
       end = start + 50;
       let inc = start;
       while (inc < end) {
-        messageArrayTemp.push(data.channels[channelIndex].message[inc]);
+        messageArrayTemp.push(data.channels[channelIndex].messages[inc]);
         inc++;
       }
     } else {
       end = -1;
       let inc = start;
-      const lastMessageIndex = data.channels[channelIndex].message.length;
-      while (inc <= lastMessageIndex) {
-        messageArrayTemp.push(data.channels[channelIndex].message[inc]);
+      const lastMessageIndex = data.channels[channelIndex].messages.length;
+      while (inc < lastMessageIndex) {
+        messageArrayTemp.push(data.channels[channelIndex].messages[inc]);
         inc++;
       }
     }
@@ -376,7 +415,7 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
 export function channelInviteV2(token: string, channelId: number, uId: number): error | object {
   const id = getId(token);
   if (id == -1) {
-    return {error: "Invalid token."}
+    return { error: "Invalid token." }
   }
   return channelInviteV1(id, channelId, uId);
 }
@@ -384,7 +423,7 @@ export function channelInviteV2(token: string, channelId: number, uId: number): 
 export function channelMessagesV2(token: string, channelId: number, start: number): error | channelMessages {
   const id = getId(token);
   if (id == -1) {
-    return {error: "Invalid token."}
+    return { error: "Invalid token." }
   }
   return channelMessagesV1(id, channelId, start);
 }
