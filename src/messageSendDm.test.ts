@@ -21,9 +21,7 @@ There will not be not tests for the functions themselves because the http
 wrappers will return an error if something is wrong with the functions anyways.
 */
 // Start of message/senddm/v1 tests
-
-describe('messageSendDM', () => {
-  let user1Token: string;
+let user1Token: string;
   let user1Id: number;
   let user2Token: string;
   let user2Id: number;
@@ -48,8 +46,8 @@ describe('messageSendDM', () => {
       }
     );
     const user1data = JSON.parse(user1.getBody() as string);
-    const user1Token = user1data.token;
-    const user1Id = user1data.authUserId;
+    user1Token = user1data.token;
+    user1Id = user1data.authUserId;
     const user4 = request(
       'POST',
       SERVER_URL + '/auth/register/v2',
@@ -63,8 +61,8 @@ describe('messageSendDM', () => {
       }
     );
     const user4data = JSON.parse(user4.getBody() as string);
-    const user4Token = user4data.token;
-    const user4Id = user4data.authUserId;
+    user4Token = user4data.token;
+    user4Id = user4data.authUserId;
     // make a channel
     const channel1 = request(
       'POST',
@@ -78,7 +76,7 @@ describe('messageSendDM', () => {
       }
     );
     const channel1data = JSON.parse(channel1.getBody() as string);
-    const channel1Id = channel1data.channelId;
+    channel1Id = channel1data.channelId;
     // make a user2
     const user2 = request(
       'POST',
@@ -93,8 +91,8 @@ describe('messageSendDM', () => {
       }
     );
     const user2data = JSON.parse(user2.getBody() as string);
-    const user2Token = user2data.token;
-    const user2Id = user2data.authUserId;
+    user2Token = user2data.token;
+    user2Id = user2data.authUserId;
     const user3 = request(
       'POST',
       SERVER_URL + '/auth/register/v2',
@@ -108,8 +106,8 @@ describe('messageSendDM', () => {
       }
     );
     const user3data = JSON.parse(user3.getBody() as string);
-    const user3Token = user3data.token;
-    const user3Id = user3data.authUserId;
+    user3Token = user3data.token;
+    user3Id = user3data.authUserId;
     const dm1 = request(
       'POST',
       SERVER_URL + '/dm/create/v1',
@@ -123,6 +121,7 @@ describe('messageSendDM', () => {
     const dmId = JSON.parse(dm1.getBody() as string);
   });
 
+describe('messageSendDM', () => {
   test('Success case - senddm', () => {
     const res = request(
       'POST',
