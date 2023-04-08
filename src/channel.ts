@@ -187,10 +187,6 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
   if (authUserId == null || channelId == null || uId == null) {
     return ({ error: 'Please fill in all fields.' });
   }
-  // const foundAuthId = data.users.some(a => a.uId === authUserId);
-  // if (foundAuthId === false) {
-  //   return ({ error: 'Please enter valid inviter userId.' });
-  // }
   let found1 = false;
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].uId === authUserId) {
@@ -198,16 +194,18 @@ export function channelInviteV1(authUserId: number, channelId: number, uId:numbe
       break;
     }
   }
-  // const foundUId = data.users.some(b => b.uId === uId);
-  // if (foundUId === false) {
-  //   return ({ error: 'Please enter valid invitee userId.' });
-  // }
+  if (found1 === false) {
+    return ({ error: 'AUthUserId is not in function'})
+  }
   let found2 = false;
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].uId === uId) {
       found2 = true;
       break;
     }
+  }
+  if (!found2) {
+    return ({ error: "Invalid uId."})
   }
   let key = false;
   for (let a = 0; a < data.channels.length; a++) {
