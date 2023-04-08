@@ -373,7 +373,7 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
       end = -1;
       let inc = start;
       const lastMessageIndex = data.channels[channelIndex].messages.length;
-      while (inc <= lastMessageIndex) {
+      while (inc < lastMessageIndex) {
         messageArrayTemp.push(data.channels[channelIndex].messages[inc]);
         inc++;
       }
