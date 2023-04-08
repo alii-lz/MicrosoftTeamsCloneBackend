@@ -117,8 +117,6 @@ const nonOwnerComment = request(
   }
 )
 messageId2 = JSON.parse(nonOwnerComment.getBody() as string);
-
-
 });
 
 describe('messageRemoveV1', () => {
@@ -214,7 +212,6 @@ describe('messageRemoveV1', () => {
 
 describe('Last test', () => {
   test('Global Owner deleting other messages', () => {
-    console.log("()()()()()()()()()()", messageId2);
     const res = request(
       'DELETE',
       SERVER_URL + '/message/remove/v1',
