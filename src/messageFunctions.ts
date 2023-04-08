@@ -20,7 +20,7 @@ import { error, channelDetails, channelDetailsWithMessages, messageDetails } fro
 export function messageSendV1(token: string, channelId: number, message: string):Number | error {
   let data = getData();
   // Check if empty values were entered. 
-  if (token == '' || channelId == null || message == '') {
+  if (token == '' || channelId == null) {
     return{error: 'Missing variables.'}
   }
   // Check if the token is valid. 
@@ -29,17 +29,13 @@ export function messageSendV1(token: string, channelId: number, message: string)
     return {error: "Invalid token."}
   }
   // check if channelId is valid.
-  let channelPointer;
-  let j = 0;
-  for (let i = 0; i < Object.keys(data.channels).length; i++) {
-    if (channelId === data.channels[i].channelId) {
-      channelPointer = data.channels[i];
-      j ++;
-      break;
-      // return error when it reaches the end of the list
-    } else if (i === Object.keys(data.channels).length - 1) {
-      return { error: 'Invalid channelId.' };
-    }
+  let channelIndex2 = 0;
+  const totalChannelCount = data.channels.length; 
+  while (channelIndex2 < totalChannelCount && data.channels[channelIndex2].channelId != channelId) {
+    channelIndex2++;
+  }
+  if (channelIndex2 === totalChannelCount) {
+    return { error: 'Invalid channelId.'};
   }
   //check if message is over 1000 characters or if it is less than one. 
   if (message.length >= 1000) {
@@ -50,10 +46,11 @@ export function messageSendV1(token: string, channelId: number, message: string)
   }
   // Check if user is part of this chanel. 
   let channelUserIndex = 0;
-  while (data.channels[j].allMembers[channelUserIndex].uId != uId ){
+  const memberCount = data.channels[channelIndex2].allMembers.length;
+  while (channelUserIndex < memberCount && data.channels[channelIndex2].allMembers[channelUserIndex].uId != uId ){
     channelUserIndex ++;
   }
-  if (channelUserIndex == data.channels[j].allMembers.length) {
+  if (channelUserIndex == memberCount) {
     return { error: 'User is not part of this channel.'}
   }
   // Save the message and create an ID. 
@@ -72,11 +69,22 @@ export function messageSendV1(token: string, channelId: number, message: string)
     dmId: -1,
   }
   // Added channel to channelMessages if it doesnt
-  let channelIndex = 0 //data.channels.indexOf(channelId)
-  while (data.channels[channelIndex].channelId != channelId) {
-    channelIndex ++;
+  // let channelIndex = 0 //data.channels.indexOf(channelId)
+  // while (data.channels[channelIndex].channelId != channelId) {
+  //   channelIndex ++;
+  // }
+  if (data.channels[channelIndex2].messages == undefined) {
+    data.channels[channelIndex2].messages = [newMessage];
+    if (data.messageDetails == undefined) {
+      data.messageDetails = [messgaeDetailEntry]
+    }
+    else {
+      data.messageDetails.push(messgaeDetailEntry)
+    }
+      setData(data);
+    return messageId;
   }
-  data.channels[channelIndex].messages.push(newMessage)
+  data.channels[channelIndex2].messages.push(newMessage)
   data.messageDetails.push(messgaeDetailEntry)
   // return id
   setData(data);
