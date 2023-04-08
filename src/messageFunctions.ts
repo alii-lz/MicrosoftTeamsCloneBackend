@@ -47,6 +47,7 @@ export function messageSendV1(token: string, channelId: number, message: string)
   // Check if user is part of this chanel. 
   let channelUserIndex = 0;
   const memberCount = data.channels[channelIndex2].allMembers.length;
+
   while (channelUserIndex < memberCount && data.channels[channelIndex2].allMembers[channelUserIndex].uId != uId ){
     channelUserIndex ++;
   }
@@ -184,16 +185,17 @@ export function messageRemoveV1(token: string, messageId: number): any|error {
   }
   // check if messageId is valid.
   let i = 0;
-  for(i = 0; i < data.messageDetails.length; i++) {
-    if (data.messageDetails[i].messageId == messageId) {
+  let numberOfMessages = data.messageDetails.length;
+  while(i<numberOfMessages) {
+    if ( data.messageDetails[i].messageId == messageId) {
       break;
     }
+    i ++;
   }
-  if (i == data.messageDetails.length) {
+  if (i == numberOfMessages) {
     return {error: 'Invalid messageId.'}
   }
 
-  // Check the user can delete it.
   let userIndex = 0;
   while (data.users[userIndex].uId != uId) {
     userIndex ++;
@@ -207,6 +209,7 @@ export function messageRemoveV1(token: string, messageId: number): any|error {
   while (data.channels[channelIndex].channelId != data.messageDetails[i].channelId) {
     channelIndex ++;
   }
+
   // Find the message index of the channel. 
   let messageIndexInChannel = 0;
   while (data.channels[channelIndex].messages[messageIndexInChannel].messageId != messageId){

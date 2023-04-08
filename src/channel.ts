@@ -260,12 +260,25 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
     return ({ error: 'Member already in channel.' });
   }
   // All error cases have been sorted. Function will continue beneath.
-  const newUser = data.users.find(o => o.uId === uId);
+  
+  let userIndex2 = 0;
+  while (data.users[userIndex2].uId != uId) {
+    userIndex2 ++;
+  }
+  let newUser = {
+    uId: data.users[userIndex2].uId,
+    email: data.users[userIndex2].email,
+    nameFirst: data.users[userIndex2].nameFirst,
+    nameLast: data.users[userIndex2].nameLast,
+    handleStr: data.users[userIndex2].handleStr,
+  }
   let i = 0;
   while (data.channels[i].channelId !== channelId) {
     i++;
   }
   data.channels[i].allMembers.push(newUser);
+  setData(data);
+
   return {};
 }
 
@@ -326,18 +339,24 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
 
   // check if start is greater than the number of messages.
   const numberOfMessages = 0;
-  const channelPassed = data.channels.find(i => i.channelId === channelId);
+  //const channelPassedIndex = data.channels.find(i => i.channelId === channelId);
+  
   // This assumes each messaage cannot be an empty string.
   let nullArray = false;
-  if (channelPassed.messages === undefined) {
+  if (data.channels[channelIndex].messages == undefined) {
     nullArray = true;
     if (start > 0) {
       return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
     }
   }
   if (nullArray === false) {
-    if (channelPassed.messages.length <= start) {
-      return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
+    let ci = 0;
+    while(data.channels[ci].channelId != channelId) {
+      ci ++;
+    }
+    if (data.channels[ci].messages.length <= start && start != 0) {
+      const display = data.channels[ci].messages.length
+      return ({ error: 'Message number entered exceeds the number of messages in this channel. ' });
     }
     // authUserId not in channelId
     let foundauthinside = false;
