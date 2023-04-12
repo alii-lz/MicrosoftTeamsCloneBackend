@@ -9,7 +9,7 @@ export function requestDmCreate(token: string, uIds: number[]) {
     {
       json: {
         token,
-        uIds,
+        uIds
       }
     }
   );

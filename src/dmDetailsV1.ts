@@ -1,67 +1,57 @@
-import { getData, setData } from './dataStore';
-import { error } from './interfaces';
-import { getUser } from './getUser';
+import { getData } from './dataStore';
+import { user } from './interfaces';
+
+import { getId } from './other';
 
 export function dmDetailsV1(token: string, dmId: number) {
   const dataStore = getData();
-  // check correct input argument
-  if (token === undefined || token === null ||
-    dmId === undefined || dmId === null) {
-    return { error: 'Incorrect Arugment use' };
+  if (dmId > dataStore.dm.length) {
+    return {
+      error: 'invalid dmId'
+    };
+  }
+  const dmess = dataStore.dm[dmId - 1];
+  if (!dmess.exists) {
+    return {
+      error: 'Invalid dmId'
+    };
   }
 
-  // check if dm is valid
-  const dmIndex = getDm(dmId);
-  if (dmIndex === -1) {
-    return { error: 'invalid dmId' };
-  }
-
-  // check if token is valid
-  // get userIndex from token
-  const userIndex = getUser(token);
-  // check if it is a valid token
-  if (userIndex === -1) {
+  const user = getId(token);
+  if (user === -1) {
     return { error: 'Invalid token' };
   }
-  // check if user is part of the dm
-  if (!isAuthValid(userIndex)) {
-    return { error: 'user is not part of the dm' };
+
+  if (!dmess.members.includes(user) && dmess.owner !== user) {
+    return {
+      error: 'user not in the dm'
+
+    };
   }
-  // append all members to membersArray
-  const MembersArray: string[] = [];
-  for (const i in dataStore.dm[dmIndex]) {
-    MembersArray.push(dataStore.dm[dmIndex].members[i]);
+  const owner = dataStore.users.find(user => user.uId === dmess.owner);
+  const members: user[] = [];
+  if (owner) {
+    members.push({
+      nameFirst: owner.nameFirst,
+      nameLast: owner.nameLast,
+      email: owner.email,
+      handleStr: owner.handleStr,
+      uId: owner.uId
+    });
   }
-  // return details
+  for (const member of dmess.members) {
+    const item = dataStore.users.find(user => user.uId === member);
+    members.push({
+      nameFirst: item.nameFirst,
+      nameLast: item.nameLast,
+      email: item.email,
+      handleStr: item.handleStr,
+      uId: item.uId
+    });
+  }
+
   return {
-    name: dataStore.dm[dmIndex].name,
-    members: MembersArray
+    name: dmess.name,
+    members: members
   };
-}
-
-function getDm(dmId: number): number {
-  const dataStore = getData();
-  for (const i in dataStore.dm) {
-    for (const j in dataStore.dm[i]) {
-      if (dmId = dataStore.dm[i]) {
-        return parseInt(i);
-      }
-    }
-  }
-  return -1;
-}
-
-function isAuthValid(userIndex: number): boolean {
-  const dataStore = getData();
-  for (const i in dataStore.dm) {
-    // if (dataStore.users[userIndex].handleStr == dataStore.dm[i]) {
-    //   return true;
-    // }
-    for (const j in dataStore.dm[i].members) {
-      if (dataStore.users[userIndex].uid == dataStore.dm[i].members[j].uId) {
-        return true;
-      }
-    }
-  }
-  return false;
 }

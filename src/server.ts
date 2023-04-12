@@ -16,9 +16,6 @@ import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
 import { channelsCreateV2, channelsListV2 } from './channels';
-import { userProfileV2 } from './users';
-import { channelAddOwnerV1 } from './channelAddOwner';
-import { channelLeaveV1 } from './channelLeave';
 
 // Set up web app
 const app = express();
@@ -73,9 +70,8 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
 });
 
 app.post('/dm/create/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
-  const uids = req.body.uids as number[];
-  return res.json(dmCreate(token, uids));
+  const { token, uIds } = req.body;
+  return res.json(dmCreate(token, uIds));
 });
 
 app.get('/dm/list/v1', (req: Request, res: Response) => {
@@ -125,11 +121,8 @@ app.post('/channel/join/v2', (req: Request, res: Response) => {
 // dmDetailsV1
 app.get('/dm/details/v1', (req: Request, res: Response) => {
   const token = req.query.token as string;
-  const dmlIdString = req.query.channelId as string;
-  const dmId = parseInt(dmlIdString);
-  const dmDetails = dmDetailsV1(token, dmId);
-
-  res.json(dmDetails);
+  const dmId = req.query.dmId as string;
+  return res.json(dmDetailsV1(token, parseInt(dmId)));
 });
 
 // profileSetnameV1
