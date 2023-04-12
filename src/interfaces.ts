@@ -16,7 +16,12 @@ export interface user {
   email: string,
   handleStr: string,
 }
-
+export interface tempMessage {
+  message: string,
+  uId: number,
+  messageId: number,
+  timeSent: number
+}
 export interface Channel{
   channelId: number,
   name: string,
@@ -30,6 +35,19 @@ export interface Token {
   token: string,
   active: boolean
 }
+export interface messageDetails {
+  messageId: number,
+  uId: number,
+  channelId: number,
+  dmId: number,
+}
+export interface dm {
+  dmId: number,
+  members: number[]
+  name: string,
+  owner: number,
+  exists: boolean
+}
 export interface Data {
   users: User[];
   channels: Channel[];
@@ -40,19 +58,6 @@ export interface Data {
 
 export interface error {
   error: string
-}
-
-export interface dm {
-  dmId: number,
-  users: user[]
-  messages: tempMessage[]
-}
-
-export interface tempMessage {
-  message: string,
-  uId: number,
-  messageId: number,
-  timeSent: number
 }
 
 export interface authUserId {
@@ -79,13 +84,6 @@ export interface channelDetailsWithMessages {
   messages: any[],
 }
 
-export interface messageDetails {
-  messageId: number,
-  uId: number,
-  channelId: number, 
-  dmId: number, 
-}
-
 export interface channelMessages {
   messages: any[],
   start: number,
@@ -104,12 +102,3 @@ export interface channelsTemp {
 export interface channels {
   channels: channelsTemp[]
 }
-
-export interface user {
-  uId: number,
-  email: string,
-  nameFirst: string,
-  nameLast: string,
-  handleStr: string
-}
-
