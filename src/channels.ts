@@ -192,4 +192,24 @@ function channelsListAllV1(authUserId: number | string): error | {channels: chan
   }
 }
 
+/**
+ * <makes an array of objects where each object is either a public or private channel
+ * and returns this array of channel objects >
+ *
+ * @param {string} token - token of user whos making the new channel
+ *
+ * @returns {channels: []} - returns an array of all channels including public channels and private channels
+ *
+ * @throws {error} - returns an error message if the token is invalid
+*/
+export function channelsListAllV2 (token : string) : error | {channels: channel[]} {
+  const id = getId(token);
+  // error checking for if token is valid
+  if (id === -1) {
+    return { error: 'invalid token' };
+  }
+
+  return channelsListAllV1(id);
+}
+
 export { channelsListAllV1, channelsListV1, channelsCreateV1 };
