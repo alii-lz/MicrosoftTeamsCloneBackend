@@ -34,7 +34,8 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
     name: name,
     members: uIds,
     owner: creatorUId,
-    exists: true
+    exists: true,
+    messages: [],
   });
   setData(database);
   return {
