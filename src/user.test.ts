@@ -1,7 +1,4 @@
-import { toNamespacedPath } from 'path';
 import request from 'sync-request';
-import { takeCoverage } from 'v8';
-import { User } from './interfaces';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;

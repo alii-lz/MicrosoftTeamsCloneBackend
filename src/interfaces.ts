@@ -46,7 +46,8 @@ export interface dm {
   members: number[]
   name: string,
   owner: number,
-  exists: boolean
+  exists: boolean,
+  messages: tempMessage[],
 }
 export interface Data {
   users: User[];
@@ -101,4 +102,8 @@ export interface channelsTemp {
 
 export interface channels {
   channels: channelsTemp[]
+}
+
+export interface emptyObject {
+  
 }

@@ -41,7 +41,6 @@ function usersAllV1 (token : string) : error | users {
       handleStr: user.handleStr,
     };
   });
-  
 
   return { users: users };
 }

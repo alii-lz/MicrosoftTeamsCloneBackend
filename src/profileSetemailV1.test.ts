@@ -5,9 +5,8 @@ const SERVER_URL = `${url}:${port}`;
 
 const ERROR = { error: expect.any(String) };
 
-describe('Incorrect testCases', () => {
-  let AuthUserId1: {token: string, authUserId: number};
-  let AuthUserId2: {token: string, authUserId: number};
+let AuthUserId1: { token: string, authUserId: number };
+// let AuthUserId2: { token: string, authUserId: number };
 beforeEach(() => {
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
@@ -24,23 +23,21 @@ beforeEach(() => {
   );
   AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-  const res2 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'ron.weasley@gmail.com',
-        password: 'flying car',
-        nameFirst: 'Ron',
-        nameLast: 'Weasley'
-      }
-    }
-  );
-  AuthUserId2 = JSON.parse(res2.getBody() as string);
-  });
-  /// ///////////////////////////////////////////////////////
-  /// ///////////////////////////////////////////////////////
-  /// ///////////////////////////////////////////////////////
+  // const res2 = request(
+  //   'POST',
+  //   SERVER_URL + '/auth/register/v2',
+  //   {
+  //     json: {
+  //       email: 'ron.weasley@gmail.com',
+  //       password: 'flying car',
+  //       nameFirst: 'Ron',
+  //       nameLast: 'Weasley'
+  //     }
+  //   }
+  // );
+  // AuthUserId2 = JSON.parse(res2.getBody() as string);
+});
+describe('Incorrect testCases', () => {
   test('undefined token', () => {
     const res = request(
       'PUT',
@@ -103,37 +100,37 @@ beforeEach(() => {
 });
 
 describe('Correct testCases', () => {
-  let AuthUserId1: {token: string, authUserId: number};
-  let AuthUserId2: {token: string, authUserId: number};
-beforeEach(() => {
-  request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
-  const res1 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'harry.potter@gmail.com',
-        password: 'quidditch',
-        nameFirst: 'Harry',
-        nameLast: 'Potter'
+  let AuthUserId1: { token: string, authUserId: number };
+  let AuthUserId2: { token: string, authUserId: number };
+  beforeEach(() => {
+    request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
+    const res1 = request(
+      'POST',
+      SERVER_URL + '/auth/register/v2',
+      {
+        json: {
+          email: 'harry.potter@gmail.com',
+          password: 'quidditch',
+          nameFirst: 'Harry',
+          nameLast: 'Potter'
+        }
       }
-    }
-  );
-  AuthUserId1 = JSON.parse(res1.getBody() as string);
+    );
+    AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-  const res2 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'ron.weasley@gmail.com',
-        password: 'flying car',
-        nameFirst: 'Ron',
-        nameLast: 'Weasley'
+    const res2 = request(
+      'POST',
+      SERVER_URL + '/auth/register/v2',
+      {
+        json: {
+          email: 'ron.weasley@gmail.com',
+          password: 'flying car',
+          nameFirst: 'Ron',
+          nameLast: 'Weasley'
+        }
       }
-    }
-  );
-  AuthUserId2 = JSON.parse(res2.getBody() as string);
+    );
+    AuthUserId2 = JSON.parse(res2.getBody() as string);
   });
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////

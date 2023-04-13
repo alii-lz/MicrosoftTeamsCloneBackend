@@ -42,7 +42,7 @@ describe('tests for /channel/removeowner/v1', () => {
 
     user2 = JSON.parse(tempUser2.getBody() as string);
 
-    const tempChannel = request('POST', SERVER_URL + '/channel/create/v2', {
+    const tempChannel = request('POST', SERVER_URL + '/channels/create/v2', {
       json: {
         token: user.token,
         name: 'matthew',
