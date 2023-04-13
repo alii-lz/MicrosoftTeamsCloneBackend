@@ -6,7 +6,7 @@ const ERROR = { error: expect.any(String) };
 
 describe('channelDetailsV1(token, channelId)', () => {
   let AuthUserId1: { token: string, authUserId: number };
-  let AuthUserId2: { token: string, authUserId: number };
+  // let AuthUserId2: { token: string, authUserId: number };
   let AuthUserId3: { token: string, authUserId: number };
   let ardenTok: { token: string, authUserId: number };
   let ChannelId1: { channelId: number };
@@ -41,19 +41,19 @@ describe('channelDetailsV1(token, channelId)', () => {
     );
     AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-    const res2 = request(
-      'POST',
-      SERVER_URL + '/auth/register/v2',
-      {
-        json: {
-          email: 'ron.weasley@gmail.com',
-          password: 'flying car',
-          nameFirst: 'Ron',
-          nameLast: 'Weasley'
-        }
-      }
-    );
-    AuthUserId2 = JSON.parse(res2.getBody() as string);
+    // const res2 = request(
+    //   'POST',
+    //   SERVER_URL + '/auth/register/v2',
+    //   {
+    //     json: {
+    //       email: 'ron.weasley@gmail.com',
+    //       password: 'flying car',
+    //       nameFirst: 'Ron',
+    //       nameLast: 'Weasley'
+    //     }
+    //   }
+    // );
+    // AuthUserId2 = JSON.parse(res2.getBody() as string);
 
     const res3 = request(
       'POST',
@@ -246,7 +246,6 @@ describe('channelDetailsV1(token, channelId)', () => {
     });
   });
 });
-
 
 /// ///// channelJoinV1 ////////
 describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {

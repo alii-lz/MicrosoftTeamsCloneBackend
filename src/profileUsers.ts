@@ -44,7 +44,7 @@ export function profileSetemailV1(token: string, email: string): error | emptyOb
   let i = 0;
   while (i < dataStore.users.length) {
     if (dataStore.users[i].email === email) {
-      return { error: 'Email already in use.' }
+      return { error: 'Email already in use.' };
     }
     i++;
   }
@@ -74,7 +74,7 @@ export function profileSethandleStrV1(token: string, handleStr: string) {
   }
 
   // lowercase handleStr
-  //handleStr = handleStr.toLowerCase();
+  // handleStr = handleStr.toLowerCase();
   if (!isAlphanumeric(handleStr)) {
     return { error: 'handleStr must be alphaNumeric' };
   }
@@ -86,22 +86,22 @@ export function profileSethandleStrV1(token: string, handleStr: string) {
     return { error: 'Invalid token' };
   }
   // check if only lower case -- Arden Sae-Ueng
-  let handleStrCopy = handleStr.slice()
+  let handleStrCopy = handleStr.slice();
   handleStrCopy = handleStr.toLowerCase();
   if (handleStrCopy !== handleStr) {
     return { error: 'Only lower case allowed' };
   }
   // Finding the user Index -- Arden Sae-Ueng
-  let userIndex = 0
+  let userIndex = 0;
   while (userIndex < dataStore.users.length && dataStore.users[userIndex].uId !== userId) {
     userIndex++;
   }
   if (userIndex === dataStore.users.length) {
-    return { error: "Invalid User" }
+    return { error: 'Invalid User' };
   }
   // check whether handleStr has already been taken
   for (let i = 0; i < dataStore.users.length; i++) {
-    //console.log(dataStore.users[i].handleStr)
+    // console.log(dataStore.users[i].handleStr)
     if (dataStore.users[i].handleStr === handleStr) {
       return { error: 'handleStr has already been taken' };
     }

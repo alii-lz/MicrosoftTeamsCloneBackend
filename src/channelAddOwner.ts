@@ -4,13 +4,14 @@ import { getId } from './other';
 
 export { Channel, user } from './interfaces';
 
-export function channelAddOwnerV1 (token: string, channelId: number, uId: number): object {
+export function channelAddOwnerV1(token: string, channelId: number, uId: number): object {
   const data = getData();
 
   let channelIndex: number;
   const id: number = getId(token);
-  let found: boolean = false;
+  let found = false;
   // check if channelId refers to a valid channel
+
   for (let i = 0; i < data.channels.length; i++) {
     if (data.channels[i].channelId === channelId) {
       channelIndex = i;
@@ -23,8 +24,8 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
     return { error: 'channelId does not refer to a valid channel' };
   }
 
-  let mainUserIndex = 0;
-  let userToAddIndex = 0;
+  let mainUserIndex;
+  // let userToAddIndex;
   let foundMainUser = false;
   let foundUserToAdd = false;
 
@@ -35,11 +36,12 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
       mainUserIndex = i;
     }
     if (data.users[i].uId === uId) {
-      userToAddIndex = i;
+      // userToAddIndex = i;
       foundUserToAdd = true;
     }
     // mainUserIndex++;
     // userToAddIndex++;
+    // Iteration this will ruin its purpose. Commented out. -- Arden Sae-Ueng
   }
 
   if (foundMainUser === false) {
@@ -50,10 +52,10 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
     return { error: 'uId does not refer to a valid user' };
   }
 
-  let userToAddTruth: boolean = false;
+  let userToAddTruth = false;
   // now we need to check if the userToAdd is not a member of the channel.
   for (let i = 0; i < data.channels[channelIndex].allMembers.length; i++) {
-    if (data.channels[channelIndex].allMembers[i].uId === id) {
+    if (data.channels[channelIndex].allMembers[i].uId === uId) {
       userToAddTruth = true;
       break;
     }
@@ -93,9 +95,20 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
   if (data.users[mainUserIndex].globalOwner === false) {
     return { error: 'authorised user does not have owner permissions in the channel' };
   }
-
-  data.channels[channelId].owners.push(data.users[userToAddIndex]);
-
+  // This does not work -- Arden Sae-Ueng
+  // data.channels[channelIndex].owners.push(data.users[userToAddIndex]);
+  let userIndex = 0;
+  while (userIndex < data.users.length && data.users[userIndex].uId !== uId) {
+    userIndex++;
+  }
+  const userAdded = {
+    uId: data.users[userIndex].uId,
+    email: data.users[userIndex].email,
+    nameFirst: data.users[userIndex].nameFirst,
+    nameLast: data.users[userIndex].nameLast,
+    handleStr: data.users[userIndex].handleStr,
+  };
+  data.channels[channelIndex].owners.push(userAdded);
   setData(data);
 
   return {};

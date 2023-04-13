@@ -2,8 +2,8 @@ import request from 'sync-request';
 
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
-let AuthUserId1: { token: string, authUserId: number };
-let AuthUserId2: { token: string, authUserId: number };
+// let AuthUserId1: { token: string, authUserId: number };
+// let AuthUserId2: { token: string, authUserId: number };
 request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 const res1 = request(
   'POST',
@@ -17,7 +17,7 @@ const res1 = request(
     }
   }
 );
-AuthUserId1 = JSON.parse(res1.getBody() as string);
+const AuthUserId1 = JSON.parse(res1.getBody() as string);
 const userTok = AuthUserId1.token;
 const res2 = request(
   'POST',
@@ -31,7 +31,7 @@ const res2 = request(
     }
   }
 );
-AuthUserId2 = JSON.parse(res2.getBody() as string);
+const AuthUserId2 = JSON.parse(res2.getBody() as string);
 
 request(
   'PUT',

@@ -3,13 +3,13 @@ import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
 const ERROR = { error: expect.any(String) };
-let user: { token: string, authUserId: number };
-let userToken: string;
-let userId: number;
+// let user: { token: string, authUserId: number };
+// let userToken: string;
+// let userId: number;
 // beforeEach(() => {
 request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 const tempUser = request(
-  'POST', 
+  'POST',
   SERVER_URL + '/auth/register/v2',
   {
     json: {
@@ -20,9 +20,9 @@ const tempUser = request(
     }
   }
 );
-user = JSON.parse(tempUser.getBody() as string);
-userToken = user.token;
-userId = user.authUserId;
+const user = JSON.parse(tempUser.getBody() as string);
+const userToken = user.token;
+// userId = user.authUserId;
 // });
 
 describe('Tests for /user/profile/v2', () => {

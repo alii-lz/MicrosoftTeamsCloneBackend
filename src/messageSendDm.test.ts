@@ -133,7 +133,7 @@ describe('messageSendDM', () => {
     );
 
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({"messageId": 0});
+    expect(returnData).toStrictEqual({ messageId: 0 });
     expect(res.statusCode).toBe(OK);
   });
   test('Invalid dmId', () => {

@@ -84,7 +84,7 @@ describe('messageSendV1', () => {
       }
     );
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ "messageId": 0 });
+    expect(returnData).toStrictEqual({ messageId: 0 });
     expect(res.statusCode).toBe(OK);
     // Check if message is there.
     res = request(

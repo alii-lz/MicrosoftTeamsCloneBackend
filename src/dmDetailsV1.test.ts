@@ -7,75 +7,75 @@ const SERVER_URL = `${url}:${port}`;
 
 request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 
-  const res1 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'harry.potter@gmail.com',
-        password: 'quidditch',
-        nameFirst: 'Harry',
-        nameLast: 'Potter'
-      }
+const res1 = request(
+  'POST',
+  SERVER_URL + '/auth/register/v2',
+  {
+    json: {
+      email: 'harry.potter@gmail.com',
+      password: 'quidditch',
+      nameFirst: 'Harry',
+      nameLast: 'Potter'
     }
-  );
-  const AuthUserId1Res = JSON.parse(res1.getBody() as string);
-  const AuthUserId1Token = AuthUserId1Res.token;
-  const res2 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'ron.weasley@gmail.com',
-        password: 'flying car',
-        nameFirst: 'Ron',
-        nameLast: 'Weasley'
-      }
+  }
+);
+const AuthUserId1Res = JSON.parse(res1.getBody() as string);
+const AuthUserId1Token = AuthUserId1Res.token;
+const res2 = request(
+  'POST',
+  SERVER_URL + '/auth/register/v2',
+  {
+    json: {
+      email: 'ron.weasley@gmail.com',
+      password: 'flying car',
+      nameFirst: 'Ron',
+      nameLast: 'Weasley'
     }
-  );
-  const AuthUserId2 = JSON.parse(res2.getBody() as string);
+  }
+);
+const AuthUserId2 = JSON.parse(res2.getBody() as string);
 
-  const res3 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'hermione.granger@gmail.com',
-        password: 'reading',
-        nameFirst: 'Hermione',
-        nameLast: 'Granger'
-      }
+const res3 = request(
+  'POST',
+  SERVER_URL + '/auth/register/v2',
+  {
+    json: {
+      email: 'hermione.granger@gmail.com',
+      password: 'reading',
+      nameFirst: 'Hermione',
+      nameLast: 'Granger'
     }
-  );
-  const AuthUserId3 = JSON.parse(res3.getBody() as string);
+  }
+);
+const AuthUserId3 = JSON.parse(res3.getBody() as string);
 
-  const res4 = request(
-    'POST',
-    SERVER_URL + '/dm/create/v1',
-    {
-      json: {
-        token: AuthUserId1Token,
-        uIds: [AuthUserId2.authUserId]
-      }
+const res4 = request(
+  'POST',
+  SERVER_URL + '/dm/create/v1',
+  {
+    json: {
+      token: AuthUserId1Token,
+      uIds: [AuthUserId2.authUserId]
     }
-  );
-  const dmId1Ans = JSON.parse(res4.getBody() as string);
-  const dmId1 = dmId1Ans.dmId;
-  const res5 = request(
-    'POST',
-    SERVER_URL + '/dm/create/v1',
-    {
-      json: {
-        token: AuthUserId3.token,
-        uIds: [AuthUserId2.authUserId]
-      }
+  }
+);
+const dmId1Ans = JSON.parse(res4.getBody() as string);
+const dmId1 = dmId1Ans.dmId;
+const res5 = request(
+  'POST',
+  SERVER_URL + '/dm/create/v1',
+  {
+    json: {
+      token: AuthUserId3.token,
+      uIds: [AuthUserId2.authUserId]
     }
-  );
-  const dmId2Ans = JSON.parse(res5.getBody() as string);
-  const dmId2 = dmId2Ans.dmId;
-  /// /////////////////////////////////////////////
-  /// /////////////////////////////////////////////
-  /// /////////////////////////////////////////////
+  }
+);
+const dmId2Ans = JSON.parse(res5.getBody() as string);
+const dmId2 = dmId2Ans.dmId;
+/// /////////////////////////////////////////////
+/// /////////////////////////////////////////////
+/// /////////////////////////////////////////////
 describe('Incorrect testCases', () => {
   // let AuthUserId1: {token: string, authUserId: number};
   // let AuthUserId2: {token: string, authUserId: number};
@@ -83,7 +83,6 @@ describe('Incorrect testCases', () => {
   // let dmId1: {dmId: number};
   // let dmId2: {dmId: number};
 
-  
   test('undefined token', () => {
     const res = request(
       'GET',

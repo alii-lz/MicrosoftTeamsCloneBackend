@@ -82,8 +82,8 @@ beforeEach(() => {
       }
     }
   );
-   m1 = JSON.parse(message0.getBody() as string);
-   messageId = m1.messageId;
+  m1 = JSON.parse(message0.getBody() as string);
+  messageId = m1.messageId;
 });
 
 describe('messageEditV1', () => {

@@ -125,7 +125,7 @@ app.get('/dm/details/v1', (req: Request, res: Response) => {
   const token: string = req.query.token as string; // const token = req.query.token as string;
   // const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
   const dmId: number = parseInt(req.query.dmId as string);
-  //const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
+  // const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
   const dmDetails = dmDetailsV1(token, dmId);
 
   res.json(dmDetails);

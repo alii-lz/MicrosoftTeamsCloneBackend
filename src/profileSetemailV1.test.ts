@@ -6,7 +6,7 @@ const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
 let AuthUserId1: { token: string, authUserId: number };
-let AuthUserId2: { token: string, authUserId: number };
+// let AuthUserId2: { token: string, authUserId: number };
 beforeEach(() => {
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
@@ -23,7 +23,7 @@ beforeEach(() => {
   );
   AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-  const res2 = request(
+  request(
     'POST',
     SERVER_URL + '/auth/register/v2',
     {
@@ -35,7 +35,7 @@ beforeEach(() => {
       }
     }
   );
-  AuthUserId2 = JSON.parse(res2.getBody() as string);
+  // const AuthUserId2 = JSON.parse(res2.getBody() as string);
 });
 describe('Incorrect testCases', () => {
   test('undefined token', () => {

@@ -261,7 +261,6 @@ export function messageSenddmV1(token: string, dmId: number, message: string) {
   // Check if user is part of dm
   let dmUserIndex = 0;
   while (dmUserIndex < data.dm[dmIndex].members.length && data.dm[dmIndex].members[dmUserIndex] !== uId) {
-console.log("MY FUCKING ASS")
     dmUserIndex++;
   }
   if (dmUserIndex === data.dm[dmIndex].members.length) {

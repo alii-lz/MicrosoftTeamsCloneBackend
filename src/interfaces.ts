@@ -104,10 +104,6 @@ export interface channels {
   channels: channelsTemp[]
 }
 
-export interface emptyObject {
-  
-}
-
 export interface messageIDReturn {
   messageId: number,
 }
