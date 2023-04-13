@@ -6,11 +6,11 @@ const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
 describe('Incorrect testCases', () => {
-  let AuthUserId1: {token: string, authUserId: number};
-  let AuthUserId2: {token: string, authUserId: number};
-  let AuthUserId3: {token: string, authUserId: number};
-  let dmId1: {dmId: number};
-  let dmId2: {dmId: number};
+  // let AuthUserId1: {token: string, authUserId: number};
+  // let AuthUserId2: {token: string, authUserId: number};
+  // let AuthUserId3: {token: string, authUserId: number};
+  // let dmId1: {dmId: number};
+  // let dmId2: {dmId: number};
 
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 
@@ -26,7 +26,7 @@ describe('Incorrect testCases', () => {
       }
     }
   );
-  AuthUserId1 = JSON.parse(res1.getBody() as string);
+  const AuthUserId1 = JSON.parse(res1.getBody() as string);
 
   const res2 = request(
     'POST',
@@ -40,7 +40,7 @@ describe('Incorrect testCases', () => {
       }
     }
   );
-  AuthUserId2 = JSON.parse(res2.getBody() as string);
+  const AuthUserId2 = JSON.parse(res2.getBody() as string);
 
   const res3 = request(
     'POST',
@@ -54,7 +54,7 @@ describe('Incorrect testCases', () => {
       }
     }
   );
-  AuthUserId3 = JSON.parse(res3.getBody() as string);
+  const AuthUserId3 = JSON.parse(res3.getBody() as string);
 
   const res4 = request(
     'POST',
@@ -66,7 +66,7 @@ describe('Incorrect testCases', () => {
       }
     }
   );
-  dmId1 = JSON.parse(res4.getBody() as string);
+  const dmId1 = JSON.parse(res4.getBody() as string);
 
   const res5 = request(
     'POST',
@@ -78,7 +78,7 @@ describe('Incorrect testCases', () => {
       }
     }
   );
-  dmId1 = JSON.parse(res5.getBody() as string);
+  const dmId2 = JSON.parse(res5.getBody() as string);
 
   /// /////////////////////////////////////////////
   /// /////////////////////////////////////////////
@@ -160,11 +160,11 @@ describe('Incorrect testCases', () => {
 });
 
 describe('Correct testCases', () => {
-  let AuthUserId1: {token: string, authUserId: number};
-  let AuthUserId2: {token: string, authUserId: number};
-  let AuthUserId3: {token: string, authUserId: number};
-  let dmId1: {dmId: number};
-  let dmId2: {dmId: number};
+  // let AuthUserId1: {token: string, authUserId: number};
+  // let AuthUserId2: {token: string, authUserId: number};
+  // let AuthUserId3: {token: string, authUserId: number};
+  // let dmId1: {dmId: number};
+  // let dmId2: {dmId: number};
 
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 
@@ -180,7 +180,7 @@ describe('Correct testCases', () => {
       }
     }
   );
-  AuthUserId1 = JSON.parse(res1.getBody() as string);
+  const AuthUserId1 = JSON.parse(res1.getBody() as string);
 
   const res2 = request(
     'POST',
@@ -194,7 +194,7 @@ describe('Correct testCases', () => {
       }
     }
   );
-  AuthUserId2 = JSON.parse(res2.getBody() as string);
+  const AuthUserId2 = JSON.parse(res2.getBody() as string);
 
   const res3 = request(
     'POST',
@@ -208,7 +208,7 @@ describe('Correct testCases', () => {
       }
     }
   );
-  AuthUserId3 = JSON.parse(res3.getBody() as string);
+  const AuthUserId3 = JSON.parse(res3.getBody() as string);
 
   const res4 = request(
     'POST',
@@ -220,7 +220,7 @@ describe('Correct testCases', () => {
       }
     }
   );
-  dmId1 = JSON.parse(res4.getBody() as string);
+  const dmId1 = JSON.parse(res4.getBody() as string);
 
   const res5 = request(
     'POST',
@@ -232,7 +232,7 @@ describe('Correct testCases', () => {
       }
     }
   );
-  dmId1 = JSON.parse(res5.getBody() as string);
+  const dmId2 = JSON.parse(res5.getBody() as string);
 
   /// /////////////////////////////////////////////
   /// /////////////////////////////////////////////

@@ -1,23 +1,15 @@
 // Written by Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
-const ERROR = { error: expect.any(String) };
-import {
-  getData,
-} from './dataStore';
 
 import {
   clearV1,
 } from './other';
-import { channel } from 'diagnostics_channel';
-import { createJsxOpeningElement } from 'typescript';
 
 const OK = 200;
 const port = config.port;
 const url = config.url;
 const SERVER_URL = `${url}:${port}`;
-
-let data = getData();
 
 let user1Token: string;
 let user1Id: number;
@@ -26,7 +18,7 @@ let user2Id: number;
 let channel1Id: number;
 beforeEach(() => {
   clearV1();
-  / ///////////Make the first User
+  // Make the first User
   const user1 = request(
     'POST',
     SERVER_URL + '/auth/register/v2',
