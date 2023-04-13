@@ -122,9 +122,10 @@ app.post('/channel/join/v2', (req: Request, res: Response) => {
 
 // dmDetailsV1
 app.get('/dm/details/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string; // const token = req.query.token as string;
-  const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
-  const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
+  const token: string = req.query.token as string; // const token = req.query.token as string;
+  // const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
+  const dmId: number = parseInt(req.query.dmId as string);
+  //const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
   const dmDetails = dmDetailsV1(token, dmId);
 
   res.json(dmDetails);
@@ -222,8 +223,8 @@ app.post('/channel/leave/v1', (req: Request, res: Response) => {
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {
-  const token = req.body.token as string;
-  const uId = parseInt(req.body.uId as string);
+  const token: string = req.query.token as string;
+  const uId = parseInt(req.query.uId as string);
   res.json(userProfileV2(token, uId));
 });
 

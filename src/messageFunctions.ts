@@ -248,10 +248,7 @@ export function messageSenddmV1(token: string, dmId: number, message: string) {
   while (dmIndex < data.dm.length && data.dm[dmIndex].dmId !== dmId) {
     dmIndex++;
   }
-
   if (dmIndex === data.dm.length) {
-    console.log(dmIndex, "dmIndex")
-    
     return { error: 'Invalid dmId.' };
   }
   // Check if message size is ok

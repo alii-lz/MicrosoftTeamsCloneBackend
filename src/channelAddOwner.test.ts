@@ -60,7 +60,7 @@ describe('Tests for /channel/addowner/v1', () => {
         json: {
           token: user.token,
           channelId: channel.channelId,
-          uId: userToAdd.authUserId
+          uId: userToAdd.authUserId,
         }
       }
     );

@@ -9,7 +9,7 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
 
   let channelIndex: number;
   const id: number = getId(token);
-  let found = false;
+  let found: boolean = false;
   // check if channelId refers to a valid channel
   for (let i = 0; i < data.channels.length; i++) {
     if (data.channels[i].channelId === channelId) {
@@ -17,14 +17,12 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
       found = true;
       break;
     }
-    channelIndex++;
   }
 
   if (found === false) {
     return { error: 'channelId does not refer to a valid channel' };
   }
 
-  found = false;
   let mainUserIndex = 0;
   let userToAddIndex = 0;
   let foundMainUser = false;
@@ -40,8 +38,8 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
       userToAddIndex = i;
       foundUserToAdd = true;
     }
-    mainUserIndex++;
-    userToAddIndex++;
+    // mainUserIndex++;
+    // userToAddIndex++;
   }
 
   if (foundMainUser === false) {
@@ -52,17 +50,16 @@ export function channelAddOwnerV1 (token: string, channelId: number, uId: number
     return { error: 'uId does not refer to a valid user' };
   }
 
-  found = false;
-
+  let userToAddTruth: boolean = false;
   // now we need to check if the userToAdd is not a member of the channel.
   for (let i = 0; i < data.channels[channelIndex].allMembers.length; i++) {
     if (data.channels[channelIndex].allMembers[i].uId === id) {
-      found = true;
+      userToAddTruth = true;
       break;
     }
   }
 
-  if (found === false) {
+  if (userToAddTruth === false) {
     return { error: 'user to add is not a member of a channel' };
   }
 

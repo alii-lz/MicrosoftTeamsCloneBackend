@@ -1,5 +1,6 @@
 import { getData, setData } from './dataStore';
 import { error, emptyObject } from './interfaces';
+import { getId } from './other';
 import { getUser } from './getUser';
 import validator from 'validator';
 import isAlphanumeric from 'is-alphanumeric';
@@ -7,9 +8,7 @@ import isAlphanumeric from 'is-alphanumeric';
 export function profileSetnameV1(token: string, nameFirst: string, nameLast: string): error | emptyObject {
   const dataStore = getData();
   // check correct input arguments
-  if (token === undefined || token === null ||
-    nameFirst === undefined || nameFirst === null ||
-    nameLast === undefined || nameLast === null) {
+  if (token === null || nameFirst === null || nameLast === null) {
     return { error: 'Incorrect Arugment use' };
   }
   // check if first or last name is between 1 and 50 characters
@@ -41,7 +40,14 @@ export function profileSetemailV1(token: string, email: string): error | emptyOb
   if (validator.isEmail(email) === false) {
     return { error: 'Invalid email' };
   }
-
+  // Check if email is repeated -- Arden Sae-Ueng
+  let i = 0;
+  while (i < dataStore.users.length) {
+    if (dataStore.users[i].email === email) {
+      return { error: 'Email already in use.' }
+    }
+    i++;
+  }
   // get userIndex from token
   const userIndex = getUser(token);
   // check if it is a valid token
@@ -68,24 +74,39 @@ export function profileSethandleStrV1(token: string, handleStr: string) {
   }
 
   // lowercase handleStr
-  handleStr = handleStr.toLowerCase();
+  //handleStr = handleStr.toLowerCase();
   if (!isAlphanumeric(handleStr)) {
     return { error: 'handleStr must be alphaNumeric' };
   }
 
   // get userIndex from token
-  const userIndex = getUser(token);
+  const userId = getId(token);
   // check if it is a valid token
-  if (userIndex === -1) {
+  if (userId === -1) {
     return { error: 'Invalid token' };
   }
-
+  // check if only lower case -- Arden Sae-Ueng
+  let handleStrCopy = handleStr.slice()
+  handleStrCopy = handleStr.toLowerCase();
+  if (handleStrCopy !== handleStr) {
+    return { error: 'Only lower case allowed' };
+  }
+  // Finding the user Index -- Arden Sae-Ueng
+  let userIndex = 0
+  while (userIndex < dataStore.users.length && dataStore.users[userIndex].uId !== userId) {
+    userIndex++;
+  }
+  if (userIndex === dataStore.users.length) {
+    return { error: "Invalid User" }
+  }
   // check whether handleStr has already been taken
-  for (let i = 0; i < Object.keys(dataStore.users).length; i++) {
+  for (let i = 0; i < dataStore.users.length; i++) {
+    //console.log(dataStore.users[i].handleStr)
     if (dataStore.users[i].handleStr === handleStr) {
       return { error: 'handleStr has already been taken' };
     }
   }
   dataStore.users[userIndex].handleStr = handleStr;
   setData(dataStore);
+  return {};
 }

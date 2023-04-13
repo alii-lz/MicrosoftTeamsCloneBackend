@@ -3,34 +3,34 @@ import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
 const ERROR = { error: expect.any(String) };
-
-beforeEach(() => {
-  request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
-});
+let user: { token: string, authUserId: number };
+let userToken: string;
+let userId: number;
+// beforeEach(() => {
+request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
+const tempUser = request(
+  'POST', 
+  SERVER_URL + '/auth/register/v2',
+  {
+    json: {
+      email: 'ali@gmail.com',
+      password: 'validPassword',
+      nameFirst: 'ali',
+      nameLast: 'ahmed',
+    }
+  }
+);
+user = JSON.parse(tempUser.getBody() as string);
+userToken = user.token;
+userId = user.authUserId;
+// });
 
 describe('Tests for /user/profile/v2', () => {
-  let user: {token: string, authUserId: number};
-
-  beforeEach(() => {
-    const tempUser = request('POST', SERVER_URL + '/auth/register/v2',
-      {
-        json: {
-          email: 'ali@gmail.com',
-          password: 'validPassword',
-          nameFirst: 'ali',
-          nameLast: 'ahmed'
-        }
-      });
-
-    user = JSON.parse(tempUser.getBody() as string);
-  });
-
   test('success case', () => {
     console.log(user);
-
     const res = request('GET', SERVER_URL + '/user/profile/v2', {
       qs: {
-        token: user.token,
+        token: userToken,
         uId: user.authUserId
       }
     });

@@ -86,7 +86,7 @@ export interface channelDetailsWithMessages {
 }
 
 export interface channelMessages {
-  messages: any[],
+  messages: tempMessage[],
   start: number,
   end: number
 }

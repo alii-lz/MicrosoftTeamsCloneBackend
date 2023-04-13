@@ -21,7 +21,9 @@ let user1Id: number;
 let user2Token: string;
 let user2Id: number;
 let channel1Id: number;
+let messageIdPass: any;
 let messageId: number;
+let messageId2Pass: any;
 let messageId2: number;
 beforeEach(() => {
   clearV1();
@@ -82,7 +84,8 @@ beforeEach(() => {
       }
     }
   );
-  messageId = JSON.parse(message0.getBody() as string);
+  messageIdPass = JSON.parse(message0.getBody() as string);
+  messageId = messageIdPass.messageId;
 
   request(
     'POST',
@@ -107,7 +110,8 @@ beforeEach(() => {
       }
     }
   );
-  messageId2 = JSON.parse(nonOwnerComment.getBody() as string);
+  messageId2Pass = JSON.parse(nonOwnerComment.getBody() as string);
+  messageId2 = messageId2Pass.messageId;
 });
 
 describe('messageRemoveV1', () => {
