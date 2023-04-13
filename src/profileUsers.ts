@@ -1,10 +1,10 @@
 import { getData, setData } from './dataStore';
-import { error } from './interfaces';
+import { error, emptyObject } from './interfaces';
 import { getUser } from './getUser';
 import validator from 'validator';
 import isAlphanumeric from 'is-alphanumeric';
 
-export function profileSetnameV1(token: string, nameFirst: string, nameLast: string): error | {} {
+export function profileSetnameV1(token: string, nameFirst: string, nameLast: string): error | emptyObject {
   const dataStore = getData();
   // check correct input arguments
   if (token === undefined || token === null ||
@@ -30,7 +30,7 @@ export function profileSetnameV1(token: string, nameFirst: string, nameLast: str
   return {};
 }
 
-export function profileSetemailV1(token: string, email: string): error | {} {
+export function profileSetemailV1(token: string, email: string): error | emptyObject {
   const dataStore = getData();
   // check correct input arguments
   if (token === undefined || token === null ||
@@ -38,7 +38,7 @@ export function profileSetemailV1(token: string, email: string): error | {} {
     return { error: 'Incorrect Arugment use' };
   }
   // checks if the email is correct
-  if (validator.isEmail(email) == false) {
+  if (validator.isEmail(email) === false) {
     return { error: 'Invalid email' };
   }
 

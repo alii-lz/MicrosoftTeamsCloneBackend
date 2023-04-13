@@ -4,10 +4,6 @@ import { getId } from './other';
 
 export { Channel, user } from './interfaces';
 
-interface error {
-  error: string;
-}
-
 export function channelLeaveV1 (token: string, channelId: number): object {
   const data = getData();
 

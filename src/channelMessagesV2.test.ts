@@ -1,28 +1,21 @@
-//Written By Arden Sae-Ueng
+// Written By Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
-const ERROR = { error: expect.any(String) };
-import {
-  getData,
-} from './dataStore';
 import { clearV1 } from './other';
-
 
 const OK = 200;
 const port = config.port;
 const url = config.url;
 const SERVER_URL = `${url}:${port}`;
 
-let data = getData();
-
 let user1Token: string;
-let user1Id: number;
+// let user1Id: number;
 let user2Token: string;
-let user2Id: number;
+// let user2Id: number;
 let channel1Id: number;
 beforeEach(() => {
   clearV1();
-  /// /////////////Make the first User
+  // Make the first User
   const user1 = request(
     'POST',
     SERVER_URL + '/auth/register/v2',
@@ -37,7 +30,7 @@ beforeEach(() => {
   );
   const user1data = JSON.parse(user1.getBody() as string);
   user1Token = user1data.token;
-  user1Id = user1data.authUserId;
+  // user1Id = user1data.authUserId;
   // make a channel
   const channel1 = request(
     'POST',
@@ -67,8 +60,8 @@ beforeEach(() => {
   );
   const user2data = JSON.parse(user2.getBody() as string);
   user2Token = user2data.token;
-  user2Id = user2data.authUserId;
-})
+  // user2Id = user2data.authUserId;
+});
 
 describe('channelInvite', () => {
   test('Success case - channelMessages', () => {
@@ -126,7 +119,6 @@ describe('channelInvite', () => {
     expect(res.statusCode).toBe(OK);
   });
   test('Invalid user', () => {
-
     const res = request(
       'GET',
       SERVER_URL + '/channel/messages/v2',

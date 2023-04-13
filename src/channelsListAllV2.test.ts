@@ -28,7 +28,7 @@ describe('tests for /channels/listall/v2', () => {
 
     user = JSON.parse(tempUser.getBody() as string);
 
-    const tempChannel = request('POST', SERVER_URL + '/channel/create/v2', {
+    const tempChannel = request('POST', SERVER_URL + '/channels/create/v2', {
       json: {
         token: user.token,
         name: 'channel1',
@@ -38,7 +38,7 @@ describe('tests for /channels/listall/v2', () => {
 
     channel1 = JSON.parse(tempChannel.getBody() as string);
 
-    const tempChannel2 = request('POST', SERVER_URL + '/channel/create/v2', {
+    const tempChannel2 = request('POST', SERVER_URL + '/channels/create/v2', {
       json: {
         token: user.token,
         name: 'channel2',
