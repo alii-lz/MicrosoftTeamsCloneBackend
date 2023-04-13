@@ -16,7 +16,7 @@ import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
 import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
-import errorHandler from 'middleware-http-errors';
+// import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV1 } from './channelRemoveOwner';
 import { usersAllV1 } from './usersAllV1';
 import { userProfileV2 } from './users';
@@ -248,5 +248,5 @@ const server = app.listen(PORT, HOST, () => {
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
 });
-app.use(errorHandler());
+// app.use(errorHandler());
 
