@@ -75,9 +75,11 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
 });
 
 app.post('/dm/create/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string; // Original -> const { token, uIds } = req.body;
-  const uids = req.body.uids as number[];
-  res.json(dmCreate(token, uids));// Original -> return res.json(dmCreate(token, uIds));
+  const { token, uIds } = req.body; // Original -> const { token, uIds } = req.body;
+  // const uids = req.body.uids as number[];
+  // console.log("<><>",req.body)
+  // console.log(uIds)
+  res.json(dmCreate(token, uIds));// Original -> return res.json(dmCreate(token, uIds));
 });
 
 app.get('/dm/list/v1', (req: Request, res: Response) => {

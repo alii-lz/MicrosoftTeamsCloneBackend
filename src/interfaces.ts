@@ -107,3 +107,7 @@ export interface channels {
 export interface emptyObject {
   
 }
+
+export interface messageIDReturn {
+  messageId: number,
+}

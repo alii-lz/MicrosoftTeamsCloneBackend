@@ -3,7 +3,7 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 const data = getData();
 setData(data);
-import { error } from './interfaces';
+import { error, messageIDReturn } from './interfaces';
 
 /**
   * messageSendV1 sends a messsage to a channel. The message is sent by the uId who owns the token.
@@ -15,7 +15,7 @@ import { error } from './interfaces';
   *
   * @returns {messageId} - Returns a number.
 */
-export function messageSendV1(token: string, channelId: number, message: string): number | error {
+export function messageSendV1(token: string, channelId: number, message: string): messageIDReturn | error {
   const data = getData();
   // Check if empty values were entered.
   if (token === '' || channelId === null) {
@@ -80,13 +80,13 @@ export function messageSendV1(token: string, channelId: number, message: string)
       data.messageDetails.push(messgaeDetailEntry);
     }
     setData(data);
-    return messageId;
+    return { messageId: messageId };
   }
   data.channels[channelIndex2].messages.push(newMessage);
   data.messageDetails.push(messgaeDetailEntry);
   // return id
   setData(data);
-  return messageId;
+  return { messageId: messageId };
 }
 
 /**
@@ -245,10 +245,13 @@ export function messageSenddmV1(token: string, dmId: number, message: string) {
   }
   // check if dmId is valid.
   let dmIndex = 0;
-  while (data.dm[dmIndex].dmId !== dmId) {
+  while (dmIndex < data.dm.length && data.dm[dmIndex].dmId !== dmId) {
     dmIndex++;
   }
+
   if (dmIndex === data.dm.length) {
+    console.log(dmIndex, "dmIndex")
+    
     return { error: 'Invalid dmId.' };
   }
   // Check if message size is ok
@@ -260,7 +263,8 @@ export function messageSenddmV1(token: string, dmId: number, message: string) {
   }
   // Check if user is part of dm
   let dmUserIndex = 0;
-  while (data.dm[dmIndex].members[dmUserIndex] !== uId) {
+  while (dmUserIndex < data.dm[dmIndex].members.length && data.dm[dmIndex].members[dmUserIndex] !== uId) {
+console.log("MY FUCKING ASS")
     dmUserIndex++;
   }
   if (dmUserIndex === data.dm[dmIndex].members.length) {

@@ -8,7 +8,7 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   if (creatorUId === -1) {
     return { error: 'invalid token' };
   }
-
+  console.log(uIds.includes(creatorUId))
   if (uIds.includes(creatorUId) || (new Set(uIds).size !== uIds.length)) {
     return { error: 'uIds repeated' };
   }
@@ -29,6 +29,7 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   // Join the sorted handles with commas and spaces
   const name: string = handles.join(', ');
   const dmId: number = database.dm.length + 1;
+  uIds.push(creatorUId);
   database.dm.push({
     dmId: dmId,
     name: name,
@@ -39,7 +40,7 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   });
   setData(database);
   return {
-    dmId: dmId
+    dmId: dmId,
   };
 }
 

@@ -25,6 +25,7 @@ let user2Id: number;
 let user4Token: string;
 // let user4Id: number;
 // let channel1Id: number;
+let dmIdJSON: any;
 let dmId: number;
 beforeEach(() => {
   clearV1();
@@ -109,11 +110,12 @@ beforeEach(() => {
     {
       json: {
         token: user1Token,
-        uIds: user2Id
+        uIds: [user2Id],
       }
     }
   );
-  dmId = JSON.parse(dm1.getBody() as string);
+  dmIdJSON = JSON.parse(dm1.getBody() as string);
+  dmId = dmIdJSON.dmId;
 });
 
 describe('messageSendDM', () => {
@@ -129,8 +131,9 @@ describe('messageSendDM', () => {
         }
       }
     );
+
     const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual(expect.any(Number));
+    expect(returnData).toStrictEqual({"messageId": 0});
     expect(res.statusCode).toBe(OK);
   });
   test('Invalid dmId', () => {
@@ -156,7 +159,7 @@ describe('messageSendDM', () => {
       SERVER_URL + '/message/senddm/v1',
       {
         json: {
-          token: user1Token,
+          token: 'bois',
           dmId: dmId,
           message: 'DM MESSAGE 1'
         }
