@@ -134,5 +134,8 @@ function dmLeave(token: string, dmId: number) {
 
   };
 }
+function dmMessagesV1 (token: string, dmId: number, start: number) {
+  console.log('missing function <><><><><>><><><><><>');
+}
 
-export { dmCreate, dmLeave, dmList, dmRemove };
+export { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 };

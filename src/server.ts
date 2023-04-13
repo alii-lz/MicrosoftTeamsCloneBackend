@@ -8,15 +8,20 @@ import {
   channelDetailsV2, channelJoinV2,
   channelInviteV2, channelMessagesV2
 } from './channel';
-import { dmCreate, dmLeave, dmList, dmRemove } from './dm';
+import { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 } from './dm';
 import { dmDetailsV1 } from './dmDetailsV1';
 import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
   from './profileUsers';
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
-import { channelsCreateV2, channelsListV2 } from './channels';
+import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
 import errorHandler from 'middleware-http-errors';
+import { channelRemoveOwnerV1 } from './channelRemoveOwner';
+import { usersAllV1 } from './usersAllV1';
+import { userProfileV2 } from './users';
+import { channelAddOwnerV1 } from './channelAddOwner';
+import { channelLeaveV1 } from './channelLeave';
 
 // Set up web app
 const app = express();
@@ -71,8 +76,9 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
 });
 
 app.post('/dm/create/v1', (req: Request, res: Response) => {
-  const { token, uIds } = req.body;
-  return res.json(dmCreate(token, uIds));
+  const token = req.body.token as string; // Original -> const { token, uIds } = req.body;
+  const uids = req.body.uids as number[];
+  res.json(dmCreate(token, uids));// Original -> return res.json(dmCreate(token, uIds));
 });
 
 app.get('/dm/list/v1', (req: Request, res: Response) => {
@@ -92,12 +98,6 @@ app.post('/dm/leave/v1', (req: Request, res: Response) => {
   const dmId = req.body.dmId as string;
   return res.json(dmLeave(token, parseInt(dmId)));
 });
-
-// // start server
-// const server = app.listen(PORT, HOST, () => {
-//   // DO NOT CHANGE THIS LINE
-//   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
-// });
 
 // channelDetailsV2
 app.get('/channel/details/v2', (req: Request, res: Response) => {
@@ -121,9 +121,12 @@ app.post('/channel/join/v2', (req: Request, res: Response) => {
 
 // dmDetailsV1
 app.get('/dm/details/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  const dmId = req.query.dmId as string;
-  return res.json(dmDetailsV1(token, parseInt(dmId)));
+  const token = req.query.token as string; // const token = req.query.token as string;
+  const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
+  const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
+  const dmDetails = dmDetailsV1(token, dmId);
+
+  res.json(dmDetails);
 });
 
 // profileSetnameV1
@@ -154,19 +157,12 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   res.json(setHandle);
 });
 
-// For coverage, handle Ctrl+C gracefully
-process.on('SIGINT', () => {
-  server.close(() => console.log('Shutting down server gracefully.'));
-});
-
 app.post('/channel/invite/v2', (req: Request, res: Response) => {
-  console.log('Channel Invite');
   const { token, channelId, uId } = req.body;
   res.json(channelInviteV2(token, channelId, uId));
 });
 
 app.get('/channel/messages/v2', (req: Request, res: Response) => {
-  console.log('View Channel Messages');
   const token: string = req.query.token as string;
   const channelId: number = parseInt(req.query.channelId as string);
   const start: number = parseInt(req.query.start as string);
@@ -174,36 +170,80 @@ app.get('/channel/messages/v2', (req: Request, res: Response) => {
 });
 
 app.post('/message/send/v1', (req: Request, res: Response) => {
-  console.log('Message Send v1');
   const { token, channelId, message } = req.body;
   res.json(messageSendV1(token, channelId, message));
 });
 
 app.put('/message/edit/v1', (req: Request, res: Response) => {
-  console.log('Message Edit v1');
   const { token, messageId, message } = req.body;
   res.json(messageEditV1(token, messageId, message));
 });
 
 app.delete('/message/remove/v1', (req: Request, res: Response) => {
-  console.log('Message Remove');
   const token: string = req.query.token as string;
   const messageId: number = parseInt(req.query.messageId as string);
   res.json(messageRemoveV1(token, messageId));
 });
 
 app.post('/message/senddm/v1', (req: Request, res: Response) => {
-  console.log('Message Senddm v1');
   const { token, dmId, message } = req.body;
   res.json(messageSenddmV1(token, dmId, message));
 });
 
 // Keep this BENEATH route definitions
 // handles errors nicely
-app.use(errorHandler());
+app.get('/channels/listall/v2', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  res.json(channelsListAllV2(token));
+});
+
+app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
+  const token = req.body.token as string;
+  const channelId = parseInt(req.body.channelId as string);
+  const uId = parseInt(req.body.uId as string);
+  res.json(channelRemoveOwnerV1(token, channelId, uId));
+});
+
+app.get('/users/all/v1', (req: Request, res: Response) => {
+  const token = req.query.token as string;
+  res.json(usersAllV1(token));
+});
+
+app.post('/channel/addowner/v1', (req: Request, res: Response) => {
+  const token = req.body.token as string;
+  const channelId = parseInt(req.body.channelId as string);
+  const uId = parseInt(req.body.uId as string);
+  res.json(channelAddOwnerV1(token, channelId, uId));
+});
+
+app.post('/channel/leave/v1', (req: Request, res: Response) => {
+  const token = req.body.token as string;
+  const channelId = parseInt(req.body.channelId as string);
+  res.json(channelLeaveV1(token, channelId));
+});
+
+app.get('/user/profile/v2', (req: Request, res: Response) => {
+  const token = req.body.token as string;
+  const uId = parseInt(req.body.uId as string);
+  res.json(userProfileV2(token, uId));
+});
+
+app.get('/dm/messages/v1', (req: Request, res: Response) => {
+  const token: string = req.query.token as string;
+  const dmId: number = parseInt(req.query.dmId as string);
+  const start: number = parseInt(req.query.start as string);
+  res.json(dmMessagesV1(token, dmId, start));
+});
 
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE
   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
 });
+
+// For coverage, handle Ctrl+C gracefully
+process.on('SIGINT', () => {
+  server.close(() => console.log('Shutting down server gracefully.'));
+});
+app.use(errorHandler());
+

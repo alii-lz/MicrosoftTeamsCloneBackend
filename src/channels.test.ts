@@ -1,7 +1,4 @@
-import { toNamespacedPath } from 'path';
 import request from 'sync-request';
-import { takeCoverage } from 'v8';
-import { User, Channel } from './interfaces';
 
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
@@ -14,7 +11,7 @@ beforeEach(() => {
 });
 
 describe('Tests for /channels/create/v2', () => {
-  let user: {token: string, authUserId: number};
+  let user: { token: string, authUserId: number };
 
   beforeEach(() => {
     const tempUser = request('POST', SERVER_URL + '/auth/register/v2',
@@ -41,7 +38,6 @@ describe('Tests for /channels/create/v2', () => {
       });
 
     const data = JSON.parse(res.getBody() as string);
-
     expect(res.statusCode).toBe(OK);
     expect(data).toStrictEqual({ channelId: expect.any(Number) });
   });
@@ -72,7 +68,6 @@ describe('Tests for /channels/create/v2', () => {
       });
 
     const data = JSON.parse(res.getBody() as string);
-
     expect(res.statusCode).toBe(OK);
     expect(data).toStrictEqual(ERROR);
   });
@@ -88,15 +83,14 @@ describe('Tests for /channels/create/v2', () => {
       });
 
     const data = JSON.parse(res.getBody() as string);
-
     expect(res.statusCode).toBe(OK);
     expect(data).toStrictEqual(ERROR);
   });
 });
 
 describe('Tests for /channels/list/v2', () => {
-  let user: {token: string, authUserId: number};
-  let channel: {channelId: number};
+  let user: { token: string, authUserId: number };
+  let channel: { channelId: number };
 
   beforeEach(() => {
     const tempUser = request('POST', SERVER_URL + '/auth/register/v2',
@@ -110,42 +104,35 @@ describe('Tests for /channels/list/v2', () => {
       });
 
     user = JSON.parse(tempUser.getBody() as string);
-
     const tempChannel = request('POST', SERVER_URL + '/channels/create/v2',
       {
-      	json: {
-        	token: user.token,
-        	name: 'ali',
-        	isPublic: true
-      	}
-    	});
+        json: {
+          token: user.token,
+          name: 'ali',
+          isPublic: true
+        }
+      });
 
     channel = JSON.parse(tempChannel.getBody() as string);
   });
 
   test('success case', () => {
     const res = request('GET', SERVER_URL + '/channels/list/v2', { qs: { token: user.token } });
-
     const data = JSON.parse(res.getBody() as string);
-
     expect(res.statusCode).toBe(OK);
     expect(data).toEqual({
-
       channels: [
         {
           channelId: channel.channelId,
           name: 'ali'
         }
       ]
-
     });
   });
 
   test('invalid token', () => {
     const res = request('GET', SERVER_URL + '/channels/list/v2', { qs: { token: 'RANDOM' } });
-
     const data = JSON.parse(res.getBody() as string);
-
     expect(res.statusCode).toBe(OK);
     expect(data).toEqual(ERROR);
   });

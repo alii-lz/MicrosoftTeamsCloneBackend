@@ -3,10 +3,6 @@ import request from 'sync-request';
 import config from './config.json';
 
 import {
-  getData,
-} from './dataStore';
-
-import {
   clearV1,
 } from './other';
 
@@ -14,7 +10,6 @@ const OK = 200;
 const port = config.port;
 const url = config.url;
 const SERVER_URL = `${url}:${port}`;
-const data = getData();
 
 /* These tests will test the http wrappers for the message/ functions.
 There will not be not tests for the functions themselves because the http
@@ -24,7 +19,7 @@ wrappers will return an error if something is wrong with the functions anyways.
 let user1Token: string;
 let user1Id: number;
 let user2Token: string;
-let user2Id: number;
+// let user2Id: number;
 let channel1Id: number;
 beforeEach(() => {
   clearV1();
@@ -72,7 +67,7 @@ beforeEach(() => {
   );
   const user2data = JSON.parse(user2.getBody() as string);
   user2Token = user2data.token;
-  user2Id = user2data.authUserId;
+  // user2Id = user2data.authUserId;
 });
 
 describe('messageSendV1', () => {

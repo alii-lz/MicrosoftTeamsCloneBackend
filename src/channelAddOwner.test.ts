@@ -1,6 +1,4 @@
-import { toNamespacedPath } from 'path';
 import request from 'sync-request';
-import { takeCoverage } from 'v8';
 
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
@@ -54,10 +52,10 @@ describe('Tests for /channel/addowner/v1', () => {
       }
     );
 
-    userToAdd = JSON.parse(tempUser.getBody() as string);
+    userToAdd = JSON.parse(tempUser2.getBody() as string);
 
     // adding the userToAdd into our channel
-    const invite = request('POST', SERVER_URL + '/channel/invite/v2',
+    request('POST', SERVER_URL + '/channel/invite/v2',
       {
         json: {
           token: user.token,
@@ -66,9 +64,6 @@ describe('Tests for /channel/addowner/v1', () => {
         }
       }
     );
-
-    // is this line needed?? (line below this comment)
-    const joined = JSON.parse(invite.getBody() as string);
   });
 
   test('success case', () => {
@@ -117,8 +112,8 @@ describe('Tests for /channel/addowner/v1', () => {
     expect(data).toStrictEqual(ERROR);
   });
   test('uId refers to a user who is not a member of the channel', () => {
-    let notMember: {token: string, authUserId: number};
-
+    // let notMember: {token: string, authUserId: number};
+    // Originally the top lin declared notMember. This did not pass linting.
     const tempUser3 = request('POST', SERVER_URL + '/auth/register/v2',
       {
         json: {
@@ -129,7 +124,7 @@ describe('Tests for /channel/addowner/v1', () => {
         }
       });
 
-    notMember = JSON.parse(tempUser3.getBody() as string);
+    const notMember = JSON.parse(tempUser3.getBody() as string);
 
     const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
 

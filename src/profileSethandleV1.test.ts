@@ -6,12 +6,12 @@ const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
 describe('Incorrect testCases', () => {
-  let AuthUserId1: {token: string, authUserId: number};
-  let AuthUserId2: {token: string, authUserId: number};
+  // let AuthUserId1: {token: string, authUserId: number};
+  // let AuthUserId2: {token: string, authUserId: number};
 
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
-    'PUT',
+    'POST',
     SERVER_URL + '/auth/register/v2',
     {
       json: {
@@ -22,21 +22,21 @@ describe('Incorrect testCases', () => {
       }
     }
   );
-  AuthUserId1 = JSON.parse(res1.getBody() as string);
+  const AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-  const res2 = request(
-    'PUT',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'ron.weasley@gmail.com',
-        password: 'flying car',
-        nameFirst: 'Ron',
-        nameLast: 'Weasley'
-      }
-    }
-  );
-  AuthUserId2 = JSON.parse(res2.getBody() as string);
+  // const res2 = request(
+  //   'POST',
+  //   SERVER_URL + '/auth/register/v2',
+  //   {
+  //     json: {
+  //       email: 'ron.weasley@gmail.com',
+  //       password: 'flying car',
+  //       nameFirst: 'Ron',
+  //       nameLast: 'Weasley'
+  //     }
+  //   }
+  // );
+  // const AuthUserId2 = JSON.parse(res2.getBody() as string);
 
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////
@@ -148,12 +148,12 @@ describe('Incorrect testCases', () => {
 });
 
 describe('Correct testCases', () => {
-  let AuthUserId1: {token: string, authUserId: number};
-  let AuthUserId2: {token: string, authUserId: number};
+  // let AuthUserId1: {token: string, authUserId: number};
+  // let AuthUserId2: {token: string, authUserId: number};
 
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
   const res1 = request(
-    'PUT',
+    'POST',
     SERVER_URL + '/auth/register/v2',
     {
       json: {
@@ -164,21 +164,21 @@ describe('Correct testCases', () => {
       }
     }
   );
-  AuthUserId1 = JSON.parse(res1.getBody() as string);
+  const AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-  const res2 = request(
-    'PUT',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'ron.weasley@gmail.com',
-        password: 'flying car',
-        nameFirst: 'Ron',
-        nameLast: 'Weasley'
-      }
-    }
-  );
-  AuthUserId2 = JSON.parse(res2.getBody() as string);
+  // const res2 = request(
+  //   'POST',
+  //   SERVER_URL + '/auth/register/v2',
+  //   {
+  //     json: {
+  //       email: 'ron.weasley@gmail.com',
+  //       password: 'flying car',
+  //       nameFirst: 'Ron',
+  //       nameLast: 'Weasley'
+  //     }
+  //   }
+  // );
+  // const AuthUserId2 = JSON.parse(res2.getBody() as string);
 
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////
