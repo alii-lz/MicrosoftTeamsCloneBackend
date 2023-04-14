@@ -5,8 +5,8 @@ import { Data } from './interfaces';
 import { getId } from './other';
 import HTTPError from 'http-errors';
 const passwordHash = require('password-hash');
-const UIDGenerator = require('uid-generator')
-const tokenGenerator = new UIDGenerator(32,UIDGenerator.BASE16);
+const UIDGenerator = require('uid-generator');
+const tokenGenerator = new UIDGenerator(32, UIDGenerator.BASE16);
 
 function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
   const invalidFirstName = (nameFirst.length < 1 || nameFirst.length > 50);
@@ -32,7 +32,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
     const registeredUser = data.users.find((user) => user.email === email);
 
     if (registeredUser) {
-      return { error: 'Already registered' };
+      throw HTTPError(400, 'Bad request');
     }
   }
 
@@ -51,7 +51,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
       handleStr = !isNaN(parseInt(endCharacter)) ? handleStr.replace(/.$/, (parseInt(endCharacter) + 1).toString()) : `${handleStr}0`;
     }
   }
-  
+
   const newToken = tokenGenerator.generateSync();
   const newUser = {
     uId: uId,
@@ -77,21 +77,15 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
 function authLoginV1(email: string, password: string) {
   const data: Data = getData();
   if (data.users.length === 0) {
-    
-      throw HTTPError(400, 'Bad request');
-    
+    throw HTTPError(400, 'Bad request');
   }
   const user = data.users.find(user => user.email === email);
   if (!user) {
-    
-      throw HTTPError(400, 'Bad request');
-    
+    throw HTTPError(400, 'Bad request');
   }
 
   if (!passwordHash.verify(password, user.password)) {
-   
     throw HTTPError(400, 'Bad request');
-    
   }
   const newToken = tokenGenerator.generateSync();
   user.tokens.push(newToken);
@@ -108,9 +102,7 @@ function authLoginV1(email: string, password: string) {
 
 function authLogoutV1(token: string) {
   if (getId(token) === -1) {
-    
-      throw HTTPError(400, 'Bad request');
-    
+    throw HTTPError(400, 'Bad request');
   }
   const data: Data = getData();
   const tokenFinder = data.tokens.findIndex((item) => item.token === token);
