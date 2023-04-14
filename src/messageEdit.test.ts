@@ -27,7 +27,7 @@ beforeEach(() => {
   clearV1();
   const user1 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user1@hotmail.com',
@@ -43,10 +43,13 @@ beforeEach(() => {
   // make a channel
   const channel1 = request(
     'POST',
-    SERVER_URL + '/channels/create/v2',
+    SERVER_URL + '/channels/create/v3',
     {
-      json: {
+      headers: {
         token: user1Token,
+      },
+      json: {
+        // token: user1Token,
         name: 'Channel1',
         isPublic: true,
       }
@@ -57,7 +60,7 @@ beforeEach(() => {
   // make a user2
   const user2 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user2@hotmail.com',
@@ -73,10 +76,13 @@ beforeEach(() => {
 
   const message0 = request(
     'POST',
-    SERVER_URL + '/message/send/v1',
+    SERVER_URL + '/message/send/v2',
     {
-      json: {
+      headers: {
         token: user1Token,
+      },
+      json: {
+        // token: user1Token,
         channelId: channel1Id,
         message: 'First message is in channel 1',
       }
@@ -90,10 +96,13 @@ describe('messageEditV1', () => {
   test('Success case - messageEdit', () => {
     let res = request(
       'PUT',
-      SERVER_URL + '/message/edit/v1',
+      SERVER_URL + '/message/edit/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           messageId: 0,
           message: 'Edited message from channel 1',
         }
@@ -105,10 +114,13 @@ describe('messageEditV1', () => {
     // Check if message is edited.
     res = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           channelId: channel1Id,
           start: 0,
         }
@@ -130,61 +142,73 @@ describe('messageEditV1', () => {
   test('Invalid messageId', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/message/edit/v1',
+      SERVER_URL + '/message/edit/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           messageId: 10,
           message: 'Edited message from channel 1',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid messageId.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Invalid messageId.' });
+    expect(res.statusCode).toBe(400);
   });
 
   test('Invalid token', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/message/edit/v1',
+      SERVER_URL + '/message/edit/v2',
       {
-        json: {
+        headers: {
           token: 'asdasdss',
+        },
+        json: {
+          // token: 'asdasdss',
           messageId: messageId,
           message: 'Edited message from channel 1',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid token.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Invalid token.' });
+    expect(res.statusCode).toBe(403);
   });
 
   test('valid messageId but invalid authuserid', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/message/edit/v1',
+      SERVER_URL + '/message/edit/v2',
       {
-        json: {
+        headers: {
           token: user2Token,
+        },
+        json: {
+          // token: user2Token,
           messageId: messageId,
           message: 'Edited message from channel 1',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'User is not a global owner. Cannot edit message.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'User is not a global owner. Cannot edit message.' });
+    expect(res.statusCode).toBe(403);
   });
 
   test('message less than one character', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/message/edit/v1',
+      SERVER_URL + '/message/edit/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           messageId: messageId,
           message: '',
         }
@@ -196,10 +220,13 @@ describe('messageEditV1', () => {
     // Message should be unedited.
     const check = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           channelId: channel1Id,
           start: 0,
         }
@@ -221,17 +248,20 @@ describe('messageEditV1', () => {
   test('message over 1000 characters', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/message/edit/v1',
+      SERVER_URL + '/message/edit/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           messageId: messageId,
           message: 'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Message too long.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Message too long.' });
+    expect(res.statusCode).toBe(400);
   });
 });

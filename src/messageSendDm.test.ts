@@ -108,8 +108,11 @@ beforeEach(() => {
     'POST',
     SERVER_URL + '/dm/create/v1',
     {
-      json: {
+      headers: {
         token: user1Token,
+      },
+      json: {
+        // token: user1Token,
         uIds: [user2Id],
       }
     }
@@ -124,8 +127,11 @@ describe('messageSendDM', () => {
       'POST',
       SERVER_URL + '/message/senddm/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           dmId: dmId,
           message: 'DM MESSAGE 1',
         }
@@ -141,16 +147,19 @@ describe('messageSendDM', () => {
       'POST',
       SERVER_URL + '/message/senddm/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           dmId: dmId + 1,
           message: 'DM MESSAGE 1'
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid dmId.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Invalid dmId.' });
+    expect(res.statusCode).toBe(400);
   });
 
   test('Invalid token', () => {
@@ -158,16 +167,19 @@ describe('messageSendDM', () => {
       'POST',
       SERVER_URL + '/message/senddm/v2',
       {
-        json: {
+        headers: {
           token: 'bois',
+        },
+        json: {
+          // token: 'bois',
           dmId: dmId,
           message: 'DM MESSAGE 1'
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid token.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Invalid token.' });
+    expect(res.statusCode).toBe(403);
   });
 
   test('valid dm but invalid authuserid', () => {
@@ -175,16 +187,19 @@ describe('messageSendDM', () => {
       'POST',
       SERVER_URL + '/message/senddm/v2',
       {
-        json: {
+        headers: {
           token: user4Token,
+        },
+        json: {
+          // token: user4Token,
           dmId: dmId,
           message: 'Wharever',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'User is not part of DM.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'User is not part of DM.' });
+    expect(res.statusCode).toBe(403);
   });
 
   test('message less than one character', () => {
@@ -192,16 +207,19 @@ describe('messageSendDM', () => {
       'POST',
       SERVER_URL + '/message/senddm/v2',
       {
-        json: {
+        headers: {
           token: user2Token,
+        },
+        json: {
+          // token: user2Token,
           dmId: dmId,
           message: '',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Message too short.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Message too short.' });
+    expect(res.statusCode).toBe(400);
   });
 
   test('message over 1000 characters', () => {
@@ -209,15 +227,18 @@ describe('messageSendDM', () => {
       'POST',
       SERVER_URL + '/message/senddm/v2',
       {
-        json: {
+        headers: {
           token: user2Token,
+        },
+        json: {
+          // token: user2Token,
           dmId: dmId,
           message: 'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Message too long.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Message too long.' });
+    expect(res.statusCode).toBe(400);
   });
 });

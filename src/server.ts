@@ -6,7 +6,7 @@ import cors from 'cors';
 
 import {
   channelDetailsV2, channelJoinV2,
-  channelInviteV2, channelMessagesV2
+  channelInviteV3, channelMessagesV3
 } from './channel';
 import { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 } from './dm';
 import { dmDetailsV1 } from './dmDetailsV1';
@@ -14,7 +14,7 @@ import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
   from './profileUsers';
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
-import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV2 } from './messageFunctions';
+import { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2 } from './messageFunctions';
 import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
 import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV1 } from './channelRemoveOwner';
@@ -77,7 +77,8 @@ app.get('/channels/list/v3', (req: Request, res: Response) => {
 });
 
 app.post('/dm/create/v1', (req: Request, res: Response) => {
-  const { token, uIds } = req.body; // Original -> const { token, uIds } = req.body;
+  const { uIds } = req.body; // Original -> const { token, uIds } = req.body;
+  const token = req.header('token');
   // const uids = req.body.uids as number[];
   // console.log("<><>",req.body)
   // console.log(uIds)
@@ -161,36 +162,42 @@ app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   res.json(setHandle);
 });
 
-app.post('/channel/invite/v2', (req: Request, res: Response) => {
-  const { token, channelId, uId } = req.body;
-  res.json(channelInviteV2(token, channelId, uId));
+app.post('/channel/invite/v3', (req: Request, res: Response) => {
+  const { channelId, uId } = req.body;
+  const token = req.header('token');
+  res.json(channelInviteV3(token, channelId, uId));
 });
 
-app.get('/channel/messages/v2', (req: Request, res: Response) => {
-  const token: string = req.query.token as string;
+app.get('/channel/messages/v3', (req: Request, res: Response) => {
+  //const token: string = req.query.token as string;
+  const token = req.header('token');
   const channelId: number = parseInt(req.query.channelId as string);
   const start: number = parseInt(req.query.start as string);
-  res.json(channelMessagesV2(token, channelId, start));
+  res.json(channelMessagesV3(token, channelId, start));
 });
 
-app.post('/message/send/v1', (req: Request, res: Response) => {
-  const { token, channelId, message } = req.body;
-  res.json(messageSendV1(token, channelId, message));
+app.post('/message/send/v2', (req: Request, res: Response) => {
+  const { channelId, message } = req.body;
+  const token = req.header('token');
+  res.json(messageSendV2(token, channelId, message));
 });
 
-app.put('/message/edit/v1', (req: Request, res: Response) => {
-  const { token, messageId, message } = req.body;
-  res.json(messageEditV1(token, messageId, message));
+app.put('/message/edit/v2', (req: Request, res: Response) => {
+  const { messageId, message } = req.body;
+  const token = req.header('token');
+  res.json(messageEditV2(token, messageId, message));
 });
 
-app.delete('/message/remove/v1', (req: Request, res: Response) => {
-  const token: string = req.query.token as string;
+app.delete('/message/remove/v2', (req: Request, res: Response) => {
+  // const token: string = req.query.token as string;
+  const token = req.header('token');
   const messageId: number = parseInt(req.query.messageId as string);
-  res.json(messageRemoveV1(token, messageId));
+  res.json(messageRemoveV2(token, messageId));
 });
 
 app.post('/message/senddm/v2', (req: Request, res: Response) => {
-  const { token, dmId, message } = req.body;
+  const { dmId, message } = req.body;
+  const token = req.header('token');
   res.json(messageSenddmV2(token, dmId, message));
 });
 
@@ -250,4 +257,4 @@ const server = app.listen(PORT, HOST, () => {
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
 });
-// app.use(errorHandler());
+app.use(errorHandler());
