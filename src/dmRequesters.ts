@@ -62,7 +62,7 @@ export function requestDmLeave(token: string, dmId: number) {
     SERVER_URL + '/dm/leave/v2',
     {
       json: {
-                dmId: dmId,
+        dmId: dmId,
       },
       headers: {
         token: token,
