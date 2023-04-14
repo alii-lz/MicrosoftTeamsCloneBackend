@@ -23,19 +23,19 @@ beforeEach(() => {
   );
   AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-  // const res2 = request(
-  //   'POST',
-  //   SERVER_URL + '/auth/register/v2',
-  //   {
-  //     json: {
-  //       email: 'ron.weasley@gmail.com',
-  //       password: 'flying car',
-  //       nameFirst: 'Ron',
-  //       nameLast: 'Weasley'
-  //     }
-  //   }
-  // );
-  // AuthUserId2 = JSON.parse(res2.getBody() as string);
+  request(
+    'POST',
+    SERVER_URL + '/auth/register/v2',
+    {
+      json: {
+        email: 'ron.weasley@gmail.com',
+        password: 'flying car',
+        nameFirst: 'Ron',
+        nameLast: 'Weasley'
+      }
+    }
+  );
+  // const AuthUserId2 = JSON.parse(res2.getBody() as string);
 });
 describe('Incorrect testCases', () => {
   test('undefined token', () => {
@@ -75,7 +75,7 @@ describe('Incorrect testCases', () => {
       {
         json: {
           token: AuthUserId1.token,
-          email: 'harvey.plotter@zxcs.com',
+          email: 'harvey.plotterzxcs.com',
         }
       }
     );
@@ -112,7 +112,7 @@ describe('Correct testCases', () => {
           email: 'harry.potter@gmail.com',
           password: 'quidditch',
           nameFirst: 'Harry',
-          nameLast: 'Potter'
+          nameLast: 'Potter',
         }
       }
     );

@@ -21,6 +21,7 @@ let user1Id: number;
 let user2Token: string;
 // let user2Id: number;
 let channel1Id: number;
+let m1: any;
 let messageId: number;
 beforeEach(() => {
   clearV1();
@@ -81,7 +82,8 @@ beforeEach(() => {
       }
     }
   );
-  messageId = JSON.parse(message0.getBody() as string);
+  m1 = JSON.parse(message0.getBody() as string);
+  messageId = m1.messageId;
 });
 
 describe('messageEditV1', () => {

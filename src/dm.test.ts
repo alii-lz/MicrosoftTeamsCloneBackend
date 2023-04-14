@@ -5,16 +5,14 @@ import { requestAuthRegister } from './authRequesters';
 const OK = 200;
 
 const ERROR = { error: expect.any(String) };
-
+let user: any;
+let user2: any;
+beforeEach(() => {
+  requestClear();
+  user = requestAuthRegister('matthew@gmail.com', 'validPassword', 'matthew', 'ieong').returnObj;
+  user2 = requestAuthRegister('ali@gmail.com', 'validPassword2', 'ali', 'amend').returnObj;
+});
 describe('success tests for /dm/create/v1', () => {
-  let user: any;
-  let user2: any;
-  beforeEach(() => {
-    requestClear();
-    user = requestAuthRegister('matthew@gmail.com', 'validPassword', 'matthew', 'ieong').returnObj;
-    user2 = requestAuthRegister('ali@gmail.com', 'validPassword2', 'ali', 'amend').returnObj;
-  });
-
   test('success case/ return object/ non-empty uids ', () => {
     const dmCreate = requestDmCreate(user.token, [user2.authUserId]);
 
@@ -36,19 +34,22 @@ describe('success tests for /dm/create/v1', () => {
 
     expect(dmDetails.returnObj.name).toStrictEqual('aliamend, matthewieong');
 
-    expect(dmDetails.returnObj.members).toStrictEqual([{
-      uId: user.authUserId,
-      nameFirst: 'matthew',
-      nameLast: 'ieong',
-      email: 'matthew@gmail.com',
-      handleStr: 'matthewieong'
-    }, {
-      uId: user2.authUserId,
-      nameFirst: 'ali',
-      nameLast: 'amend',
-      email: 'ali@gmail.com',
-      handleStr: 'aliamend'
-    }]);
+    expect(dmDetails.returnObj.members).toEqual([
+      {
+        email: 'ali@gmail.com',
+        handleStr: 'aliamend',
+        nameFirst: 'ali',
+        nameLast: 'amend',
+        uId: user2.authUserId,
+      },
+      {
+        email: 'matthew@gmail.com',
+        handleStr: 'matthewieong',
+        nameFirst: 'matthew',
+        nameLast: 'ieong',
+        uId: user.authUserId,
+      },
+    ]);
     expect(dmCreate.status).toStrictEqual(OK);
   });
 
@@ -58,17 +59,18 @@ describe('success tests for /dm/create/v1', () => {
 
     expect(dmDetails.returnObj.name).toStrictEqual('aliamend, matthewieong');
     expect(dmDetails.returnObj.members).toStrictEqual([{
-      uId: user.authUserId,
-      nameFirst: 'matthew',
-      nameLast: 'ieong',
-      email: 'matthew@gmail.com',
-      handleStr: 'matthewieong'
-    }, {
       uId: user2.authUserId,
       nameFirst: 'ali',
       nameLast: 'amend',
       email: 'ali@gmail.com',
       handleStr: 'aliamend'
+    },
+    {
+      uId: user.authUserId,
+      nameFirst: 'matthew',
+      nameLast: 'ieong',
+      email: 'matthew@gmail.com',
+      handleStr: 'matthewieong'
     }]);
     expect(dmCreate.status).toStrictEqual(OK);
   });

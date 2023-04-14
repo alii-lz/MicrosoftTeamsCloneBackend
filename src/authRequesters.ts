@@ -8,10 +8,10 @@ export function requestAuthRegister(email: string, password: string, nameFirst: 
     SERVER_URL + '/auth/register/v2',
     {
       json: {
-        email,
-        password,
-        nameFirst,
-        nameLast
+        email: email,
+        password: password,
+        nameFirst: nameFirst,
+        nameLast: nameLast,
       }
     }
   );
@@ -24,8 +24,8 @@ export function requestAuthLogin(email: string, password: string) {
     SERVER_URL + '/auth/login/v2',
     {
       json: {
-        email,
-        password,
+        email: email,
+        password: password,
 
       }
     }
@@ -39,7 +39,7 @@ export function requestAuthLogout(token: string) {
     SERVER_URL + '/auth/logout/v1',
     {
       json: {
-        token,
+        token: token,
 
       }
     }

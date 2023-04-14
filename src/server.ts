@@ -16,7 +16,7 @@ import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
 import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
-import errorHandler from 'middleware-http-errors';
+// import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV1 } from './channelRemoveOwner';
 import { usersAllV1 } from './usersAllV1';
 import { userProfileV2 } from './users';
@@ -76,9 +76,11 @@ app.get('/channels/list/v2', (req: Request, res: Response) => {
 });
 
 app.post('/dm/create/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string; // Original -> const { token, uIds } = req.body;
-  const uids = req.body.uids as number[];
-  res.json(dmCreate(token, uids));// Original -> return res.json(dmCreate(token, uIds));
+  const { token, uIds } = req.body; // Original -> const { token, uIds } = req.body;
+  // const uids = req.body.uids as number[];
+  // console.log("<><>",req.body)
+  // console.log(uIds)
+  res.json(dmCreate(token, uIds));// Original -> return res.json(dmCreate(token, uIds));
 });
 
 app.get('/dm/list/v1', (req: Request, res: Response) => {
@@ -121,9 +123,10 @@ app.post('/channel/join/v2', (req: Request, res: Response) => {
 
 // dmDetailsV1
 app.get('/dm/details/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string; // const token = req.query.token as string;
-  const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
-  const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
+  const token: string = req.query.token as string; // const token = req.query.token as string;
+  // const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
+  const dmId: number = parseInt(req.query.dmId as string);
+  // const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
   const dmDetails = dmDetailsV1(token, dmId);
 
   res.json(dmDetails);
@@ -223,8 +226,8 @@ app.post('/channel/leave/v1', (req: Request, res: Response) => {
 });
 
 app.get('/user/profile/v2', (req: Request, res: Response) => {
-  const token = req.body.token as string;
-  const uId = parseInt(req.body.uId as string);
+  const token: string = req.query.token as string;
+  const uId = parseInt(req.query.uId as string);
   res.json(userProfileV2(token, uId));
 });
 
@@ -245,5 +248,5 @@ const server = app.listen(PORT, HOST, () => {
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
 });
-app.use(errorHandler());
+// app.use(errorHandler());
 

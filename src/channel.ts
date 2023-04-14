@@ -48,14 +48,17 @@ export function channelDetailsV2(token: string, channelId: number): error | chan
   const authUserId = dataStore.users[userIndex].uId;
 
   // Not member Case: User is not a member of the channel
-  for (const i in channelPointer.allMembers) {
+  let i = 0;
+  while (i < channelPointer.allMembers.length) {
     if (authUserId === channelPointer.allMembers[i].uId) {
       break;
-    } else if (parseInt(i) === dataStore.channels[i].allMembers.length) {
-      // console.log(authUserId);
-      // console.log(dataStore.users[i].uId);
-      return { error: 'User is not a member of the channel' };
     }
+    i++;
+  }
+  if (i === dataStore.channels[i].allMembers.length) {
+    // console.log(authUserId);
+    // console.log(dataStore.users[i].uId);
+    return { error: 'User is not a member of the channel' };
   }
   // stores users and channels into an array(s)
   const ownerMembersArray: user[] = [];
