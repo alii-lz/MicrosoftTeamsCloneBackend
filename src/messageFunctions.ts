@@ -232,7 +232,7 @@ export function messageRemoveV1(token: string, messageId: number): any | error {
   *
   * @returns {messageId} - Returns Id of new message if successful.
 */
-export function messageSenddmV1(token: string, dmId: number, message: string) {
+export function messageSenddmV2(token: string, dmId: number, message: string) {
   const data = getData();
   // Check if empty values were entered.
   if (token === '' || dmId === null) {
@@ -283,7 +283,7 @@ export function messageSenddmV1(token: string, dmId: number, message: string) {
     dmId: dmId,
   };
   data.messageDetails.push(messgaeDetailEntry);
-  data.dm[dmIndex].messages.push(newMessage);
+  data.dm[dmIndex].messages.unshift(newMessage);
   // return messageId
   setData(data);
   return { messageId };

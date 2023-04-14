@@ -15,7 +15,7 @@ const SERVER_URL = `${url}:${port}`;
 There will not be not tests for the functions themselves because the http
 wrappers will return an error if something is wrong with the functions anyways.
 */
-// Start of message/senddm/v1 tests
+// Start of message/senddm/v2 tests
 let user1Token: string;
 // let user1Id: number;
 let user2Token: string;
@@ -31,7 +31,7 @@ beforeEach(() => {
   clearV1();
   const user1 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user1@hotmail.com',
@@ -46,7 +46,7 @@ beforeEach(() => {
   // user1Id = user1data.authUserId;
   const user4 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user4@hotmail.com',
@@ -76,7 +76,7 @@ beforeEach(() => {
   // make a user2
   const user2 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user2@hotmail.com',
@@ -91,7 +91,7 @@ beforeEach(() => {
   user2Id = user2data.authUserId;
   // const user3 = request(
   //   'POST',
-  //   SERVER_URL + '/auth/register/v2',
+  //   SERVER_URL + '/auth/register/v3',
   //   {
   //     json: {
   //       email: 'user3@hotmail.com',
@@ -122,7 +122,7 @@ describe('messageSendDM', () => {
   test('Success case - senddm', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/senddm/v1',
+      SERVER_URL + '/message/senddm/v2',
       {
         json: {
           token: user1Token,
@@ -139,7 +139,7 @@ describe('messageSendDM', () => {
   test('Invalid dmId', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/senddm/v1',
+      SERVER_URL + '/message/senddm/v2',
       {
         json: {
           token: user1Token,
@@ -156,7 +156,7 @@ describe('messageSendDM', () => {
   test('Invalid token', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/senddm/v1',
+      SERVER_URL + '/message/senddm/v2',
       {
         json: {
           token: 'bois',
@@ -173,7 +173,7 @@ describe('messageSendDM', () => {
   test('valid dm but invalid authuserid', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/senddm/v1',
+      SERVER_URL + '/message/senddm/v2',
       {
         json: {
           token: user4Token,
@@ -190,7 +190,7 @@ describe('messageSendDM', () => {
   test('message less than one character', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/senddm/v1',
+      SERVER_URL + '/message/senddm/v2',
       {
         json: {
           token: user2Token,
@@ -207,7 +207,7 @@ describe('messageSendDM', () => {
   test('message over 1000 characters', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/senddm/v1',
+      SERVER_URL + '/message/senddm/v2',
       {
         json: {
           token: user2Token,
