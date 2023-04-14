@@ -3,6 +3,10 @@ import { setData } from './dataStore';
 import validator from 'validator';
 import { Data } from './interfaces';
 import { getId } from './other';
+import HTTPError from 'http-errors';
+const passwordHash = require('password-hash');
+const UIDGenerator = require('uid-generator')
+const tokenGenerator = new UIDGenerator(32,UIDGenerator.BASE16);
 
 function authRegisterV1(email: string, password: string, nameFirst: string, nameLast: string) {
   const invalidFirstName = (nameFirst.length < 1 || nameFirst.length > 50);
@@ -14,7 +18,7 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
   const invalidEmail = (!validator.isEmail(email));
 
   if (invalidFirstName || invalidLastName || invalidPassword || invalidEmail) {
-    return { error: 'One or more invalid inputs' };
+    throw HTTPError(400, 'Bad request');
   }
 
   const data: Data = getData();
@@ -47,11 +51,12 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
       handleStr = !isNaN(parseInt(endCharacter)) ? handleStr.replace(/.$/, (parseInt(endCharacter) + 1).toString()) : `${handleStr}0`;
     }
   }
-  const newToken = (data.tokens.length + 1).toString();
+  
+  const newToken = tokenGenerator.generateSync();
   const newUser = {
     uId: uId,
     email: email,
-    password: password,
+    password: passwordHash.generate(password),
     nameFirst: nameFirst,
     nameLast: nameLast,
     handleStr: handleStr,
@@ -72,28 +77,29 @@ function authRegisterV1(email: string, password: string, nameFirst: string, name
 function authLoginV1(email: string, password: string) {
   const data: Data = getData();
   if (data.users.length === 0) {
-    return {
-      error: 'Email not found',
-    };
+    
+      throw HTTPError(400, 'Bad request');
+    
   }
   const user = data.users.find(user => user.email === email);
   if (!user) {
-    return {
-      error: 'Email not found',
-    };
+    
+      throw HTTPError(400, 'Bad request');
+    
   }
 
-  if (user.password !== password) {
-    return {
-      error: 'Invalid password',
-    };
+  if (!passwordHash.verify(password, user.password)) {
+   
+    throw HTTPError(400, 'Bad request');
+    
   }
-  const newToken = (data.tokens.length + 1).toString();
+  const newToken = tokenGenerator.generateSync();
   user.tokens.push(newToken);
   data.tokens.push({
     token: newToken,
     active: true
   });
+  setData(data);
   return {
     authUserId: user.uId,
     token: newToken
@@ -103,14 +109,14 @@ function authLoginV1(email: string, password: string) {
 function authLogoutV1(token: string) {
   if (getId(token) === -1) {
     return {
-      error: 'invalid token'
+     // error: 'invalid token'
     };
   }
   const data: Data = getData();
   const tokenFinder = data.tokens.findIndex((item) => item.token === token);
   data.tokens[tokenFinder].active = false;
   setData(data);
-  return {};
+  return {pass: 'pass'};
 }
 
 export { authRegisterV1, authLoginV1, authLogoutV1 };

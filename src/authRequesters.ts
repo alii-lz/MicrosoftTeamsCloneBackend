@@ -40,7 +40,7 @@ export function requestAuthLogout(token: string) {
     'POST',
     SERVER_URL + '/auth/logout/v2',
     {
-      json: {
+      headers: {
         token: token,
 
       },
