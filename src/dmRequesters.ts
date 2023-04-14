@@ -59,11 +59,13 @@ export function requestDmDetails(token: string, dmId: number) {
 export function requestDmLeave(token: string, dmId: number) {
   const res = request(
     'POST',
-    SERVER_URL + '/dm/leave/v1',
+    SERVER_URL + '/dm/leave/v2',
     {
       json: {
+                dmId: dmId,
+      },
+      headers: {
         token: token,
-        dmId: dmId,
       }
     }
   );

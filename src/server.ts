@@ -95,8 +95,8 @@ app.delete('/dm/remove/v1', (req: Request, res: Response) => {
   return res.json(dmRemove(token, parseInt(dmId)));
 });
 
-app.post('/dm/leave/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/dm/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
   const dmId = req.body.dmId as string;
   return res.json(dmLeave(token, parseInt(dmId)));
 });

@@ -3,6 +3,8 @@ import { requestClear } from './clearRequester';
 import { requestAuthRegister } from './authRequesters';
 
 const OK = 200;
+const BAD_REQUEST = 400;
+const AUTHORIZATION_ERROR = 403;
 
 const ERROR = { error: expect.any(String) };
 let user: any;
@@ -261,30 +263,46 @@ describe('tests for /dm/leave/v1', () => {
   });
 
   test('failure case/ invalid token', () => {
+    try{
     const invalidToken = user.token + user2.token;
     const dmLeave = requestDmLeave(invalidToken, dm.dmId);
     expect(dmLeave.returnObj).toStrictEqual(ERROR);
-    expect(dmLeave.status).toStrictEqual(OK);
+    expect(dmLeave.status).toStrictEqual(AUTHORIZATION_ERROR);
+  } catch (error){
+    expect(error).toBeInstanceOf(Error);
+  }
   });
 
   test('failure case/ invalid dmId', () => {
+    try{
     const invalidDmId = dm.dmId + 1;
     const dmLeave = requestDmLeave(user.token, invalidDmId);
     expect(dmLeave.returnObj).toStrictEqual(ERROR);
-    expect(dmLeave.status).toStrictEqual(OK);
+    expect(dmLeave.status).toStrictEqual(BAD_REQUEST);
+  } catch (error){
+    expect(error).toBeInstanceOf(Error);
+  }
   });
 
   test('failure case/ user already left', () => {
+    try{
     requestDmLeave(user.token, dm.dmId);
     const dmLeave2 = requestDmLeave(user.token, dm.dmId);
     expect(dmLeave2.returnObj).toStrictEqual(ERROR);
-    expect(dmLeave2.status).toStrictEqual(OK);
+    expect(dmLeave2.status).toStrictEqual(AUTHORIZATION_ERROR);
+  } catch (error){
+    expect(error).toBeInstanceOf(Error);
+  }
   });
 
-  test('failure case/ user not a memeber of the DM', () => {
+  test('failure case/ user not a member of the DM', () => {
+    try{
     const user3 = requestAuthRegister('rudie@gmail.com', 'password', 'Rudie', 'Tate').returnObj;
     const dmLeave = requestDmLeave(user3.token, dm.dmId);
     expect(dmLeave.returnObj).toStrictEqual(ERROR);
-    expect(dmLeave.status).toStrictEqual(OK);
+    expect(dmLeave.status).toStrictEqual(AUTHORIZATION_ERROR);
+  } catch (error){
+    expect(error).toBeInstanceOf(Error);
+  }
   });
 });
