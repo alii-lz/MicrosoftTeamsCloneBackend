@@ -108,15 +108,15 @@ function authLoginV1(email: string, password: string) {
 
 function authLogoutV1(token: string) {
   if (getId(token) === -1) {
-    return {
-     // error: 'invalid token'
-    };
+    
+      throw HTTPError(400, 'Bad request');
+    
   }
   const data: Data = getData();
   const tokenFinder = data.tokens.findIndex((item) => item.token === token);
   data.tokens[tokenFinder].active = false;
   setData(data);
-  return {pass: 'pass'};
+  return {};
 }
 
 export { authRegisterV1, authLoginV1, authLogoutV1 };

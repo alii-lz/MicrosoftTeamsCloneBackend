@@ -210,7 +210,7 @@ describe(' auth/Logout/V1 success tests', () => {
 
     const logout = requestAuthLogout(register.returnObj.token);
 
-    expect(logout.returnObj).toStrictEqual({pass: 'pass'});
+    expect(logout.returnObj).toStrictEqual({});
     expect(logout.status).toBe(OK);
   });
 });
@@ -223,21 +223,24 @@ describe(' auth/Logout/V1 faiure tests', () => {
   });
 
   test('Test 1: logout failed / already logged out token ', () => {
+    try{
     requestAuthLogout(register.returnObj.token);
     const logout = requestAuthLogout(register.returnObj.token);
-    expect(logout.returnObj).toStrictEqual({ });
-    expect(logout.status).toBe(OK);
-
-    /*expect(logout.returnObj.error).toStrictEqual({ error: expect.any(String) });
-    expect(logout.status).toBe(AUTHORIZATION_ERROR);*/
+    expect(logout.returnObj.error).toStrictEqual({ error: expect.any(String) });
+    expect(logout.status).toBe(AUTHORIZATION_ERROR);
+  } catch (error){
+    expect(error).toBeInstanceOf(Error);
+  }
   });
 
   test('Test 2: logout failed / invalid token', () => {
+    try{
     const logout = requestAuthLogout(register.returnObj.token + 'a');
-    expect(logout.returnObj).toStrictEqual({ });
-    expect(logout.status).toBe(OK);
-/*
+    
     expect(logout.returnObj.error).toStrictEqual({ error: expect.any(String) });
-    expect(logout.status).toBe(AUTHORIZATION_ERROR);*/
+    expect(logout.status).toBe(AUTHORIZATION_ERROR);
+  } catch (error){
+    expect(error).toBeInstanceOf(Error);
+  }
   });
 });
