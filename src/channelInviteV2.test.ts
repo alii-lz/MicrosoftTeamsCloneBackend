@@ -1,10 +1,13 @@
 // Written by Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
-
+import { requestAuthRegister, requestAuthLogin, requestAuthLogout } from './authRequesters';
+import { channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channelRequestor';
+import { requestMessageSendV2, requestMessageEditV2 } from './messageFunctionRequestors'
 import {
   clearV1,
 } from './other';
+import { resetData } from './dataStore';
 
 const OK = 200;
 const port = config.port;
@@ -17,23 +20,11 @@ let user2Token: string;
 let user2Id: number;
 let channel1Id: number;
 beforeEach(() => {
+  resetData();
   clearV1();
-  // Make the first User
-  const user1 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v3',
-    {
-      json: {
-        email: 'user1@hotmail.com',
-        password: 'p123445P',
-        nameFirst: 'asdasdasd',
-        nameLast: 'asdadsdsd',
-      }
-    }
-  );
-  const user1data = JSON.parse(user1.getBody() as string);
-  user1Token = user1data.token;
-  user1Id = user1data.authUserId;
+  const user1data = requestAuthRegister('user1@hotmail.com', 'p123445P', 'Arr', 'Sddd');
+  user1Token = user1data.returnObj.token;
+  user1Id = user1data.returnObj.authUserId;
   // make a channel
   const channel1 = request(
     'POST',
@@ -43,7 +34,6 @@ beforeEach(() => {
         token: user1Token,
       },
       json: {
-        // token: user1Token,
         name: 'Channel1',
         isPublic: true,
       }
@@ -51,138 +41,37 @@ beforeEach(() => {
   );
   const channel1data = JSON.parse(channel1.getBody() as string);
   channel1Id = channel1data.channelId;
-  // make a user2
-  const user2 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v3',
-    {
-      json: {
-        email: 'user2@hotmail.com',
-        password: 'p123445P',
-        nameFirst: 'Bdsdsdsd',
-        nameLast: 'Sdsdsdssdsd',
-      }
-    }
-  );
-  const user2data = JSON.parse(user2.getBody() as string);
-  user2Token = user2data.token;
-  user2Id = user2data.authUserId;
+ 
+  const user2data = requestAuthRegister('user2@hotmail.com', 'p123445P', 'ddddddd', 'Sddddd');
+  user2Token= user2data.returnObj.token;
+  user2Id = user2data.returnObj.authUserId;
 });
 
 describe('channelInvite', () => {
   test('Success case - channelInvite', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/channel/invite/v3',
-      {
-        headers: {
-          token: user1Token,
-        },
-        json: {
-          // token: user1Token,
-          channelId: channel1Id,
-          uId: user2Id,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({});
-    expect(res.statusCode).toBe(OK);
+    const res = channelInviteV3(user1Token,channel1Id,user2Id)
+    expect(res.returnObj).toStrictEqual({});
+    expect(res.status).toBe(OK);
   });
 
   test('Invalid channelId', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/channel/invite/v3',
-      {
-        headers: {
-          token: user1Token,
-        },
-        json: {
-          // token: user1Token,
-          channelId: channel1Id + 1,
-          uId: user2Id,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.' });
-    expect(res.statusCode).toBe(400);
+    const res = channelInviteV3(user1Token,channel1Id+1,user2Id)
+    expect(res.status).toBe(400);
   });
   test('Invalid uId', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/channel/invite/v3',
-      {
-        headers: {
-          token: user1Token,
-        },
-        json: {
-          // token: user1Token,
-          channelId: channel1Id,
-          uId: user2Id + 22,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Invalid uId.' });
-    expect(res.statusCode).toBe(400);
+    const res = channelInviteV3(user1Token,channel1Id,user2Id+22)
+    expect(res.status).toBe(400);
   });
   test('uId already member', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/channel/invite/v3',
-      {
-        headers: {
-          token: user1Token,
-        },
-        json: {
-          // token: user1Token,
-          channelId: channel1Id,
-          uId: user1Id,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Member already in channel.' });
-    expect(res.statusCode).toBe(403);
+    const res = channelInviteV3(user1Token,channel1Id,user1Id)
+    expect(res.status).toBe(400);
   });
   test('Authorised user not a member', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/channel/invite/v3',
-      {
-        headers: {
-          token: user2Token,
-        },
-        json: {
-          // token: user2Token,
-          channelId: channel1Id,
-          uId: user2Id,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'You are not part of this channel.' });
-    expect(res.statusCode).toBe(403);
+    const res = channelInviteV3(user2Token,channel1Id,user2Id)
+    expect(res.status).toBe(403);
   });
   test('Invalid token', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/channel/invite/v3',
-      {
-        headers: {
-          token: 'abcdef',
-        },
-        json: {
-          // token: 'abcdef',
-          channelId: channel1Id,
-          uId: user2Id,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Invalid token.' });
-    expect(res.statusCode).toBe(403);
+    const res = channelInviteV3('abcdef',channel1Id,user2Id)
+    expect(res.status).toBe(403);
   });
 });

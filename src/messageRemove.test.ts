@@ -1,7 +1,9 @@
 // Written by Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
-
+import { requestAuthRegister } from './authRequesters';
+import { channelInviteV3, channelMessagesV3 } from './channelRequestor';
+import { requestMessageSendV2, requestMessageRemoveV2 } from './messageFunctionRequestors'
 import {
   clearV1,
 } from './other';
@@ -27,21 +29,9 @@ let messageId2Pass: any;
 let messageId2: number;
 beforeEach(() => {
   clearV1();
-  const user1 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v3',
-    {
-      json: {
-        email: 'user1@hotmail.com',
-        password: 'p123445P',
-        nameFirst: 'A',
-        nameLast: 'S',
-      }
-    }
-  );
-  const user1data = JSON.parse(user1.getBody() as string);
-  user1Token = user1data.token;
-  user1Id = user1data.authUserId;
+  const user1data = requestAuthRegister('user1@hotmail.com', 'p123445P', 'Arr', 'Sddd');
+  user1Token= user1data.returnObj.token;
+  user1Id = user1data.returnObj.authUserId;
   // make a channel
   const channel1 = request(
     'POST',
@@ -51,7 +41,6 @@ beforeEach(() => {
         token: user1Token,
       },
       json: {
-        // token: user1Token,
         name: 'Channel1',
         isPublic: true,
       }
@@ -59,114 +48,33 @@ beforeEach(() => {
   );
   const channel1data = JSON.parse(channel1.getBody() as string);
   channel1Id = channel1data.channelId;
-  // make a user2
-  const user2 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v3',
-    {
-      json: {
-        email: 'user2@hotmail.com',
-        password: 'p123445P',
-        nameFirst: 'B',
-        nameLast: 'S',
-      }
-    }
-  );
-  const user2data = JSON.parse(user2.getBody() as string);
-  user2Token = user2data.token;
-  user2Id = user2data.authUserId;
-  // Make a message.
-  const message0 = request(
-    'POST',
-    SERVER_URL + '/message/send/v2',
-    {
-      headers: {
-        token: user1Token,
-      },
-      json: {
-        // token: user1Token,
-        channelId: channel1Id,
-        message: 'First message is in channel 1',
-      }
-    }
-  );
-  messageIdPass = JSON.parse(message0.getBody() as string);
-  messageId = messageIdPass.messageId;
 
-  request(
-    'POST',
-    SERVER_URL + '/channel/invite/v3',
-    {
-      headers: {
-        token: user1Token,
-      },
-      json: {
-        // token: user1Token,
-        channelId: channel1Id,
-        uId: user2Id,
-      }
-    }
-  );
-  // const inviteRes = JSON.parse(invite.getBody() as string);
-  const nonOwnerComment = request(
-    'POST',
-    SERVER_URL + '/message/send/v2',
-    {
-      headers: {
-        token: user2Token,
-      },
-      json: {
-        // token: user2Token,
-        channelId: channel1Id,
-        message: 'I am not an owner.',
-      }
-    }
-  );
-  messageId2Pass = JSON.parse(nonOwnerComment.getBody() as string);
-  messageId2 = messageId2Pass.messageId;
+  const user2data = requestAuthRegister('user2@hotmail.com', 'p123445P', 'ddddddd', 'Sddddd');
+  user2Token= user2data.returnObj.token;
+  user2Id = user2data.returnObj.authUserId;
+
+  const message0 = requestMessageSendV2(user1Token,channel1Id,'First message is in channel 1')
+  messageId = message0.returnObj.messageId;
+  channelInviteV3(user1Token, channel1Id, user2Id)
+  const nonOwnerComment = requestMessageSendV2(user2Token,channel1Id,'I am not an owner.')
+  messageId2 = nonOwnerComment.returnObj.messageId;
 });
 
 describe('messageRemoveV1', () => {
   test('Success case - MessageRemove', () => {
-    const res = request(
-      'DELETE',
-      SERVER_URL + '/message/remove/v2',
-      {
-        headers: {
-          token: user1Token,
-        },
-        qs: {
-          // token: user1Token,
-          messageId: messageId,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({});
-    expect(res.statusCode).toBe(OK);
-    // Check if message is DELETED.
-    const res2 = request(
-      'GET',
-      SERVER_URL + '/channel/messages/v3',
-      {
-        headers: {
-          token: user1Token,
-        },
-        qs: {
-          // token: user1Token,
-          channelId: channel1Id,
-          start: 0,
-        }
-      }
-    );
-    const data2 = JSON.parse(res2.getBody() as string);
-    expect(data2).toStrictEqual({
+    const res = requestMessageRemoveV2(user1Token,messageId)
+    expect(res.returnObj).toStrictEqual({});
+    expect(res.status).toBe(OK);
+    const res2 = channelMessagesV3(user1Token,channel1Id,0)
+    expect(res2.returnObj).toStrictEqual({
       messages: [
         {
           message: 'I am not an owner.',
           messageId: 1,
           timeSent: expect.any(Number),
           uId: 2,
+          isPinned: false,
+          reacts:[],
         }
       ],
       start: 0,
@@ -175,102 +83,35 @@ describe('messageRemoveV1', () => {
   });
 
   test('Invalid messageId', () => {
-    const res = request(
-      'DELETE',
-      SERVER_URL + '/message/remove/v2',
-      {
-        headers: {
-          token: user1Token,
-        },
-        qs: {
-          // token: user1Token,
-          messageId: 10,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Invalid messageId.' });
-    expect(res.statusCode).toBe(400);
+    const res = requestMessageRemoveV2(user1Token,10)
+    expect(res.status).toBe(400);
   });
 
   test('Invalid token', () => {
-    const res = request(
-      'DELETE',
-      SERVER_URL + '/message/remove/v2',
-      {
-        headers: {
-          token: 'asdasdss',
-        },
-        qs: {
-          // token: 'asdasdss',
-          messageId: messageId,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Invalid token.' });
-    expect(res.statusCode).toBe(403);
+    const res = requestMessageRemoveV2('asdasdss',messageId)
+    expect(res.status).toBe(403);
   });
 
   test('valid messageId but authuserid not part of channel', () => {
-    const res = request(
-      'DELETE',
-      SERVER_URL + '/message/remove/v2',
-      {
-        headers: {
-          token: user2Token,
-        },
-        qs: {
-          // token: user2Token,
-          messageId: messageId,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'User is not a global owner. Cannot remove message.' });
-    expect(res.statusCode).toBe(403);
+    const res = requestMessageRemoveV2(user2Token,messageId)
+    expect(res.status).toBe(403);
   });
 });
 
 describe('Last test', () => {
   test('Global Owner deleting other messages', () => {
-    const res = request(
-      'DELETE',
-      SERVER_URL + '/message/remove/v2',
-      {
-        headers: {
-          token: user1Token,
-        },
-        qs: {
-          // token: user1Token,
-          messageId: messageId2,
-        }
-      }
-    );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({});
-    expect(res.statusCode).toBe(OK);
-    const res2 = request(
-      'GET',
-      SERVER_URL + '/channel/messages/v3',
-      {
-        headers: {
-          token: user1Token,
-        },
-        qs: {
-          // token: user1Token,
-          channelId: channel1Id,
-          start: 0,
-        }
-      }
-    );
-    const data = JSON.parse(res2.getBody() as string);
-    expect(data).toStrictEqual({
+    const res = requestMessageRemoveV2(user1Token,messageId2)
+    expect(res.returnObj).toStrictEqual({});
+    expect(res.status).toBe(OK);
+    const res2 = channelMessagesV3(user1Token,channel1Id,0)
+    expect(res2.returnObj).toStrictEqual({
       messages: [{
         messageId: 0,
         uId: user1Id,
         message: 'First message is in channel 1',
         timeSent: expect.any(Number),
+        isPinned: false,
+        reacts: [],
       }],
       start: 0,
       end: -1,

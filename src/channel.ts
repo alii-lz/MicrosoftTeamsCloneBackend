@@ -334,7 +334,7 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   for (let j = 0; j < data.channels.length; j++) {
     if (data.channels[j].channelId === channelId) {
       foundChannel = true;
-      break;
+      
     }
   }
   if (foundChannel === false) {
@@ -444,7 +444,7 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
 export function channelInviteV3(token: string, channelId: number, uId: number): error | object {
   const id = getId(token);
   if (id === -1) {
-    throw HttpError(403, 'Invalid token.' );
+    throw HTTPError(403, 'Invalid token.' );
     // return { error: 'Invalid token.' };
   }
   return channelInviteV1(id, channelId, uId);
@@ -453,7 +453,7 @@ export function channelInviteV3(token: string, channelId: number, uId: number): 
 export function channelMessagesV3(token: string, channelId: number, start: number): error | channelMessages {
   const id = getId(token);
   if (id === -1) {
-    throw HttpError(403, 'Invalid token.' );
+    throw HTTPError(403, 'Invalid token.' );
     // return { error: 'Invalid token.' };
   }
   return channelMessagesV1(id, channelId, start);
