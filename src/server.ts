@@ -59,7 +59,7 @@ app.post('/auth/login/v2', (req: Request, res: Response) => {
 });
 
 app.post('/auth/logout/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   return res.json(authLogoutV1(token));
 });
 
