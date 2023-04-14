@@ -34,7 +34,7 @@ export function requestChannelJoinV3(token: string, channelId: number) {
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
-export function channelInviteV3(token: string, channelId: number, uId: number) {
+export function requestChannelInviteV3(token: string, channelId: number, uId: number) {
   const res = request(
     'POST',
     SERVER_URL + '/channel/invite/v3',

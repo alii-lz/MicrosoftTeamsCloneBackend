@@ -2,7 +2,7 @@
 import request from 'sync-request';
 import config from './config.json';
 import { requestAuthRegister } from './authRequesters';
-import { channelInviteV3, channelMessagesV3 } from './channelRequestor';
+import { requestChannelInviteV3, requestChannelMessagesV3 } from './channelRequestor';
 import { requestMessageSendV2, requestMessageRemoveV2 } from './messageFunctionRequestors'
 import {
   clearV1,
@@ -55,7 +55,7 @@ beforeEach(() => {
 
   const message0 = requestMessageSendV2(user1Token,channel1Id,'First message is in channel 1')
   messageId = message0.returnObj.messageId;
-  channelInviteV3(user1Token, channel1Id, user2Id)
+  requestChannelInviteV3(user1Token, channel1Id, user2Id)
   const nonOwnerComment = requestMessageSendV2(user2Token,channel1Id,'I am not an owner.')
   messageId2 = nonOwnerComment.returnObj.messageId;
 });
@@ -65,7 +65,7 @@ describe('messageRemoveV1', () => {
     const res = requestMessageRemoveV2(user1Token,messageId)
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
-    const res2 = channelMessagesV3(user1Token,channel1Id,0)
+    const res2 = requestChannelMessagesV3(user1Token,channel1Id,0)
     expect(res2.returnObj).toStrictEqual({
       messages: [
         {
@@ -103,7 +103,7 @@ describe('Last test', () => {
     const res = requestMessageRemoveV2(user1Token,messageId2)
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
-    const res2 = channelMessagesV3(user1Token,channel1Id,0)
+    const res2 = requestChannelMessagesV3(user1Token,channel1Id,0)
     expect(res2.returnObj).toStrictEqual({
       messages: [{
         messageId: 0,

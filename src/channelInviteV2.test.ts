@@ -1,9 +1,8 @@
 // Written by Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
-import { requestAuthRegister, requestAuthLogin, requestAuthLogout } from './authRequesters';
-import { channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channelRequestor';
-import { requestMessageSendV2, requestMessageEditV2 } from './messageFunctionRequestors'
+import { requestAuthRegister } from './authRequesters';
+import { requestChannelInviteV3 } from './channelRequestor';
 import {
   clearV1,
 } from './other';
@@ -49,29 +48,29 @@ beforeEach(() => {
 
 describe('channelInvite', () => {
   test('Success case - channelInvite', () => {
-    const res = channelInviteV3(user1Token,channel1Id,user2Id)
+    const res = requestChannelInviteV3(user1Token,channel1Id,user2Id)
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
   });
 
   test('Invalid channelId', () => {
-    const res = channelInviteV3(user1Token,channel1Id+1,user2Id)
+    const res = requestChannelInviteV3(user1Token,channel1Id+1,user2Id)
     expect(res.status).toBe(400);
   });
   test('Invalid uId', () => {
-    const res = channelInviteV3(user1Token,channel1Id,user2Id+22)
+    const res = requestChannelInviteV3(user1Token,channel1Id,user2Id+22)
     expect(res.status).toBe(400);
   });
   test('uId already member', () => {
-    const res = channelInviteV3(user1Token,channel1Id,user1Id)
+    const res = requestChannelInviteV3(user1Token,channel1Id,user1Id)
     expect(res.status).toBe(400);
   });
   test('Authorised user not a member', () => {
-    const res = channelInviteV3(user2Token,channel1Id,user2Id)
+    const res = requestChannelInviteV3(user2Token,channel1Id,user2Id)
     expect(res.status).toBe(403);
   });
   test('Invalid token', () => {
-    const res = channelInviteV3('abcdef',channel1Id,user2Id)
+    const res = requestChannelInviteV3('abcdef',channel1Id,user2Id)
     expect(res.status).toBe(403);
   });
 });

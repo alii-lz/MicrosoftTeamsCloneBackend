@@ -2,8 +2,8 @@
 import request from 'sync-request';
 import config from './config.json';
 import { clearV1 } from './other';
-import { requestAuthRegister, requestAuthLogin, requestAuthLogout } from './authRequesters';
-import { channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channelRequestor';
+import { requestAuthRegister } from './authRequesters';
+import { requestChannelMessagesV3 } from './channelRequestor';
 const OK = 200;
 const port = config.port;
 const url = config.url;
@@ -41,7 +41,7 @@ beforeEach(() => {
 
 describe('channelMessages', () => {
   test('Success case - channelMessages', () => {
-    const res = channelMessagesV3(user1Token,channel1Id,0)
+    const res = requestChannelMessagesV3(user1Token,channel1Id,0)
     expect(res.returnObj).toStrictEqual({
       messages: [
       ],
@@ -52,19 +52,19 @@ describe('channelMessages', () => {
   });
 
   test('Invalid ChannelId', () => {
-    const res = channelMessagesV3(user1Token,channel1Id+1,0)
+    const res = requestChannelMessagesV3(user1Token,channel1Id+1,0)
     expect(res.status).toBe(400);
   });
   test('start too big', () => {
-    const res = channelMessagesV3(user1Token,channel1Id,300000)
+    const res = requestChannelMessagesV3(user1Token,channel1Id,300000)
     expect(res.status).toBe(400);
   });
   test('Invalid user', () => {
-    const res = channelMessagesV3(user2Token,channel1Id,0)
+    const res = requestChannelMessagesV3(user2Token,channel1Id,0)
     expect(res.status).toBe(403);
   });
   test('Invalid token', () => {
-    const res = channelMessagesV3('abcdefg',channel1Id,0)
+    const res = requestChannelMessagesV3('abcdefg',channel1Id,0)
     expect(res.status).toBe(403);
   });
 });

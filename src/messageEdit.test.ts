@@ -1,8 +1,8 @@
 // Written by Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
-import { requestAuthRegister, requestAuthLogin, requestAuthLogout } from './authRequesters';
-import { channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channelRequestor';
+import { requestAuthRegister } from './authRequesters';
+import { requestChannelMessagesV3 } from './channelRequestor';
 import { requestMessageSendV2, requestMessageEditV2 } from './messageFunctionRequestors'
 import {
   clearV1,
@@ -60,7 +60,7 @@ describe('messageEditV1', () => {
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
     // Check if message is edited.
-    const res2 = channelMessagesV3(user1Token,channel1Id,0)
+    const res2 = requestChannelMessagesV3(user1Token,channel1Id,0)
     expect(res2.returnObj).toStrictEqual({
       messages: [{
         messageId: 0,
@@ -95,7 +95,7 @@ describe('messageEditV1', () => {
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
     // Message should be unedited.
-    const res2 = channelMessagesV3(user1Token,channel1Id,0)
+    const res2 = requestChannelMessagesV3(user1Token,channel1Id,0)
     expect(res2.returnObj).toStrictEqual({
       messages: [{
         messageId: 0,
