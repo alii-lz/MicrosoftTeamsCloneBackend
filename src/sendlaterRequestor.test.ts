@@ -2,34 +2,36 @@ import request from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 
-export function reactV1(token: string, messageId: number, reactId: number) {
+export function sendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
   const res = request(
     'POST',
-    SERVER_URL + '/message/react/v1',
+    SERVER_URL + '/message/sendlater/v1',
     {
       headers: {
         token: token
       },
       json: {
-        messageId: messageId,
-        reactId: reactId,
+        channelId: channelId,
+        message: message,
+        timeSent: timeSent,
       }
     }
   );
   return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
 }
 
-export function unreactV1(token: string, messageId: number, reactId: number) {
+export function sendlaterdmV1(token: string, dmId: number, message: string, timeSent: number) {
   const res = request(
     'POST',
-    SERVER_URL + '/message/unreact/v1',
+    SERVER_URL + '/message/sendlaterdm/v1',
     {
       headers: {
         token: token
       },
       json: {
-        messageId: messageId,
-        reactId: reactId,
+        dmId: dmId,
+        message: message,
+        timeSent: timeSent,
       }
     }
   );

@@ -22,8 +22,12 @@ import { usersAllV2 } from './usersAllV1';
 import { userProfileV2 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
 import { channelLeaveV1 } from './channelLeave';
-import { request } from 'http';
+
 import { notificationsGetV1 } from './notificationGet';
+import { request } from 'http';
+
+import { searchV1 } from './search';
+
 
 // Set up web app
 const app = express();
@@ -233,13 +237,45 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 
+<<<<<<< src/server.ts
 
+=======
+app.get('/dm/messages/v2', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  const dmId: number = parseInt(req.query.dmId as string);
+  const start: number = parseInt(req.query.start as string);
+  res.json(dmMessagesV1(token, dmId, start));
+});
+
+app.get('/search/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  const queryStr = req.query.queryStr as string;
+  res.json(searchV1(token, queryStr));
+});
+
+app.post('message/react/v1', (req: Request, res: Response) => {
+  const { MessageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(reactV1(token, MessageId, reactId));
+});
+
+app.post('message/unreact/v1', (req: Request, res: Response) => {
+  const { MessageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(unreactV1(token, MessageId, reactId));
+>>>>>>> src/server.ts
+});
 
 app.use(errorHandler());
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE
   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
+});
+
+app.get('/notifications/get/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  res.json(notificationsGetV1(token));
 });
 
 // For coverage, handle Ctrl+C gracefully
