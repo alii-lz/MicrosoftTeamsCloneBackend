@@ -15,7 +15,7 @@ import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
-import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
+import { channelsCreateV2, channelsListV2, channelsListAllV3 } from './channels';
 import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV1 } from './channelRemoveOwner';
 import { usersAllV1 } from './usersAllV1';
@@ -44,7 +44,7 @@ app.delete('/clear/v1', (req: Request, res: Response) => {
   return res.json(clearV1());
 });
 
-app.post('/auth/register/v2', (req: Request, res: Response) => {
+app.post('/auth/register/v3', (req: Request, res: Response) => {
   const email = req.body.email as string;
   const password = req.body.password as string;
   const nameFirst = req.body.nameFirst as string;
@@ -52,14 +52,14 @@ app.post('/auth/register/v2', (req: Request, res: Response) => {
   return res.json(authRegisterV1(email, password, nameFirst, nameLast));
 });
 
-app.post('/auth/login/v2', (req: Request, res: Response) => {
+app.post('/auth/login/v3', (req: Request, res: Response) => {
   const email = req.body.email as string;
   const password = req.body.password as string;
   return res.json(authLoginV1(email, password));
 });
 
-app.post('/auth/logout/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/auth/logout/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
   return res.json(authLogoutV1(token));
 });
 
@@ -95,8 +95,8 @@ app.delete('/dm/remove/v1', (req: Request, res: Response) => {
   return res.json(dmRemove(token, parseInt(dmId)));
 });
 
-app.post('/dm/leave/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/dm/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
   const dmId = req.body.dmId as string;
   return res.json(dmLeave(token, parseInt(dmId)));
 });
@@ -195,9 +195,9 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
 
 // Keep this BENEATH route definitions
 // handles errors nicely
-app.get('/channels/listall/v2', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  res.json(channelsListAllV2(token));
+app.get('/channels/listall/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(channelsListAllV3(token));
 });
 
 app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
@@ -238,6 +238,7 @@ app.get('/dm/messages/v1', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 
+app.use(errorHandler());
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE
@@ -248,6 +249,4 @@ const server = app.listen(PORT, HOST, () => {
 process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
 });
-
-app.use(errorHandler());
-
+// app.use(errorHandler());

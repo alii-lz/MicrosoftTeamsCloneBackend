@@ -2,6 +2,7 @@
 import { error, Data } from './interfaces';
 import { getId } from './other';
 import { getData, setData } from './dataStore';
+import HTTPError from 'http-errors';
 
 function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   const creatorUId: number = getId(token);
@@ -104,38 +105,28 @@ function dmRemove(token: string, dmId: number) {
 function dmLeave(token: string, dmId: number) {
   const user = getId(token);
   if (user === -1) {
-    return {
-      error: 'Invalid token'
-    };
+    throw HTTPError(403, 'Invalid token');
   }
   const dataBase: Data = getData();
 
-  // if (dmId > dataBase.dm.length) {
-  //   return {
-  //     error: 'invalid dmId'
-  //   };
-  // }
-  // This does not work. Should NOT use the dmId as an index. May cause errors
-  // -- Arden Sae-Ueng
   let dmIndex = 0;
   while (dmIndex < dataBase.dm.length && dataBase.dm[dmIndex].dmId !== dmId) {
     dmIndex++;
   }
   if (dmIndex === dataBase.dm.length) {
-    return { error: 'Invalid dmId' };
+    throw HTTPError(400, 'Bad request');
+  }
+  if (dataBase.dm[dmIndex].exists === false) {
+    throw HTTPError(400, 'Bad request');
   }
 
-  if (dataBase.dm[dmIndex].members.includes(user) === false) {
-    return { error: 'User not a member of the dm' };
-  }
-
-  if (dataBase.dm[dmIndex].members.includes(user) === true) {
-    const memberIndex = dataBase.dm[dmIndex].members.indexOf(user);
-    dataBase.dm[dmIndex].members.splice(memberIndex, 1);
+  if ((dataBase.dm[dmIndex].members.includes(user) === false)) {
+    throw HTTPError(403, 'NOT A MEMBER');
   }
   if (dataBase.dm[dmIndex].owner === user) {
     dataBase.dm[dmIndex].owner = -1;
   }
+  dataBase.dm[dmIndex].members.splice(user);
 
   setData(dataBase);
   return {};
