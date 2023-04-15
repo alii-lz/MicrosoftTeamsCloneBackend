@@ -209,6 +209,11 @@ app.post('/channel/addowner/v1', (req: Request, res: Response) => {
   res.json(channelAddOwnerV1(token, channelId, uId));
 });
 
+app.get('/notifications/get/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  res.json(notificationsGetV1(token));
+});
+
 app.post('/channel/leave/v1', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const channelId = parseInt(req.body.channelId as string);
@@ -228,10 +233,7 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 
-app.get('/notifications/get/v1', (req: Request, res: Response) => {
-  const token: string = req.header('token');
-  res.json(notificationsGetV1(token));
-});
+
 
 app.use(errorHandler());
 // start server

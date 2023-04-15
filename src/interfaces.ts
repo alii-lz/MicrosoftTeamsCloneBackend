@@ -66,6 +66,17 @@ export interface Data {
   indivNotification: indivNotification[],
 }
 
+export interface notification {
+  channelId: number,
+  dmId: number,
+  notificationMessage: string,
+}
+
+export interface indivNotification {
+  userId: number,
+  notification: notification[];
+}
+
 export interface error {
   error: string
 }
@@ -117,13 +128,3 @@ export interface messageIDReturn {
   messageId: number,
 }
 
-export interface notification {
-  channelId: number,
-  dmId: number,
-  notificationMessage: string,
-}
-
-export interface indivNotification {
-  userId: number,
-  notification: notification[];
-}

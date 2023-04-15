@@ -157,9 +157,9 @@ describe('channel/details/v3 success tests', () => {
   });
 });
 
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////////
+/// ///////////////////////////////////////////////////////////////////////////
 
 describe('channel/join/v3 failure tests', () => {
   beforeEach(() => {
@@ -176,7 +176,7 @@ describe('channel/join/v3 failure tests', () => {
     const channelId1_return = requestChannelsCreateV3(AuthUserId1.token, 'Quidditch League', true);
     ChannelId1 = channelId1_return.returnObj;
     const channelId2_return = requestChannelsCreateV3(AuthUserId2.token, 'The Weasleys', false);
-    ChannelId2 = channelId2_return.returnObj
+    ChannelId2 = channelId2_return.returnObj;
     const channelId3_return = requestChannelsCreateV3(AuthUserId3.token, 'Hermione Fan Club', true);
     ChannelId3 = channelId3_return.returnObj;
   });
@@ -246,7 +246,7 @@ describe('channel/join/v3 success tests', () => {
     const channelId1_return = requestChannelsCreateV3(AuthUserId1.token, 'Quidditch League', true);
     ChannelId1 = channelId1_return.returnObj;
     const channelId2_return = requestChannelsCreateV3(AuthUserId2.token, 'The Weasleys', false);
-    ChannelId2 = channelId2_return.returnObj
+    ChannelId2 = channelId2_return.returnObj;
     const channelId3_return = requestChannelsCreateV3(AuthUserId3.token, 'Hermione Fan Club', true);
     ChannelId3 = channelId3_return.returnObj;
   });
@@ -262,20 +262,6 @@ describe('channel/join/v3 success tests', () => {
     expect(result.status).toBe(OK);
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import request from 'sync-request';
 // import { port, url } from './config.json';
