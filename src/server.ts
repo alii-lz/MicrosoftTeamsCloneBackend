@@ -9,8 +9,8 @@ import {
   channelInviteV2, channelMessagesV2
 } from './channel';
 import { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 } from './dm';
-import { dmDetailsV1 } from './dmDetailsV1';
-import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
+import { dmDetailsV1 } from './dmDetailsV2';
+import { profileSetnameV2, profileSetemailV2, profileSethandleStrV2 }
   from './profileUsers';
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
@@ -123,7 +123,7 @@ app.post('/channel/join/v2', (req: Request, res: Response) => {
 });
 
 // dmDetailsV1
-app.get('/dm/details/v1', (req: Request, res: Response) => {
+app.get('/dm/details/v2', (req: Request, res: Response) => {
   const token: string = req.query.token as string; // const token = req.query.token as string;
   // const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
   const dmId: number = parseInt(req.query.dmId as string);
@@ -134,20 +134,20 @@ app.get('/dm/details/v1', (req: Request, res: Response) => {
 });
 
 // profileSetnameV1
-app.put('/user/profile/setname/v1', (req: Request, res: Response) => {
+app.put('/user/profile/setname/v2', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const nameFirst = req.body.nameFirst as string;
   const nameLast = req.body.nameLast as string;
-  const setName = profileSetnameV1(token, nameFirst, nameLast);
+  const setName = profileSetnameV2(token, nameFirst, nameLast);
 
   res.json(setName);
 });
 
 // profileSetemailV1
-app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
+app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const email = req.body.email as string;
-  const setEmail = profileSetemailV1(token, email);
+  const setEmail = profileSetemailV2(token, email);
 
   res.json(setEmail);
 });
@@ -156,7 +156,7 @@ app.put('/user/profile/setemail/v1', (req: Request, res: Response) => {
 app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const handleStr = req.body.handleStr as string;
-  const setHandle = profileSethandleStrV1(token, handleStr);
+  const setHandle = profileSethandleStrV2(token, handleStr);
 
   res.json(setHandle);
 });
