@@ -1,8 +1,8 @@
 import { requestSendlaterV1 } from './sendlaterRequestor.test'; 
-import { requestChannelsCreateV3 } from './channels.test';
-// import { requestDmCreate } from './dmRequesters';
+import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';
+import { requestChannelsCreateV3 } from './channelsRequestor';
 
 const OK = 200;
 const INPUT_ERROR = 400;

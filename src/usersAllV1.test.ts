@@ -73,7 +73,7 @@ describe('tests for /users/all/v1', () => {
       const data = JSON.parse(res.getBody() as string);
 
       expect(res.statusCode).toBe(403);
-      expect(data).toStrictEqual(ERROR);
+      expect(data.error).toStrictEqual(ERROR);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }

@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import { Data, timeout } from './interfaces';
 
@@ -8,6 +7,8 @@ const initialData: Data = {
   tokens: [],
   dm: [],
   messageDetails: [],
+  resetCodes: [],
+  indivNotification: []
 };
 
 const timeoutStore: timeout = {

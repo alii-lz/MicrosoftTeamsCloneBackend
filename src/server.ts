@@ -12,18 +12,29 @@ import { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 } from './dm';
 import { dmDetailsV2 } from './dmDetailsV2';
 import { profileSetnameV2, profileSetemailV2, profileSethandleStrV2 }
   from './profileUsers';
-import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
+import { authRegisterV1, authLoginV1, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV2, messageEditV2, messageRemoveV2, messageSenddmV2 } from './messageFunctions';
 import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
 import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV2 } from './channelRemoveOwner';
 import { usersAllV2 } from './usersAllV1';
-import { userProfileV2 } from './users';
+import { userProfileV3 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
-import { channelLeaveV1 } from './channelLeave';
 import { sendlaterV1 } from './sendlater';
 import { reactV1, unreactV1 } from './react';
+import { channelLeaveV2 } from './channelLeave';
+
+import { notificationsGetV1 } from './notificationGet';
+import { request } from 'http';
+
+import { searchV1 } from './search';
+
+import { messagePinV1 } from './messagePin';
+import { messageUnpinV1 } from './messageUnpin';
+
+import { adminUserRemoveV1 } from './adminUserRemoveV1';
+import { adminUserPermissionChangeV1 } from './adminUserPermissionChange';
 
 // Set up web app
 const app = express();
@@ -65,15 +76,36 @@ app.post('/auth/logout/v2', (req: Request, res: Response) => {
   return res.json(authLogoutV1(token));
 });
 
+app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
+  const email = req.body.email as string;
+  return res.json(authPasswordResetRequestV1(email));
+});
+
+app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
+  const resetCode = req.body.resetCode as string;
+  const newPassword = req.body.newPassword as string;
+  return res.json(authPasswordResetResetV1(resetCode, newPassword));
+});
+
+app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const uId: number = parseInt(req.query.uId as string);
+  return res.json(adminUserRemoveV1(token, uId));
+});
+
+app.post('/admin/userpermission/change/v1', (req: Request, res: Response) =>{
+  const token = req.header('token');
+  const { uId, permissionId } = req.body;
+  return res.json(adminUserPermissionChangeV1(token, uId, permissionId)); 
+});
+
 app.post('/channels/create/v3', (req: Request, res: Response) => {
-  
   const token = req.header('token');
   const { name, isPublic } = req.body;
   return res.json(channelsCreateV3(token, name, isPublic));
 });
 
 app.get('/channels/list/v3', (req: Request, res: Response) => {
-
   const token = req.header('token');
   return res.json(channelsListV3(token));
 });
@@ -153,7 +185,7 @@ app.post('/channel/invite/v3', (req: Request, res: Response) => {
 });
 
 app.get('/channel/messages/v3', (req: Request, res: Response) => {
-  //const token: string = req.query.token as string;
+  // const token: string = req.query.token as string;
   const token = req.header('token');
   const channelId: number = parseInt(req.query.channelId as string);
   const start: number = parseInt(req.query.start as string);
@@ -180,7 +212,7 @@ app.delete('/message/remove/v2', (req: Request, res: Response) => {
 });
 
 app.post('/message/senddm/v2', (req: Request, res: Response) => {
-  const {dmId, message } = req.body;
+  const { dmId, message } = req.body;
   const token = req.header('token');
   res.json(messageSenddmV2(token, dmId, message));
 });
@@ -204,23 +236,23 @@ app.get('/users/all/v2', (req: Request, res: Response) => {
   res.json(usersAllV2(token));
 });
 
-app.post('/channel/addowner/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/channel/addowner/v2', (req: Request, res: Response) => {
+	const token = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
   const uId = parseInt(req.body.uId as string);
-  res.json(channelAddOwnerV1(token, channelId, uId));
+  return res.json(channelAddOwnerV1(token, channelId, uId));
 });
 
-app.post('/channel/leave/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/channel/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
-  res.json(channelLeaveV1(token, channelId));
+  return res.json(channelLeaveV2(token, channelId));
 });
 
-app.get('/user/profile/v2', (req: Request, res: Response) => {
-  const token: string = req.query.token as string;
+app.get('/user/profile/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
   const uId = parseInt(req.query.uId as string);
-  res.json(userProfileV2(token, uId));
+  return res.json(userProfileV3(token, uId));
 });
 
 app.get('/dm/messages/v2', (req: Request, res: Response) => {
@@ -258,12 +290,45 @@ app.post('/message/sendlater/v1', (req: Request, res: Response) => {
   const timeSent = parseInt(timeSentString);
   return res.json(sendlaterV1(token, channelId, message, timeSent));
 });
+app.get('/search/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  const queryStr = req.query.queryStr as string;
+  res.json(searchV1(token, queryStr));
+});
 
-app.use(errorHandler());
+app.post('/message/pin/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = parseInt(req.body.messageId as string);
+  res.json(messagePinV1(token, messageId));
+});
+
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = parseInt(req.body.messageId as string);
+  res.json(messageUnpinV1(token, messageId));
+});
+
+// app.post('message/react/v1', (req: Request, res: Response) => {
+//   const { MessageId, reactId } = req.body;
+//   const token = req.header('token');
+//   res.json(reactV1(token, MessageId, reactId));
+// });
+
+// app.post('message/unreact/v1', (req: Request, res: Response) => {
+//   const { MessageId, reactId } = req.body;
+//   const token = req.header('token');
+//   res.json(unreactV1(token, MessageId, reactId));
+// });
+
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE
   console.log(`⚡️ Server started on port ${PORT} at ${HOST}`);
+});
+
+app.get('/notifications/get/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  res.json(notificationsGetV1(token));
 });
 
 // For coverage, handle Ctrl+C gracefully

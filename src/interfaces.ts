@@ -62,21 +62,35 @@ export interface dm {
   exists: boolean,
   messages: tempMessage[],
 }
-// DataStore
+export interface resetCode{
+  code: string,
+  valid: boolean,
+  uId: number
+}
+
 export interface Data {
   users: User[];
   channels: Channel[];
   tokens: Token[];
   messageDetails: messageDetails[];
   dm: dm[];
+  indivNotification: indivNotification[],
+  resetCodes: resetCode[]
 }
-
-// export interface timeoutId {
-//   timeoutId: number[];
-// }
 
 export interface timeout {
   timeout: NodeJS.Timeout[];
+}
+
+export interface notification {
+  channelId: number,
+  dmId: number,
+  notificationMessage: string,
+}
+
+export interface indivNotification {
+  userId: number,
+  notification: notification[];
 }
 
 export interface error {

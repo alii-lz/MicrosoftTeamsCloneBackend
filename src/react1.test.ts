@@ -1,11 +1,10 @@
 
 import { reactV1 } from './reactRequestor';
-import { requestChannelsCreateV3 } from './channels.test';
+import { requestChannelsCreateV3 } from './channelsRequestor';
 import { requestMessageSendV2, requestMessageSendDmV2 } from './messageFunctionRequestors'
 import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';
-import { messageSenddmV2 } from './messageFunctions';
 
 const OK = 200;
 const INPUT_ERROR = 400;

@@ -40,15 +40,15 @@ beforeEach(() => {
   );
   const channel1data = JSON.parse(channel1.getBody() as string);
   channel1Id = channel1data.channelId;
- 
+
   const user2data = requestAuthRegister('user2@hotmail.com', 'p123445P', 'ddddddd', 'Sddddd');
-  user2Token= user2data.returnObj.token;
+  user2Token = user2data.returnObj.token;
   user2Id = user2data.returnObj.authUserId;
 });
 
 describe('channelInvite', () => {
   test('Success case - channelInvite', () => {
-    const res = requestChannelInviteV3(user1Token,channel1Id,user2Id)
+    const res = requestChannelInviteV3(user1Token, channel1Id, user2Id);
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
   });

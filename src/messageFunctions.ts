@@ -1,8 +1,6 @@
 // Written by Arden Sae-Ueng
 import { getData, setData } from './dataStore';
 import { getId } from './other';
-const data = getData();
-setData(data);
 import { error, messageIDReturn, tempMessage } from './interfaces';
 import HTTPError from 'http-errors';
 
@@ -20,13 +18,13 @@ export function messageSendV2(token: string, channelId: number, message: string)
   const data = getData();
   // Check if empty values were entered.
   if (token === '' || channelId === null) {
-    throw HTTPError(400, 'Missing variables.' );
+    throw HTTPError(400, 'Missing variables.');
     // return { error: 'Missing variables.' };
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    throw HTTPError(403, 'Invalid token.' );
+    throw HTTPError(403, 'Invalid token.');
     // return { error: 'Invalid token.' };
   }
   // check if channelId is valid.
@@ -36,16 +34,16 @@ export function messageSendV2(token: string, channelId: number, message: string)
     channelIndex2++;
   }
   if (channelIndex2 === totalChannelCount) {
-    throw HTTPError(400, 'Invalid channelId.' );
+    throw HTTPError(400, 'Invalid channelId.');
     // return { error: 'Invalid channelId.' };
   }
   // check if message is over 1000 characters or if it is less than one.
   if (message.length >= 1000) {
-    throw HTTPError(400, 'Message too long.' );
+    throw HTTPError(400, 'Message too long.');
     // return { error: 'Message too long.' };
   }
   if (message === '') {
-    throw HTTPError(400, 'Message too short.' );
+    throw HTTPError(400, 'Message too short.');
     // return { error: 'Message too short.' };
   }
   // Check if user is part of this chanel.
@@ -56,10 +54,10 @@ export function messageSendV2(token: string, channelId: number, message: string)
     channelUserIndex++;
   }
   if (channelUserIndex === memberCount) {
-    throw HTTPError(403, 'User is not part of this channel.')
+    throw HTTPError(403, 'User is not part of this channel.');
     // return { error: 'User is not part of this channel.' };
   }
-  let reacts: any[] = [];
+  const reacts: any[] = [];
   // Save the message and create an ID.
   const messageId = data.messageDetails.length;
   const newMessage = {
@@ -69,7 +67,7 @@ export function messageSendV2(token: string, channelId: number, message: string)
     timeSent: Date.now(),
     isPinned: false,
     reacts: reacts,
-    };
+  };
   // This will make it easier to find and delete in the future
   const messgaeDetailEntry = {
     messageId: messageId,
@@ -114,13 +112,13 @@ export function messageEditV2(token: string, messageId: number, message: string)
   const data = getData();
   // Check if empty values were entered.
   if (token === '' || messageId === null) {
-    throw HTTPError(400, 'Missing variables.' );
+    throw HTTPError(400, 'Missing variables.');
     // return { error: 'Missing variables.' };
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    throw HTTPError(403, 'Invalid token.' );
+    throw HTTPError(403, 'Invalid token.');
     // return { error: 'Invalid token.' };
   }
   // check if messageId is valid.
@@ -131,13 +129,13 @@ export function messageEditV2(token: string, messageId: number, message: string)
     }
   }
   if (i === data.messageDetails.length) {
-    throw HTTPError(400, 'Invalid messageId.' );
+    throw HTTPError(400, 'Invalid messageId.');
     // return { error: 'Invalid messageId.' };
   }
 
   // check if message is over 1000 characters or if it is less than one.
   if (message.length >= 1000) {
-    throw HTTPError(400, 'Message too long.' );
+    throw HTTPError(400, 'Message too long.');
     // return { error: 'Message too long.' };
   }
   if (message === '') {
@@ -151,7 +149,7 @@ export function messageEditV2(token: string, messageId: number, message: string)
     userIndex++;
   }
   if (data.messageDetails[i].uId !== uId && data.users[userIndex].globalOwner === false) {
-    throw HTTPError(403, 'User is not a global owner. Cannot edit message.')
+    throw HTTPError(403, 'User is not a global owner. Cannot edit message.');
     // return { error: 'User is not a global owner. Cannot edit message.' };
   }
 
@@ -188,13 +186,13 @@ export function messageRemoveV2(token: string, messageId: number): any | error {
   const data = getData();
   // Check for missing variables
   if (token === '' || messageId === null) {
-    throw HTTPError(400, 'Missing variables.' );
+    throw HTTPError(400, 'Missing variables.');
     // return { error: 'Missing variables.' };
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    throw HTTPError(403, 'Invalid token.' );
+    throw HTTPError(403, 'Invalid token.');
 
     // return { error: 'Invalid token.' };
   }
@@ -208,7 +206,7 @@ export function messageRemoveV2(token: string, messageId: number): any | error {
     i++;
   }
   if (i === numberOfMessages) {
-    throw HTTPError(400, 'Invalid messageId.' );
+    throw HTTPError(400, 'Invalid messageId.');
     // return { error: 'Invalid messageId.' };
   }
 
@@ -217,7 +215,7 @@ export function messageRemoveV2(token: string, messageId: number): any | error {
     userIndex++;
   }
   if (data.messageDetails[i].uId !== uId && data.users[userIndex].globalOwner === false) {
-    throw HTTPError(403, 'User is not a global owner. Cannot remove message.')
+    throw HTTPError(403, 'User is not a global owner. Cannot remove message.');
     // return { error: 'User is not a global owner. Cannot remove message.' };
   }
   // Delete the message.
@@ -262,7 +260,7 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    throw HTTPError(403, 'Invalid token.' );
+    throw HTTPError(403, 'Invalid token.');
     // return { error: 'Invalid token.' };
   }
   // check if dmId is valid.
@@ -271,18 +269,17 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
     dmIndex++;
   }
   if (dmIndex === data.dm.length) {
-    throw HTTPError(400, 'Invalid dmId.' );
+    throw HTTPError(400, 'Invalid dmId.');
     // return { error: 'Invalid dmId.' };
   }
   // Check if message size is ok
   if (message.length >= 1000) {
-    throw HTTPError(400, 'Message too long.' );
+    throw HTTPError(400, 'Message too long.');
     // return { error: 'Message too long.' };
   }
   if (message === '') {
     // return { error: 'Message too short.' };
-    throw HTTPError(400, 'Message too short.' );
-
+    throw HTTPError(400, 'Message too short.');
   }
   // Check if user is part of dm
   let dmUserIndex = 0;
@@ -290,7 +287,7 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
     dmUserIndex++;
   }
   if (dmUserIndex === data.dm[dmIndex].members.length) {
-    throw HTTPError(403, 'User is not part of DM.')
+    throw HTTPError(403, 'User is not part of DM.');
 
     // return { error: 'User is not part of DM.' };
   }
@@ -302,7 +299,7 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
     messageId: messageId,
     uId: uId,
     message: message,
-    timeSent: Math.floor(time.getTime()/1000),
+    timeSent: Math.floor(time.getTime() / 1000),
     isPinned: false,
     reacts: []
   };

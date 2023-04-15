@@ -3,7 +3,7 @@ import request from 'sync-request';
 import config from './config.json';
 import { requestAuthRegister } from './authRequesters';
 import { requestChannelInviteV3, requestChannelMessagesV3 } from './channelRequestor';
-import { requestMessageSendV2, requestMessageRemoveV2 } from './messageFunctionRequestors'
+import { requestMessageSendV2, requestMessageRemoveV2 } from './messageFunctionRequestors';
 import {
   clearV1,
 } from './other';
@@ -30,7 +30,7 @@ let messageId2: number;
 beforeEach(() => {
   clearV1();
   const user1data = requestAuthRegister('user1@hotmail.com', 'p123445P', 'Arr', 'Sddd');
-  user1Token= user1data.returnObj.token;
+  user1Token = user1data.returnObj.token;
   user1Id = user1data.returnObj.authUserId;
   // make a channel
   const channel1 = request(
@@ -50,22 +50,22 @@ beforeEach(() => {
   channel1Id = channel1data.channelId;
 
   const user2data = requestAuthRegister('user2@hotmail.com', 'p123445P', 'ddddddd', 'Sddddd');
-  user2Token= user2data.returnObj.token;
+  user2Token = user2data.returnObj.token;
   user2Id = user2data.returnObj.authUserId;
 
-  const message0 = requestMessageSendV2(user1Token,channel1Id,'First message is in channel 1')
+  const message0 = requestMessageSendV2(user1Token, channel1Id, 'First message is in channel 1');
   messageId = message0.returnObj.messageId;
-  requestChannelInviteV3(user1Token, channel1Id, user2Id)
-  const nonOwnerComment = requestMessageSendV2(user2Token,channel1Id,'I am not an owner.')
+  requestChannelInviteV3(user1Token, channel1Id, user2Id);
+  const nonOwnerComment = requestMessageSendV2(user2Token, channel1Id, 'I am not an owner.');
   messageId2 = nonOwnerComment.returnObj.messageId;
 });
 
 describe('messageRemoveV1', () => {
   test('Success case - MessageRemove', () => {
-    const res = requestMessageRemoveV2(user1Token,messageId)
+    const res = requestMessageRemoveV2(user1Token, messageId);
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
-    const res2 = requestChannelMessagesV3(user1Token,channel1Id,0)
+    const res2 = requestChannelMessagesV3(user1Token, channel1Id, 0);
     expect(res2.returnObj).toStrictEqual({
       messages: [
         {
@@ -74,7 +74,7 @@ describe('messageRemoveV1', () => {
           timeSent: expect.any(Number),
           uId: 2,
           isPinned: false,
-          reacts:[],
+          reacts: [],
         }
       ],
       start: 0,
@@ -83,27 +83,27 @@ describe('messageRemoveV1', () => {
   });
 
   test('Invalid messageId', () => {
-    const res = requestMessageRemoveV2(user1Token,10)
+    const res = requestMessageRemoveV2(user1Token, 10);
     expect(res.status).toBe(400);
   });
 
   test('Invalid token', () => {
-    const res = requestMessageRemoveV2('asdasdss',messageId)
+    const res = requestMessageRemoveV2('asdasdss', messageId);
     expect(res.status).toBe(403);
   });
 
   test('valid messageId but authuserid not part of channel', () => {
-    const res = requestMessageRemoveV2(user2Token,messageId)
+    const res = requestMessageRemoveV2(user2Token, messageId);
     expect(res.status).toBe(403);
   });
 });
 
 describe('Last test', () => {
   test('Global Owner deleting other messages', () => {
-    const res = requestMessageRemoveV2(user1Token,messageId2)
+    const res = requestMessageRemoveV2(user1Token, messageId2);
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
-    const res2 = requestChannelMessagesV3(user1Token,channel1Id,0)
+    const res2 = requestChannelMessagesV3(user1Token, channel1Id, 0);
     expect(res2.returnObj).toStrictEqual({
       messages: [{
         messageId: 0,
