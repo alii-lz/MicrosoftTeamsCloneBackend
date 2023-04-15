@@ -12,7 +12,7 @@ beforeEach(() => {
   user = requestAuthRegister('matthew@gmail.com', 'validPassword', 'matthew', 'ieong').returnObj;
   user2 = requestAuthRegister('ali@gmail.com', 'validPassword2', 'ali', 'amend').returnObj;
 });
-describe('success tests for /dm/create/v1', () => {
+describe('success tests for /dm/create/v2', () => {
   test('success case/ return object/ non-empty uids ', () => {
     const dmCreate = requestDmCreate(user.token, [user2.authUserId]);
 
@@ -91,7 +91,7 @@ describe('success tests for /dm/create/v1', () => {
   });
 });
 
-describe('failure tests for /dm/create/v1', () => {
+describe('failure tests for /dm/create/v2', () => {
   let user: any;
   let user2: any;
 
@@ -102,28 +102,40 @@ describe('failure tests for /dm/create/v1', () => {
   });
 
   test('redundant uIds', () => {
-    const user3 = requestAuthRegister('arden@gmail.com', 'validpass3', 'arden', 'surname').returnObj;
-    const dmCreate = requestDmCreate(user.token, [user2.authUserId, user3.authUserId, user2.authUserId]);
-    expect(dmCreate.returnObj).toStrictEqual(ERROR);
-    expect(dmCreate.status).toStrictEqual(OK);
+    try {
+      const user3 = requestAuthRegister('arden@gmail.com', 'validpass3', 'arden', 'surname').returnObj;
+      const dmCreate = requestDmCreate(user.token, [user2.authUserId, user3.authUserId, user2.authUserId]);
+      expect(dmCreate.returnObj.error).toStrictEqual(ERROR);
+      expect(dmCreate.status).toStrictEqual(400);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 
   test('invalid uid in uids', () => {
-    const invalidUid = user2.authUserId + user.authUserId;
-    const dmCreate = requestDmCreate(user.token, [user2.authUserId, invalidUid]);
-    expect(dmCreate.returnObj).toStrictEqual(ERROR);
-    expect(dmCreate.status).toStrictEqual(OK);
+    try {
+      const invalidUid = user2.authUserId + user.authUserId;
+      const dmCreate = requestDmCreate(user.token, [user2.authUserId, invalidUid]);
+      expect(dmCreate.returnObj.error).toStrictEqual(ERROR);
+      expect(dmCreate.status).toStrictEqual(400);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 
   test('token is invalid', () => {
-    const invalidToken = user2.token + user.token;
-    const dmCreate = requestDmCreate(invalidToken, [user2.authUserId]);
-    expect(dmCreate.returnObj).toStrictEqual(ERROR);
-    expect(dmCreate.status).toStrictEqual(OK);
+    try {
+      const invalidToken = user2.token + user.token;
+      const dmCreate = requestDmCreate(invalidToken, [user2.authUserId]);
+      expect(dmCreate.returnObj.error).toStrictEqual(ERROR);
+      expect(dmCreate.status).toStrictEqual(403);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 });
 
-describe('tests for /dm/list/v1', () => {
+describe('tests for /dm/list/v2', () => {
   let user: any;
   let user2: any;
   let user3: any;
@@ -165,14 +177,18 @@ describe('tests for /dm/list/v1', () => {
   });
 
   test('failure case/ token is invalid', () => {
-    const invalidToken = user.token.repeat(2);
-    const dmList = requestDmList(invalidToken);
-    expect(dmList.returnObj).toStrictEqual(ERROR);
-    expect(dmList.status).toStrictEqual(OK);
+    try {
+      const invalidToken = user.token.repeat(2);
+      const dmList = requestDmList(invalidToken);
+      expect(dmList.returnObj.error).toStrictEqual(ERROR);
+      expect(dmList.status).toStrictEqual(403);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 });
 
-describe('tests for /dm/remove/v1', () => {
+describe('tests for /dm/remove/v2', () => {
   let user: any;
   let user2: any;
   let dm: any;
@@ -207,30 +223,46 @@ describe('tests for /dm/remove/v1', () => {
     expect(dmRemove.status).toStrictEqual(OK);
   });
   test('failure case/member not owner', () => {
+    try {
     const dmRemove = requestDmRemove(user2.token, dm.dmId);
-    expect(dmRemove.returnObj).toStrictEqual(ERROR);
-    expect(dmRemove.status).toStrictEqual(OK);
+    expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
+    expect(dmRemove.status).toStrictEqual(403);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 
   test('failure case/ dmId does not refer to a valid dm', () => {
+    try {
     const invalidDmId = dm.dmId + 1;
     const dmRemove = requestDmRemove(user.token, invalidDmId);
-    expect(dmRemove.returnObj).toStrictEqual(ERROR);
-    expect(dmRemove.status).toStrictEqual(OK);
+    expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
+    expect(dmRemove.status).toStrictEqual(400);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 
   test('failure/ token is invalid', () => {
+    try {
     const invalidToken = user.token + user2.token;
     const dmRemove = requestDmRemove(invalidToken, dm.dmId);
-    expect(dmRemove.returnObj).toStrictEqual(ERROR);
-    expect(dmRemove.status).toStrictEqual(OK);
+    expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
+    expect(dmRemove.status).toStrictEqual(403);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 
   test('dmId is valid and the authorised user is no longer in the DM', () => {
+    try {
     requestDmLeave(user.token, dm.dmId);
     const dmRemove = requestDmRemove(user.token, dm.dmId);
-    expect(dmRemove.returnObj).toStrictEqual(ERROR);
-    expect(dmRemove.status).toStrictEqual(OK);
+    expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
+    expect(dmRemove.status).toStrictEqual(403);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 });
 
