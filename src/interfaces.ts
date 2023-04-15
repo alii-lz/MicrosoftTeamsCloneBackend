@@ -62,8 +62,8 @@ export interface Data {
   channels: Channel[];
   tokens: Token[];
   messageDetails: messageDetails[],
-  dm: dm[]
-
+  dm: dm[],
+  indivNotification: indivNotification[],
 }
 
 export interface error {
@@ -115,4 +115,15 @@ export interface channels {
 
 export interface messageIDReturn {
   messageId: number,
+}
+
+export interface notification {
+  channelId: number,
+  dmId: number,
+  notificationMessage: string,
+}
+
+export interface indivNotification {
+  userId: number,
+  notification: notification[];
 }

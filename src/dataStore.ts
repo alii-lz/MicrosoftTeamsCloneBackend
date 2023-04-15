@@ -8,6 +8,7 @@ const initialData: Data = {
   tokens: [],
   dm: [],
   messageDetails: [],
+  indivNotification: []
 };
 
 function getData(): Data {

@@ -14,7 +14,7 @@ let user2Token: string;
 let channel1Id: number;
 
 beforeEach(() => {
-  resetData()
+  resetData();
   clearV1();
   const user1data = requestAuthRegister('user1@hotmail.com', 'p123445P', 'Arr', 'Sddd');
   user1Token = user1data.returnObj.token;
@@ -36,12 +36,12 @@ beforeEach(() => {
   channel1Id = channel1data.channelId;
   // make a user2
   const user2data = requestAuthRegister('user2@hotmail.com', 'p123445P', 'ddddddd', 'Sddddd');
-  user2Token= user2data.returnObj.token;
+  user2Token = user2data.returnObj.token;
 });
 
 describe('channelMessages', () => {
   test('Success case - channelMessages', () => {
-    const res = requestChannelMessagesV3(user1Token,channel1Id,0)
+    const res = requestChannelMessagesV3(user1Token, channel1Id, 0);
     expect(res.returnObj).toStrictEqual({
       messages: [
       ],
@@ -52,19 +52,19 @@ describe('channelMessages', () => {
   });
 
   test('Invalid ChannelId', () => {
-    const res = requestChannelMessagesV3(user1Token,channel1Id+1,0)
+    const res = requestChannelMessagesV3(user1Token, channel1Id + 1, 0);
     expect(res.status).toBe(400);
   });
   test('start too big', () => {
-    const res = requestChannelMessagesV3(user1Token,channel1Id,300000)
+    const res = requestChannelMessagesV3(user1Token, channel1Id, 300000);
     expect(res.status).toBe(400);
   });
   test('Invalid user', () => {
-    const res = requestChannelMessagesV3(user2Token,channel1Id,0)
+    const res = requestChannelMessagesV3(user2Token, channel1Id, 0);
     expect(res.status).toBe(403);
   });
   test('Invalid token', () => {
-    const res = requestChannelMessagesV3('abcdefg',channel1Id,0)
+    const res = requestChannelMessagesV3('abcdefg', channel1Id, 0);
     expect(res.status).toBe(403);
   });
 });

@@ -1,9 +1,10 @@
 import { getData, setData } from './dataStore';
 import { getId } from './other';
-import { error, channelDetails, channelMessages, user } from './interfaces';
+import { error, channelDetails, channelMessages, user, notification, indivNotification } from './interfaces';
 import HTTPError from 'http-errors';
 
 import { getUser } from './getUser';
+import { notificationsGetV1 } from './notificationGet';
 
 export function channelDetailsV3(token: string, channelId: number): error | channelDetails {
   const dataStore = getData();
@@ -303,6 +304,42 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
     i++;
   }
   data.channels[i].allMembers.push(newUser);
+
+  // Making notification //
+  // Find handle for authUserId
+  let authUserIndex = 0;
+  while (data.users[authUserIndex].uId != authUserId) {
+    authUserIndex++;
+  }
+  // Find channel name
+  const channelName: string = data.channels[i].name;
+  const handleString: string = data.users[authUserIndex].handleStr;
+  const newNotification: notification = {
+    channelId: channelId,
+    dmId: -1,
+    notificationMessage: `${handleString} added you to ${channelName}`
+  };
+  // If first person to have notifications ever, need to make array.
+  if (data.indivNotification.length === 0) {
+    data.indivNotification = [{
+      userId: uId,
+      notification: [newNotification]
+    }];
+  } else {
+    let notiIndex = 0;
+    while (notiIndex < data.indivNotification.length && data.indivNotification[notiIndex].userId !== uId) {
+      notiIndex++;
+    }
+    if (notiIndex === data.indivNotification.length) {
+      data.indivNotification[notiIndex].userId = uId;
+      data.indivNotification[notiIndex].notification = [newNotification];
+      // This is this user's first notification.
+    }
+    // User already has notifications.
+    else {
+      data.indivNotification[notiIndex].notification.unshift(newNotification);
+    }
+  }
   setData(data);
 
   return {};
@@ -335,7 +372,6 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   for (let j = 0; j < data.channels.length; j++) {
     if (data.channels[j].channelId === channelId) {
       foundChannel = true;
-      
     }
   }
   if (foundChannel === false) {
@@ -445,7 +481,7 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
 export function channelInviteV3(token: string, channelId: number, uId: number): error | object {
   const id = getId(token);
   if (id === -1) {
-    throw HTTPError(403, 'Invalid token.' );
+    throw HTTPError(403, 'Invalid token.');
     // return { error: 'Invalid token.' };
   }
   return channelInviteV1(id, channelId, uId);
@@ -454,7 +490,7 @@ export function channelInviteV3(token: string, channelId: number, uId: number): 
 export function channelMessagesV3(token: string, channelId: number, start: number): error | channelMessages {
   const id = getId(token);
   if (id === -1) {
-    throw HTTPError(403, 'Invalid token.' );
+    throw HTTPError(403, 'Invalid token.');
     // return { error: 'Invalid token.' };
   }
   return channelMessagesV1(id, channelId, start);
