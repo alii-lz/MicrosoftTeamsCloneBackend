@@ -2,49 +2,52 @@ import request from 'sync-request';
 
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
-
-const ERROR = { error: expect.any(String) };
-
-describe('Incorrect testCases', () => {
-  // let AuthUserId1: {token: string, authUserId: number};
-  // let AuthUserId2: {token: string, authUserId: number};
-
-  request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
-  const res1 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'harry.potter@gmail.com',
-        password: 'quidditch',
-        nameFirst: 'Harry',
-        nameLast: 'Potter'
-      }
+// let AuthUserId1: { token: string, authUserId: number };
+// let AuthUserId2: { token: string, authUserId: number };
+request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
+const res1 = request(
+  'POST',
+  SERVER_URL + '/auth/register/v2',
+  {
+    json: {
+      email: 'harry.potter@gmail.com',
+      password: 'quidditch',
+      nameFirst: 'Harry',
+      nameLast: 'Potter'
     }
-  );
-  const AuthUserId1 = JSON.parse(res1.getBody() as string);
+  }
+);
+const AuthUserId1 = JSON.parse(res1.getBody() as string);
+const userTok = AuthUserId1.token;
+const res2 = request(
+  'POST',
+  SERVER_URL + '/auth/register/v2',
+  {
+    json: {
+      email: 'ron.weasley@gmail.com',
+      password: 'flying car',
+      nameFirst: 'Ron',
+      nameLast: 'Weasley'
+    }
+  }
+);
+const AuthUserId2 = JSON.parse(res2.getBody() as string);
 
-  // const res2 = request(
-  //   'POST',
-  //   SERVER_URL + '/auth/register/v2',
-  //   {
-  //     json: {
-  //       email: 'ron.weasley@gmail.com',
-  //       password: 'flying car',
-  //       nameFirst: 'Ron',
-  //       nameLast: 'Weasley'
-  //     }
-  //   }
-  // );
-  // const AuthUserId2 = JSON.parse(res2.getBody() as string);
-
-  /// ///////////////////////////////////////////////////////
-  /// ///////////////////////////////////////////////////////
-  /// ///////////////////////////////////////////////////////
+request(
+  'PUT',
+  SERVER_URL + '/user/profile/sethandle/v1',
+  {
+    json: {
+      token: AuthUserId2.token,
+      handleStr: 'ronweasley',
+    }
+  }
+);
+describe('Incorrect testCases', () => {
   test('undefined token', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
           token: undefined,
@@ -53,13 +56,13 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'Incorrect Arugment use' });
   });
 
   test('undefined handlestr', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -68,13 +71,13 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'Incorrect Arugment use' });
   });
 
   test('< 3 characters', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -83,13 +86,13 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'handleStr must be between 3 and 20 characters' });
   });
 
   test('> 20 characters', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -98,13 +101,13 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'handleStr must be between 3 and 20 characters' });
   });
 
   test('not alphanumeric', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -113,80 +116,45 @@ describe('Incorrect testCases', () => {
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'handleStr must be alphaNumeric' });
   });
 
   test('not lowercase', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
-          token: AuthUserId1.token,
-          handleStr: 'HarryPotter',
+          token: userTok,
+          handleStr: 'NOTALLOWED',
         }
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'Only lower case allowed' });
   });
 
   test('handleStr is already taken', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
-          token: AuthUserId1.token,
+          token: userTok,
           handleStr: 'ronweasley',
         }
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'handleStr has already been taken' });
   });
 });
 
 describe('Correct testCases', () => {
-  // let AuthUserId1: {token: string, authUserId: number};
-  // let AuthUserId2: {token: string, authUserId: number};
-
-  request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
-  const res1 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'harry.potter@gmail.com',
-        password: 'quidditch',
-        nameFirst: 'Harry',
-        nameLast: 'Potter'
-      }
-    }
-  );
-  const AuthUserId1 = JSON.parse(res1.getBody() as string);
-
-  // const res2 = request(
-  //   'POST',
-  //   SERVER_URL + '/auth/register/v2',
-  //   {
-  //     json: {
-  //       email: 'ron.weasley@gmail.com',
-  //       password: 'flying car',
-  //       nameFirst: 'Ron',
-  //       nameLast: 'Weasley'
-  //     }
-  //   }
-  // );
-  // const AuthUserId2 = JSON.parse(res2.getBody() as string);
-
-  /// ///////////////////////////////////////////////////////
-  /// ///////////////////////////////////////////////////////
-  /// ///////////////////////////////////////////////////////
   test('Success case 1', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
           token: AuthUserId1.token,
@@ -201,7 +169,7 @@ describe('Correct testCases', () => {
   test('Success case 2', () => {
     const res = request(
       'PUT',
-      SERVER_URL + '/user/profile/setname/v1',
+      SERVER_URL + '/user/profile/sethandle/v1',
       {
         json: {
           token: AuthUserId1.token,

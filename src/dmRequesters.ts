@@ -8,8 +8,8 @@ export function requestDmCreate(token: string, uIds: number[]) {
     SERVER_URL + '/dm/create/v1',
     {
       json: {
-        token,
-        uIds
+        token: token,
+        uIds: uIds,
       }
     }
   );
@@ -22,7 +22,7 @@ export function requestDmList(token: string) {
     SERVER_URL + '/dm/list/v1',
     {
       qs: {
-        token
+        token: token,
       }
     }
   );
@@ -35,8 +35,8 @@ export function requestDmRemove(token: string, dmId: number) {
     SERVER_URL + '/dm/remove/v1',
     {
       qs: {
-        token,
-        dmId
+        token: token,
+        dmId: dmId,
       }
     }
   );
@@ -49,8 +49,8 @@ export function requestDmDetails(token: string, dmId: number) {
     SERVER_URL + '/dm/details/v1',
     {
       qs: {
-        token,
-        dmId
+        token: token,
+        dmId: dmId,
       }
     }
   );
@@ -59,11 +59,13 @@ export function requestDmDetails(token: string, dmId: number) {
 export function requestDmLeave(token: string, dmId: number) {
   const res = request(
     'POST',
-    SERVER_URL + '/dm/leave/v1',
+    SERVER_URL + '/dm/leave/v2',
     {
       json: {
-        token,
-        dmId
+        dmId: dmId,
+      },
+      headers: {
+        token: token,
       }
     }
   );

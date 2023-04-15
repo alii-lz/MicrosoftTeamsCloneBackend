@@ -2,6 +2,7 @@
 import { error, Data } from './interfaces';
 import { getId } from './other';
 import { getData, setData } from './dataStore';
+import HTTPError from 'http-errors';
 
 function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   const creatorUId: number = getId(token);
@@ -29,16 +30,18 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   // Join the sorted handles with commas and spaces
   const name: string = handles.join(', ');
   const dmId: number = database.dm.length + 1;
+  uIds.push(creatorUId);
   database.dm.push({
     dmId: dmId,
     name: name,
     members: uIds,
     owner: creatorUId,
-    exists: true
+    exists: true,
+    messages: [],
   });
   setData(database);
   return {
-    dmId: dmId
+    dmId: dmId,
   };
 }
 
@@ -102,37 +105,31 @@ function dmRemove(token: string, dmId: number) {
 function dmLeave(token: string, dmId: number) {
   const user = getId(token);
   if (user === -1) {
-    return {
-      error: 'Invalid token'
-    };
+    throw HTTPError(403, 'Invalid token');
   }
   const dataBase: Data = getData();
-  if (dmId > dataBase.dm.length) {
-    return {
-      error: 'invalid dmId'
-    };
-  }
-  const dm = dataBase.dm[dmId - 1];
-  if (!(dm.exists)) {
-    return {
-      error: 'Invalid dmId'
-    };
-  }
-  if (!dm.members.includes(user) && dm.owner !== user) {
-    return {
-      error: 'User not a member of the dm'
-    };
-  }
-  if (dm.members.includes(user)) {
-    const index = dataBase.dm[dmId - 1].members.indexOf(user);
-    dataBase.dm[dmId - 1].members.slice(index);
-  } else {
-    dataBase.dm[dmId - 1].owner = -1;
-  }
-  setData(dataBase);
-  return {
 
-  };
+  let dmIndex = 0;
+  while (dmIndex < dataBase.dm.length && dataBase.dm[dmIndex].dmId !== dmId) {
+    dmIndex++;
+  }
+  if (dmIndex === dataBase.dm.length) {
+    throw HTTPError(400, 'Bad request');
+  }
+  if (dataBase.dm[dmIndex].exists === false) {
+    throw HTTPError(400, 'Bad request');
+  }
+
+  if ((dataBase.dm[dmIndex].members.includes(user) === false)) {
+    throw HTTPError(403, 'NOT A MEMBER');
+  }
+  if (dataBase.dm[dmIndex].owner === user) {
+    dataBase.dm[dmIndex].owner = -1;
+  }
+  dataBase.dm[dmIndex].members.splice(user);
+
+  setData(dataBase);
+  return {};
 }
 function dmMessagesV1 (token: string, dmId: number, start: number) {
   console.log('missing function <><><><><>><><><><><>');

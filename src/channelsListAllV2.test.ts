@@ -3,6 +3,8 @@ import request from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
+const INPUT_ERROR = 400;
+const AUTHORIZATION_ERROR = 403;
 
 const ERROR = { error: expect.any(String) };
 
@@ -10,7 +12,7 @@ beforeEach(() => {
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 });
 
-describe('tests for /channels/listall/v2', () => {
+describe('tests for /channels/listall/v3', () => {
   let user: {token: string, authUserId: number};
   let channel1: {channelId: number};
   let channel2: {channelId: number};
@@ -50,11 +52,10 @@ describe('tests for /channels/listall/v2', () => {
   });
 
   test('success case', () => {
-    const res = request('GET', SERVER_URL + '/channels/listall/v2', { qs: { token: user.token } });
+    const res = request('GET', SERVER_URL + '/channels/listall/v3', { headers: { token: user.token } });
 
     const data = JSON.parse(res.getBody() as string);
 
-    expect(res.statusCode).toBe(OK);
     expect(data).toEqual({
       channels: [
         {
@@ -67,14 +68,19 @@ describe('tests for /channels/listall/v2', () => {
         }
       ],
     });
+    expect(res.statusCode).toBe(OK);
   });
 
   test('invalid token', () => {
-    const res = request('GET', SERVER_URL + '/channels/listall/v2', { qs: { token: 'RANDOM' } });
+    try {
+      const res = request('GET', SERVER_URL + '/channels/listall/v3', { headers: { token: 'RANDOM' } });
 
-    const data = JSON.parse(res.getBody() as string);
+      const data = JSON.parse(res.getBody() as string);
 
-    expect(res.statusCode).toBe(OK);
-    expect(data).toEqual(ERROR);
+      expect(data).toEqual(ERROR);
+      expect(res.statusCode).toBe(AUTHORIZATION_ERROR);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 });

@@ -49,12 +49,14 @@ export interface dm {
   exists: boolean,
   messages: tempMessage[],
 }
+
 export interface Data {
   users: User[];
   channels: Channel[];
   tokens: Token[];
   messageDetails: messageDetails[],
   dm: dm[]
+
 }
 
 export interface error {
@@ -86,7 +88,7 @@ export interface channelDetailsWithMessages {
 }
 
 export interface channelMessages {
-  messages: any[],
+  messages: tempMessage[],
   start: number,
   end: number
 }
@@ -104,6 +106,6 @@ export interface channels {
   channels: channelsTemp[]
 }
 
-export interface emptyObject {
-  
+export interface messageIDReturn {
+  messageId: number,
 }

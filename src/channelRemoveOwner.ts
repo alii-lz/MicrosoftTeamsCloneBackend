@@ -37,12 +37,61 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
   }
 
   // return error when uId refers to a user who is not an owner of the channel
-  if (data.channels.find(i => i.channelId === channelId).owners.find((j: { uId: number; }) => j.uId === uId) === undefined) {
-    return ({ error: 'uId refers to a user who is not an owner of the channel.' });
+  // Rewriting this -- Arden Sae-Ueng
+  // if (data.channels.find(i => i.channelId === channelId).owners.find((j: { uId: number; }) => j.uId === uId) === undefined) {
+  //   return ({ error: 'uId refers to a user who is not an owner of the channel.' });
+  // }
+  let channelIndex: number;
+  // const id: number = getId(token);
+  // let found = false;
+  // check if channelId refers to a valid channel
+
+  for (let i = 0; i < data.channels.length; i++) {
+    if (data.channels[i].channelId === channelId) {
+      channelIndex = i;
+      // found = true;
+      break;
+    }
+  }
+  let mainUserIndex = 0;
+  // let userToAddIndex = 0;
+  let foundMainUser = false;
+  let foundUserToAdd = false;
+  for (let i = 0; i < data.users.length; i++) {
+    if (data.users[i].uId === id) {
+      foundMainUser = true;
+      mainUserIndex = i;
+    }
+    if (data.users[i].uId === uId) {
+      // userToAddIndex = i;
+      foundUserToAdd = true;
+    }
+  }
+  if (foundMainUser === false || foundUserToAdd === false) {
+    return { error: 'Users missing' };
+  }
+  let permission = false;
+  for (let i = 0; i < data.channels[channelIndex].owners.length; i++) {
+    if (data.channels[channelIndex].owners[i].uId === id) {
+      mainUserIndex = i;
+      permission = true;
+    }
+  }
+
+  if (permission === false) {
+    return { error: 'authorised user does not have owner permissions in the channel' };
+  }
+
+  if (data.users[mainUserIndex].globalOwner === false) {
+    return { error: 'authorised user does not have owner permissions in the channel' };
   }
 
   // return error when uId refers to the only owner of the channel
-  if (data.channels.find(i => i.channelId === channelId).owners.length === 1) {
+  // Rewritten -- Arden Sae-Ueng Reason: This does not seem to work. Success test fails on this line.
+  // if (data.channels.find(i => i.channelId === channelId).owners.length === 1) {
+  //   return ({ error: 'uId refers to the only owner of the channel.' });
+  // }
+  if (data.channels[channelIndex].owners.length === 1 && data.channels[channelIndex].owners[0].uId === uId) {
     return ({ error: 'uId refers to the only owner of the channel.' });
   }
 
@@ -50,16 +99,23 @@ export function channelRemoveOwnerV1(token: string, channelId: number, uId: numb
   if (data.channels.find(i => i.channelId === channelId).owners.find((j: { uId: number; }) => j.uId === id) === undefined) {
     return ({ error: 'channelId is valid and the authorised user does not have owner permissions in the channel.' });
   }
-
+  let j = 0;
+  while (j < data.channels[channelIndex].owners.length && data.channels[channelIndex].owners[j].uId !== uId) {
+    j++;
+  }
+  console.log(data.channels[channelIndex].owners);
+  if (j === data.channels[channelIndex].owners.length) {
+    return ({ error: 'uId is not an owner' });
+  }
   // remove uId from the owners list of the channel
-  let channelIndex = 0;
+  // let channelIndex = 0;
   let ownerIndex = 0;
 
-  while (data.channels[channelIndex].channelId !== channelId) {
-    channelIndex++;
-  }
+  // while (data.channels[channelIndex].channelId !== channelId) {
+  //   channelIndex++;
+  // }
 
-  while (data.channels[channelIndex].owners[ownerIndex].uId !== uId) {
+  while (ownerIndex < data.channels[channelIndex].owners.length && data.channels[channelIndex].owners[ownerIndex].uId !== uId) {
     ownerIndex++;
   }
 
