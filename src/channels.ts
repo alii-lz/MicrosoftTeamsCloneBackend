@@ -6,6 +6,8 @@ import { Channel, Data, user } from './interfaces';
 import  HTTPError  from 'http-errors';
 
 
+import HTTPError from 'http-errors';
+
 interface error {
   error: string;
 }
@@ -196,11 +198,12 @@ function channelsListAllV1(authUserId: number | string): error | {channels: chan
  *
  * @throws {error} - returns an error message if the token is invalid
 */
-export function channelsListAllV2 (token : string) : error | {channels: channel[]} {
+export function channelsListAllV3 (token : string) : error | {channels: channel[]} {
   const id = getId(token);
   // error checking for if token is valid
   if (id === -1) {
-    return { error: 'invalid token' };
+    // return { error: 'invalid token' };
+    throw HTTPError(403, 'invalid token');
   }
 
   return channelsListAllV1(id);
