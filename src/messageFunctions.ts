@@ -3,7 +3,7 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 const data = getData();
 setData(data);
-import { error, messageIDReturn } from './interfaces';
+import { error, messageIDReturn, tempMessage } from './interfaces';
 
 /**
   * messageSendV1 sends a messsage to a channel. The message is sent by the uId who owns the token.
@@ -269,11 +269,14 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
   // sendDm and give it a number
   // Make an Id for the message.
   const messageId = data.messageDetails.length;
-  const newMessage = {
+  const time = new Date();
+  const newMessage: tempMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
-    timeSent: Date.now(),
+    timeSent: Math.floor(time.getTime()/1000),
+    isPinned: false,
+    reacts: []
   };
   // This will make it easier to find and delete in the future
   const messgaeDetailEntry = {
