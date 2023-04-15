@@ -3,7 +3,6 @@ import request from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
-const INPUT_ERROR = 400;
 const AUTHORIZATION_ERROR = 403;
 
 const ERROR = { error: expect.any(String) };
