@@ -29,16 +29,18 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   // Join the sorted handles with commas and spaces
   const name: string = handles.join(', ');
   const dmId: number = database.dm.length + 1;
+  uIds.push(creatorUId);
   database.dm.push({
     dmId: dmId,
     name: name,
     members: uIds,
     owner: creatorUId,
-    exists: true
+    exists: true,
+    messages: [],
   });
   setData(database);
   return {
-    dmId: dmId
+    dmId: dmId,
   };
 }
 
@@ -107,32 +109,36 @@ function dmLeave(token: string, dmId: number) {
     };
   }
   const dataBase: Data = getData();
-  if (dmId > dataBase.dm.length) {
-    return {
-      error: 'invalid dmId'
-    };
-  }
-  const dm = dataBase.dm[dmId - 1];
-  if (!(dm.exists)) {
-    return {
-      error: 'Invalid dmId'
-    };
-  }
-  if (!dm.members.includes(user) && dm.owner !== user) {
-    return {
-      error: 'User not a member of the dm'
-    };
-  }
-  if (dm.members.includes(user)) {
-    const index = dataBase.dm[dmId - 1].members.indexOf(user);
-    dataBase.dm[dmId - 1].members.slice(index);
-  } else {
-    dataBase.dm[dmId - 1].owner = -1;
-  }
-  setData(dataBase);
-  return {
 
-  };
+  // if (dmId > dataBase.dm.length) {
+  //   return {
+  //     error: 'invalid dmId'
+  //   };
+  // }
+  // This does not work. Should NOT use the dmId as an index. May cause errors
+  // -- Arden Sae-Ueng
+  let dmIndex = 0;
+  while (dmIndex < dataBase.dm.length && dataBase.dm[dmIndex].dmId !== dmId) {
+    dmIndex++;
+  }
+  if (dmIndex === dataBase.dm.length) {
+    return { error: 'Invalid dmId' };
+  }
+
+  if (dataBase.dm[dmIndex].members.includes(user) === false) {
+    return { error: 'User not a member of the dm' };
+  }
+
+  if (dataBase.dm[dmIndex].members.includes(user) === true) {
+    const memberIndex = dataBase.dm[dmIndex].members.indexOf(user);
+    dataBase.dm[dmIndex].members.splice(memberIndex, 1);
+  }
+  if (dataBase.dm[dmIndex].owner === user) {
+    dataBase.dm[dmIndex].owner = -1;
+  }
+
+  setData(dataBase);
+  return {};
 }
 function dmMessagesV1 (token: string, dmId: number, start: number) {
   console.log('missing function <><><><><>><><><><><>');

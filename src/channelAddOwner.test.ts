@@ -60,7 +60,7 @@ describe('Tests for /channel/addowner/v1', () => {
         json: {
           token: user.token,
           channelId: channel.channelId,
-          uId: userToAdd.authUserId
+          uId: userToAdd.authUserId,
         }
       }
     );
@@ -160,7 +160,7 @@ describe('Tests for /channel/addowner/v1', () => {
     const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
 
       json: {
-        token: user.token,
+        token: userToAdd.token,
         channelId: channel.channelId,
         uId: userToAdd.authUserId
       }

@@ -3,26 +3,23 @@ import request from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 
-const ERROR = { error: expect.any(String) };
+request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
+const res1 = request(
+  'POST',
+  SERVER_URL + '/auth/register/v2',
+  {
+    json: {
+      email: 'harry.potter@gmail.com',
+      password: 'quidditch',
+      nameFirst: 'Harry',
+      nameLast: 'Potter',
+    }
+  }
+);
+const AuthUserId1 = JSON.parse(res1.getBody() as string);
 
 describe('Incorrect testCases', () => {
   // let AuthUserId1: {token: string, authUserId: number};
-
-  request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
-  const res1 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v2',
-    {
-      json: {
-        email: 'harry.potter@gmail.com',
-        password: 'quidditch',
-        nameFirst: 'Harry',
-        nameLast: 'Potter'
-      }
-    }
-  );
-  const AuthUserId1 = JSON.parse(res1.getBody() as string);
-
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////
   /// ///////////////////////////////////////////////////////
@@ -32,14 +29,14 @@ describe('Incorrect testCases', () => {
       SERVER_URL + '/user/profile/setname/v1',
       {
         json: {
-          token: undefined,
+          token: null,
           nameFisrt: 'Harvey',
           nameLast: 'Plotter',
         }
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'Incorrect Arugment use' });
   });
 
   test('undefined first name', () => {
@@ -49,13 +46,13 @@ describe('Incorrect testCases', () => {
       {
         json: {
           token: AuthUserId1.token,
-          nameFisrt: undefined,
+          nameFirst: null,
           nameLast: 'Plotter',
         }
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'Incorrect Arugment use' });
   });
 
   test('undefined last name', () => {
@@ -65,13 +62,13 @@ describe('Incorrect testCases', () => {
       {
         json: {
           token: AuthUserId1.token,
-          nameFisrt: 'Harvey',
-          nameLast: undefined,
+          nameFirst: 'Harvey',
+          nameLast: null,
         }
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'Incorrect Arugment use' });
   });
 
   test('invalid token', () => {
@@ -80,14 +77,14 @@ describe('Incorrect testCases', () => {
       SERVER_URL + '/user/profile/setname/v1',
       {
         json: {
-          token: -1,
-          nameFisrt: 'Harvey',
+          token: '-1',
+          nameFirst: 'Harvey',
           nameLast: 'Plotter',
         }
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'Invalid token' });
   });
 
   test('long first name', () => {
@@ -97,13 +94,13 @@ describe('Incorrect testCases', () => {
       {
         json: {
           token: AuthUserId1.token,
-          nameFisrt: 'Harveyfdsjapiofjjiupdefjapjdfiupasueuipashhuidfsa',
+          nameFirst: 'Harveyfdsjapiofjjiupdefjapjdfiupasueuipashhuidfsasdasdasd',
           nameLast: 'Plotter',
         }
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'First or Last name exceed 50 character' });
   });
 
   test('long last name', () => {
@@ -113,17 +110,17 @@ describe('Incorrect testCases', () => {
       {
         json: {
           token: AuthUserId1.token,
-          nameFisrt: 'Harvey',
+          nameFirst: 'Harvey',
           nameLast: 'Plotterdfsafdsafijdsnahfinewafdohbewaydholfauewbfaudos',
         }
       }
     );
     const data = JSON.parse(res.getBody() as string);
-    expect(data).toStrictEqual({ ERROR });
+    expect(data).toStrictEqual({ error: 'First or Last name exceed 50 character' });
   });
 });
 
-describe('Incorrect testCases', () => {
+describe('Correct testCases', () => {
   // let AuthUserId1: {token: string, authUserId: number};
   // let AuthUserId2: {token: string, authUserId: number};
 
@@ -150,7 +147,7 @@ describe('Incorrect testCases', () => {
         email: 'ron.weasley@gmail.com',
         password: 'flying car',
         nameFirst: 'Ron',
-        nameLast: 'Weasley'
+        nameLast: 'Weasley',
       }
     }
   );
@@ -166,7 +163,7 @@ describe('Incorrect testCases', () => {
       {
         json: {
           token: AuthUserId1.token,
-          nameFisrt: 'Harvey',
+          nameFirst: 'Harvey',
           nameLast: 'Plotter',
         }
       }
@@ -182,7 +179,7 @@ describe('Incorrect testCases', () => {
       {
         json: {
           token: AuthUserId2.token,
-          nameFisrt: 'Ronnie',
+          nameFirst: 'Ronnie',
           nameLast: 'Weasley',
         }
       }

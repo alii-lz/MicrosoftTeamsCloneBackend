@@ -6,13 +6,27 @@ const ERROR = { error: expect.any(String) };
 
 describe('channelDetailsV1(token, channelId)', () => {
   let AuthUserId1: { token: string, authUserId: number };
-  let AuthUserId2: { token: string, authUserId: number };
+  // let AuthUserId2: { token: string, authUserId: number };
   let AuthUserId3: { token: string, authUserId: number };
+  let ardenTok: { token: string, authUserId: number };
   let ChannelId1: { channelId: number };
   let ChannelId3: { channelId: number };
 
   beforeEach(() => {
     request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
+    const arden = request(
+      'POST',
+      SERVER_URL + '/auth/register/v2',
+      {
+        json: {
+          email: 'aaaaaa@gmail.com',
+          password: 'asdadasdasdadsa',
+          nameFirst: 'asdasd',
+          nameLast: 'asdasdasd'
+        }
+      }
+    );
+    ardenTok = JSON.parse(arden.getBody() as string);
     const res1 = request(
       'POST',
       SERVER_URL + '/auth/register/v2',
@@ -27,19 +41,19 @@ describe('channelDetailsV1(token, channelId)', () => {
     );
     AuthUserId1 = JSON.parse(res1.getBody() as string);
 
-    const res2 = request(
-      'POST',
-      SERVER_URL + '/auth/register/v2',
-      {
-        json: {
-          email: 'ron.weasley@gmail.com',
-          password: 'flying car',
-          nameFirst: 'Ron',
-          nameLast: 'Weasley'
-        }
-      }
-    );
-    AuthUserId2 = JSON.parse(res2.getBody() as string);
+    // const res2 = request(
+    //   'POST',
+    //   SERVER_URL + '/auth/register/v2',
+    //   {
+    //     json: {
+    //       email: 'ron.weasley@gmail.com',
+    //       password: 'flying car',
+    //       nameFirst: 'Ron',
+    //       nameLast: 'Weasley'
+    //     }
+    //   }
+    // );
+    // AuthUserId2 = JSON.parse(res2.getBody() as string);
 
     const res3 = request(
       'POST',
@@ -60,7 +74,7 @@ describe('channelDetailsV1(token, channelId)', () => {
       SERVER_URL + '/channels/create/v2',
       {
         json: {
-          token: AuthUserId1.token[0],
+          token: AuthUserId1.token,
           name: 'Quidditch League',
           isPublic: true,
         }
@@ -143,56 +157,56 @@ describe('channelDetailsV1(token, channelId)', () => {
     );
     const data = JSON.parse(res.getBody() as string);
     expect(data).toStrictEqual(ERROR);
+  });
 
-    test('AuthUserId is not a member of the channel', () => {
-      const res = request(
-        'GET',
-        SERVER_URL + '/channel/details/v2',
-        {
-          qs: {
-            token: AuthUserId2.token,
-            channelId: ChannelId3.channelId,
-          }
+  test('AuthUserId is not a member of the channel', () => {
+    const res = request(
+      'GET',
+      SERVER_URL + '/channel/details/v2',
+      {
+        qs: {
+          token: ardenTok.token,
+          channelId: ChannelId3.channelId,
         }
-      );
-      const data = JSON.parse(res.getBody() as string);
-      expect(data).toStrictEqual(ERROR);
-    });
+      }
+    );
+    const data = JSON.parse(res.getBody() as string);
+    expect(data).toStrictEqual(ERROR);
+  });
 
-    test('Successful test 1', () => {
-      const res = request(
-        'GET',
-        SERVER_URL + '/channel/details/v2',
-        {
-          qs: {
-            token: AuthUserId1.token,
-            channelId: ChannelId1.channelId,
-          }
+  test('Successful test 1', () => {
+    const res = request(
+      'GET',
+      SERVER_URL + '/channel/details/v2',
+      {
+        qs: {
+          token: AuthUserId1.token,
+          channelId: ChannelId1.channelId,
         }
-      );
-      const data = JSON.parse(res.getBody() as string);
-      expect(data).toStrictEqual({
-        name: 'Quidditch League',
-        isPublic: true,
-        ownerMembers: [
-          {
-            uId: expect.any(Number),
-            email: 'harry.potter@gmail.com',
-            nameFirst: 'Harry',
-            nameLast: 'Potter',
-            handleStr: 'harrypotter',
-          }
-        ],
-        allMembers: [
-          {
-            uId: expect.any(Number),
-            email: 'harry.potter@gmail.com',
-            nameFirst: 'Harry',
-            nameLast: 'Potter',
-            handleStr: 'harrypotter',
-          }
-        ],
-      });
+      }
+    );
+    const data = JSON.parse(res.getBody() as string);
+    expect(data).toStrictEqual({
+      name: 'Quidditch League',
+      isPublic: true,
+      ownerMembers: [
+        {
+          uId: expect.any(Number),
+          email: 'harry.potter@gmail.com',
+          nameFirst: 'Harry',
+          nameLast: 'Potter',
+          handleStr: 'harrypotter',
+        }
+      ],
+      allMembers: [
+        {
+          uId: expect.any(Number),
+          email: 'harry.potter@gmail.com',
+          nameFirst: 'Harry',
+          nameLast: 'Potter',
+          handleStr: 'harrypotter',
+        }
+      ],
     });
   });
 
@@ -319,7 +333,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
       'POST',
       SERVER_URL + '/channel/join/v2',
       {
-        qs: {
+        json: {
           token: undefined,
           channelId: ChannelId1.channelId,
         }
@@ -334,7 +348,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
       'POST',
       SERVER_URL + '/channel/join/v2',
       {
-        qs: {
+        json: {
           token: AuthUserId1.token,
           channelId: undefined,
         }
@@ -349,7 +363,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
       'POST',
       SERVER_URL + '/channel/join/v2',
       {
-        qs: {
+        json: {
           token: 111,
           channelId: ChannelId1.channelId,
         }
@@ -364,7 +378,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
       'POST',
       SERVER_URL + '/channel/join/v2',
       {
-        qs: {
+        json: {
           token: AuthUserId1.token,
           channelId: 1010,
         }
@@ -379,7 +393,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
       'POST',
       SERVER_URL + '/channel/join/v2',
       {
-        qs: {
+        json: {
           token: AuthUserId2.token,
           channelId: ChannelId3.channelId,
         }
@@ -394,7 +408,7 @@ describe('channelJoinV1(authUserId, channelId): Invalid Inputs', () => {
       'POST',
       SERVER_URL + '/channel/join/v2',
       {
-        qs: {
+        json: {
           token: AuthUserId3.token,
           channelId: ChannelId1.channelId,
         }
