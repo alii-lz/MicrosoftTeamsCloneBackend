@@ -14,11 +14,8 @@ import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
   from './profileUsers';
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
-import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
-import { channelsCreateV3, channelsListV3, channelsListAllV2 } from './channels';
-import errorHandler from 'middleware-http-errors';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV2 } from './messageFunctions';
-import { channelsCreateV2, channelsListV2, channelsListAllV3 } from './channels';
+import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
 import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV1 } from './channelRemoveOwner';
 import { usersAllV1 } from './usersAllV1';
