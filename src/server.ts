@@ -248,9 +248,6 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 
-<<<<<<< src/server.ts
-
-=======
 app.get('/dm/messages/v2', (req: Request, res: Response) => {
   const token: string = req.header('token');
   const dmId: number = parseInt(req.query.dmId as string);
@@ -264,18 +261,17 @@ app.get('/search/v1', (req: Request, res: Response) => {
   res.json(searchV1(token, queryStr));
 });
 
-app.post('message/react/v1', (req: Request, res: Response) => {
-  const { MessageId, reactId } = req.body;
-  const token = req.header('token');
-  res.json(reactV1(token, MessageId, reactId));
-});
+// app.post('message/react/v1', (req: Request, res: Response) => {
+//   const { MessageId, reactId } = req.body;
+//   const token = req.header('token');
+//   res.json(reactV1(token, MessageId, reactId));
+// });
 
-app.post('message/unreact/v1', (req: Request, res: Response) => {
-  const { MessageId, reactId } = req.body;
-  const token = req.header('token');
-  res.json(unreactV1(token, MessageId, reactId));
->>>>>>> src/server.ts
-});
+// app.post('message/unreact/v1', (req: Request, res: Response) => {
+//   const { MessageId, reactId } = req.body;
+//   const token = req.header('token');
+//   res.json(unreactV1(token, MessageId, reactId));
+// });
 
 app.use(errorHandler());
 // start server

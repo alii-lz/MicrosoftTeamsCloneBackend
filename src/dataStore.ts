@@ -8,12 +8,8 @@ const initialData: Data = {
   tokens: [],
   dm: [],
   messageDetails: [],
-<<<<<<< src/dataStore.ts
-  
-=======
-  resetCodes: []
+  resetCodes: [],
   indivNotification: []
->>>>>>> src/dataStore.ts
 };
 
 function getData(): Data {
