@@ -2,7 +2,7 @@
 import { getId } from './other';
 import HTTPError from 'http-errors';
 import { Data } from './interfaces';
-import { getData } from './dataStore';
+import { getData, setData } from './dataStore';
 
 export function adminUserPermissionChangeV1(token: string, uId: number, permissionId: number) {
   const data: Data = getData();
@@ -56,5 +56,6 @@ export function adminUserPermissionChangeV1(token: string, uId: number, permissi
   if (data.users[userIndex].globalOwner === false) {
     data.users[userIndex].globalOwner = true;
   }
+  setData(data);
   return ({})
 }

@@ -1,8 +1,6 @@
 // Written by Arden Sae-Ueng
 import { getData, setData } from './dataStore';
 import { getId } from './other';
-const data = getData();
-setData(data);
 import { error, messageIDReturn, tempMessage } from './interfaces';
 import HTTPError from 'http-errors';
 
