@@ -12,7 +12,7 @@ import { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 } from './dm';
 import { dmDetailsV1 } from './dmDetailsV2';
 import { profileSetnameV2, profileSetemailV2, profileSethandleStrV2 }
   from './profileUsers';
-import { authRegisterV1, authLoginV1, authLogoutV1 , authPasswordResetRequestV1, authPasswordResetResetV1} from './auth';
+import { authRegisterV1, authLoginV1, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV2 } from './messageFunctions';
 import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
@@ -75,14 +75,12 @@ app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
 });
 
 app.post('/channels/create/v3', (req: Request, res: Response) => {
-  
   const token = req.header('token');
   const { name, isPublic } = req.body;
   return res.json(channelsCreateV3(token, name, isPublic));
 });
 
 app.get('/channels/list/v3', (req: Request, res: Response) => {
-
   const token = req.header('token');
   return res.json(channelsListV3(token));
 });
@@ -201,7 +199,7 @@ app.delete('/message/remove/v1', (req: Request, res: Response) => {
 });
 
 app.post('/message/senddm/v2', (req: Request, res: Response) => {
-  const {dmId, message } = req.body;
+  const { dmId, message } = req.body;
   const token = req.header('token');
   res.json(messageSenddmV2(token, dmId, message));
 });
