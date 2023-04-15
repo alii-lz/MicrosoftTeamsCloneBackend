@@ -27,6 +27,7 @@ import { notificationsGetV1 } from './notificationGet';
 import { request } from 'http';
 
 import { searchV1 } from './search';
+import { adminUserRemoveV1 } from './adminUserRemoveV1';
 
 
 // Set up web app
@@ -78,6 +79,12 @@ app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
   const resetCode = req.body.resetCode as string;
   const newPassword = req.body.newPassword as string;
   return res.json(authPasswordResetResetV1(resetCode, newPassword));
+});
+
+app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const uId: number = parseInt(req.query.uId as string);
+  return res.json(adminUserRemoveV1(token, uId));
 });
 
 app.post('/channels/create/v3', (req: Request, res: Response) => {
