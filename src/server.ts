@@ -15,8 +15,8 @@ import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
-import { channelsCreateV2, channelsListV2, channelsListAllV2 } from './channels';
-// import errorHandler from 'middleware-http-errors';
+import { channelsCreateV2, channelsListV2, channelsListAllV3 } from './channels';
+import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV1 } from './channelRemoveOwner';
 import { usersAllV1 } from './usersAllV1';
 import { userProfileV2 } from './users';
@@ -195,9 +195,9 @@ app.post('/message/senddm/v1', (req: Request, res: Response) => {
 
 // Keep this BENEATH route definitions
 // handles errors nicely
-app.get('/channels/listall/v2', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  res.json(channelsListAllV2(token));
+app.get('/channels/listall/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(channelsListAllV3(token));
 });
 
 app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
@@ -238,6 +238,7 @@ app.get('/dm/messages/v1', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 
+app.use(errorHandler());
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE
@@ -249,4 +250,3 @@ process.on('SIGINT', () => {
   server.close(() => console.log('Shutting down server gracefully.'));
 });
 // app.use(errorHandler());
-
