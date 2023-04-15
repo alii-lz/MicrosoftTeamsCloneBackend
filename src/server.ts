@@ -14,6 +14,9 @@ import { profileSetnameV1, profileSetemailV1, profileSethandleStrV1 }
   from './profileUsers';
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
+import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
+import { channelsCreateV3, channelsListV3, channelsListAllV2 } from './channels';
+import errorHandler from 'middleware-http-errors';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV2 } from './messageFunctions';
 import { channelsCreateV2, channelsListV2, channelsListAllV3 } from './channels';
 import errorHandler from 'middleware-http-errors';
@@ -63,16 +66,17 @@ app.post('/auth/logout/v2', (req: Request, res: Response) => {
   return res.json(authLogoutV1(token));
 });
 
-app.post('/channels/create/v2', (req: Request, res: Response) => {
-  const { token, name, isPublic } = req.body;
-
-  res.json(channelsCreateV2(token, name, isPublic));
+app.post('/channels/create/v3', (req: Request, res: Response) => {
+  
+  const token = req.header('token');
+  const { name, isPublic } = req.body;
+  return res.json(channelsCreateV3(token, name, isPublic));
 });
 
-app.get('/channels/list/v2', (req: Request, res: Response) => {
-  const token = req.query.token as string;
+app.get('/channels/list/v3', (req: Request, res: Response) => {
 
-  res.json(channelsListV2(token));
+  const token = req.header('token');
+  return res.json(channelsListV3(token));
 });
 
 app.post('/dm/create/v1', (req: Request, res: Response) => {
