@@ -14,7 +14,7 @@ import { profileSetnameV2, profileSetemailV2, profileSethandleStrV2 }
   from './profileUsers';
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
 import { clearV1 } from './other';
-import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV1 } from './messageFunctions';
+import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV2 } from './messageFunctions';
 import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
 import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV1 } from './channelRemoveOwner';
