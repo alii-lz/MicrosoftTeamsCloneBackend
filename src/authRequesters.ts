@@ -49,3 +49,34 @@ export function requestAuthLogout(token: string) {
   );
   return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
 }
+
+export function requestAuthPasswordResetRequest(email: string) {
+  const res = request(
+    'POST',
+    SERVER_URL + '/auth/passwordreset/request/v1',
+    {
+      json: {
+        email: email,
+
+      },
+      timeout: 100
+    }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+}
+
+export function requestAuthPasswordResetResest(resetCode: string, newPassword: string) {
+  const res = request(
+    'POST',
+    SERVER_URL + '/auth/passwordreset/reset/v1',
+    {
+      json: {
+        resetCode: resetCode,
+        newPassword: newPassword
+
+      },
+      timeout: 100
+    }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+}

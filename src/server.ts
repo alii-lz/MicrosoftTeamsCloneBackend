@@ -12,7 +12,7 @@ import { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 } from './dm';
 import { dmDetailsV1 } from './dmDetailsV2';
 import { profileSetnameV2, profileSetemailV2, profileSethandleStrV2 }
   from './profileUsers';
-import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
+import { authRegisterV1, authLoginV1, authLogoutV1 , authPasswordResetRequestV1, authPasswordResetResetV1} from './auth';
 import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV2 } from './messageFunctions';
 import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
@@ -61,6 +61,17 @@ app.post('/auth/login/v3', (req: Request, res: Response) => {
 app.post('/auth/logout/v2', (req: Request, res: Response) => {
   const token = req.header('token');
   return res.json(authLogoutV1(token));
+});
+
+app.post('/auth/passwordreset/request/v1', (req: Request, res: Response) => {
+  const email = req.body.email as string;
+  return res.json(authPasswordResetRequestV1(email));
+});
+
+app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
+  const resetCode = req.body.resetCode as string;
+  const newPassword = req.body.newPassword as string;
+  return res.json(authPasswordResetResetV1(resetCode, newPassword));
 });
 
 app.post('/channels/create/v3', (req: Request, res: Response) => {

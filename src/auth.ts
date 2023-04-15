@@ -110,5 +110,12 @@ function authLogoutV1(token: string) {
   setData(data);
   return {};
 }
+function authPasswordResetRequestV1(email: string){
+  return {}
+}
+function authPasswordResetResetV1(resetCode: string, newPassword: string){
+  return {}
+}
+  
 
-export { authRegisterV1, authLoginV1, authLogoutV1 };
+export { authRegisterV1, authLoginV1, authLogoutV1, authPasswordResetRequestV1, authPasswordResetResetV1 };
