@@ -1,10 +1,11 @@
+// Written by Arden Sae-Ueng
 import { getId } from './other';
 import HTTPError from 'http-errors';
-import { Data, notification } from './interfaces';
+import { Data } from './interfaces';
 import { getData } from './dataStore';
 
 export function adminUserRemoveV1(token: string, uId: number) {
-  const data = getData();
+  const data: Data = getData();
   const authUserId = getId(token);
   if (authUserId === -1) {
     throw HTTPError(403, 'Invalid token.');

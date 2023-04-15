@@ -55,6 +55,12 @@ describe('admin/user/removeV1', ()=> {
     const res = requestAdminUserPermissionChangeV1(user1Token, user1Id, 1);
     expect(res.status).toBe(400);
   });
+
+  test('Wrong permissionId', () => {
+    const res = requestAdminUserPermissionChangeV1(user1Token, user2Id, 5);
+    expect(res.status).toBe(400);
+  });
+
   test('Success', ()=> {
     const res = requestAdminUserPermissionChangeV1(user1Token, user2Id, 1);
     expect(res.status).toBe(OK);
