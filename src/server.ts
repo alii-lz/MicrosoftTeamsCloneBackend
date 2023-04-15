@@ -190,7 +190,8 @@ app.delete('/message/remove/v1', (req: Request, res: Response) => {
 });
 
 app.post('/message/senddm/v2', (req: Request, res: Response) => {
-  const { token, dmId, message } = req.body;
+  const {dmId, message } = req.body;
+  const token = req.header('token');
   res.json(messageSenddmV2(token, dmId, message));
 });
 
@@ -232,8 +233,8 @@ app.get('/user/profile/v2', (req: Request, res: Response) => {
   res.json(userProfileV2(token, uId));
 });
 
-app.get('/dm/messages/v1', (req: Request, res: Response) => {
-  const token: string = req.query.token as string;
+app.get('/dm/messages/v2', (req: Request, res: Response) => {
+  const token: string = req.header('token');
   const dmId: number = parseInt(req.query.dmId as string);
   const start: number = parseInt(req.query.start as string);
   res.json(dmMessagesV1(token, dmId, start));

@@ -1,4 +1,4 @@
-import { requestDmCreate, requestDmDetails, requestDmLeave, requestDmList, requestDmRemove } from './dmRequesters';
+import { requestDmCreate, requestDmDetails, requestDmLeave, requestDmList, requestDmRemove,requestDmMessageV1, requestMessageSendDM } from './dmRequesters';
 import { requestClear } from './clearRequester';
 import { requestAuthRegister } from './authRequesters';
 
@@ -318,3 +318,173 @@ describe('tests for /dm/leave/v2', () => {
     }
   });
 });
+
+describe('failure tests for /dm/messages/v2', () => {
+  let user: any;
+  let user2: any;
+  let dm: any;
+
+  beforeEach(() => {
+    requestClear();
+    user = requestAuthRegister('matthew@gmail.com', 'validPassword', 'matthew', 'ieong').returnObj;
+    user2 = requestAuthRegister('ali@gmail.com', 'validPassword2', 'ali', 'amend').returnObj;
+
+    dm = requestDmCreate(user.token, [user2.authUserId]).returnObj;
+  });
+
+  test('failure case/ invalid token', () => {
+    try{
+    const invalidToken = user.token + user2.token;
+    requestMessageSendDM(user.token, dm.dmId, 'Test message 1');
+    const dmMessages = requestDmMessageV1(invalidToken, dm.dmId, 0);
+    expect(dmMessages.returnObj).toStrictEqual(ERROR);
+    expect(dmMessages.status).toStrictEqual(AUTHORIZATION_ERROR);
+    }catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
+  });
+
+  test('failure case/ user not in dm', () => {
+    try{
+    const user3 = requestAuthRegister('danny@gmail.com', 'validPassword', 'danny', 'chan').returnObj;
+    requestMessageSendDM(user.token, dm.dmId, 'Test message 1');
+    const dmMessages = requestDmMessageV1(user3.token, dm.dmId, 0);
+    expect(dmMessages.returnObj).toStrictEqual(ERROR);
+    expect(dmMessages.status).toStrictEqual(AUTHORIZATION_ERROR);
+    }catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
+  });
+
+  test('failure case/ invalid dmId', () => {
+    try{
+    const invalidDmId = dm.dmId + 1;
+    requestMessageSendDM(user.token, dm.dmId, 'Test message 1');
+    const dmMessages = requestDmMessageV1(user.token, invalidDmId, 0);
+    expect(dmMessages.returnObj).toStrictEqual(ERROR);
+    expect(dmMessages.status).toStrictEqual(BAD_REQUEST);
+    }catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
+  });
+  test('failure case/ start > length of messages', () => {
+    try{
+      for (let i = 0; i < 51; i++){
+        requestMessageSendDM(user.token, dm.dmId, "Test message");
+      }
+    const dmMessages = requestDmMessageV1(user.token, dm.dmId, 100);
+    expect(dmMessages.returnObj).toStrictEqual(ERROR);
+    expect(dmMessages.status).toStrictEqual(BAD_REQUEST);
+    }catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
+  });
+});
+describe('success tests for /dm/messages/v2', () => {
+  let user: any;
+  let user2: any;
+  let dm: any;
+
+  beforeEach(() => {
+    requestClear();
+    user = requestAuthRegister('matthew@gmail.com', 'validPassword', 'matthew', 'ieong').returnObj;
+    user2 = requestAuthRegister('ali@gmail.com', 'validPassword2', 'ali', 'amend').returnObj;
+
+    dm = requestDmCreate(user.token, [user2.authUserId]).returnObj;
+  });
+
+  
+
+  test('success case/ more than 50 messages exist from start index', () => {
+    
+    const expectedMessages = [];
+    const message = "Test message";
+    for (let i = 0; i < 51; i++){
+      const msg = requestMessageSendDM(user.token, dm.dmId, message);
+      if (i > 0){
+      expectedMessages.unshift({
+        messageId: msg.returnObj.messageId,
+        uId: user.authUserId,
+        message: "Test message",
+        timeSent: expect.any(Number),
+        isPinned: false,
+        reacts: []
+      })
+    }
+    }
+    const start = 0;
+    const end = start + 50;
+    const dmMessages = requestDmMessageV1(user.token, dm.dmId, start);    
+    expect(dmMessages.returnObj.start).toStrictEqual(start);
+    expect(dmMessages.returnObj.messages).toStrictEqual(expectedMessages);
+    expect(dmMessages.returnObj.end).toStrictEqual(end);
+    expect(dmMessages.status).toStrictEqual(OK);
+  });
+
+  test('success case/ exactly 50 messages exist from start index', () => {
+    
+    const expectedMessages = [];
+    const message = "Test message";
+    for (let i = 0; i < 50; i++){
+      const msg = requestMessageSendDM(user.token, dm.dmId, message);
+      expectedMessages.unshift({
+        messageId: msg.returnObj.messageId,
+        uId: user.authUserId,
+        message: "Test message",
+        timeSent: expect.any(Number),
+        isPinned: false,
+        reacts: []
+      })
+    }
+    const start = 0;
+    const end = start + 50;
+    const dmMessages = requestDmMessageV1(user.token, dm.dmId, start);    
+    expect(dmMessages.returnObj.start).toStrictEqual(start);
+    expect(dmMessages.returnObj.messages).toStrictEqual(expectedMessages);
+    expect(dmMessages.returnObj.end).toStrictEqual(end);
+    expect(dmMessages.status).toStrictEqual(OK);
+  });
+
+  test('success case/ less than 50 messages exist from start index', () => {
+    
+    const expectedMessages = [];
+    const message = "Test message";
+    for (let i = 0; i < 50; i++){
+      const msg = requestMessageSendDM(user.token, dm.dmId, message);
+      if (i < 40)
+      expectedMessages.unshift({
+        messageId: msg.returnObj.messageId,
+        uId: user.authUserId,
+        message: "Test message",
+        timeSent: expect.any(Number),
+        isPinned: false,
+        reacts: []
+      })
+    }
+    const start = 10;
+    const end = -1;
+    const dmMessages = requestDmMessageV1(user.token, dm.dmId, start);    
+    expect(dmMessages.returnObj.start).toStrictEqual(start);
+    expect(dmMessages.returnObj.messages).toStrictEqual(expectedMessages);
+    expect(dmMessages.returnObj.end).toStrictEqual(end);
+    expect(dmMessages.status).toStrictEqual(OK);
+  });
+
+  test('success case/ start = length of messages', () => {
+    
+
+    const message = "Test message";
+    for (let i = 0; i < 50; i++){
+      const msg = requestMessageSendDM(user.token, dm.dmId, message);
+      
+    }
+    const start = 50;
+    const end = -1;
+    const dmMessages = requestDmMessageV1(user.token, dm.dmId, start);    
+    expect(dmMessages.returnObj.start).toStrictEqual(start);
+    expect(dmMessages.returnObj.messages).toStrictEqual([]);
+    expect(dmMessages.returnObj.end).toStrictEqual(end);
+    expect(dmMessages.status).toStrictEqual(OK);
+  });
+});
+

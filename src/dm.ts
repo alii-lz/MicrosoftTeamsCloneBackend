@@ -1,5 +1,5 @@
 
-import { error, Data } from './interfaces';
+import { error, Data, message, tempMessage } from './interfaces';
 import { getId } from './other';
 import { getData, setData } from './dataStore';
 import HTTPError from 'http-errors';
@@ -132,7 +132,39 @@ function dmLeave(token: string, dmId: number) {
   return {};
 }
 function dmMessagesV1 (token: string, dmId: number, start: number) {
-  console.log('missing function <><><><><>><><><><><>');
+  const user: number = getId(token);
+  if (user === -1){
+    throw HTTPError(403, 'Invalid token');
+  }
+  const dataBase: Data = getData();
+  const dm = dataBase.dm.find(dm => dm.dmId === dmId);
+  if(!dm){
+    throw HTTPError(400, 'invalid DmID');
+  };
+  if(start> dm.messages.length){
+    throw HTTPError(400, 'messages not found');
+  }
+  if (!dm.members.includes(user)){
+    throw HTTPError(403, 'user not in dm');
+  }
+  let end: number, lastIndex: number = 0;
+  if (start + 50 > dm.messages.length){
+    end = -1;
+    lastIndex = dm.messages.length;
+  } else{
+    end = start + 50;
+    lastIndex = end;
+  }
+  let messages: tempMessage[] = [];
+  for (let index = start; index < lastIndex; index++){
+    messages.push(dm.messages[index]);
+  }
+  return {
+    messages: messages,
+    start: start,
+    end: end
+  }
+  
 }
 
 export { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 };

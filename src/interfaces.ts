@@ -16,11 +16,18 @@ export interface user {
   email: string,
   handleStr: string,
 }
+export interface React{
+  reactId: number,
+  uIds: number[],
+  isThisUserReacted: boolean
+}
 export interface tempMessage {
   message: string,
   uId: number,
   messageId: number,
   timeSent: number
+  isPinned: boolean,
+  reacts: React[]
 }
 export interface Channel{
   channelId: number,

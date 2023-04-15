@@ -71,3 +71,36 @@ export function requestDmLeave(token: string, dmId: number) {
   );
   return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
 }
+export function requestDmMessageV1(token: string, dmId: number, start: number) {
+  const res = request(
+    'GET',
+    SERVER_URL + '/dm/messages/v2',
+    {
+      qs: {
+        dmId: dmId,
+        start: start
+      },
+      headers: {
+        token: token,
+      }
+    }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+}
+
+export function requestMessageSendDM(token: string, dmId: number, message: string) {
+  const res = request(
+    'POST',
+    SERVER_URL + '/message/senddm/v2',
+    {
+      json: {
+        dmId: dmId,
+        message: message
+      },
+      headers: {
+        token: token,
+      }
+    }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+}
