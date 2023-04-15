@@ -28,19 +28,19 @@ describe('HTTP tests using Jest', () => {
     expect(bodyObj).toEqual('Hello');
   });
   // UNCOMMENT BELOW BEFORE ITERATION 3 DUE
-  // test('Test invalid echo', () => {
-  //   const res = request(
-  //     'GET',
-  //           `${url}:${port}/echo`,
-  //           {
-  //             qs: {
-  //               echo: 'echo',
-  //             },
-  //             timeout: 100
-  //           }
-  //   );
-  //   const bodyObj = JSON.parse(res.body as string);
-  //   expect(res.statusCode).toBe(INPUT_ERROR);
-  //   expect(bodyObj.error).toStrictEqual({ message: 'Cannot echo "echo"' });
-  // });
+  test('Test invalid echo', () => {
+    const res = request(
+      'GET',
+            `${url}:${port}/echo`,
+            {
+              qs: {
+                echo: 'echo',
+              },
+              timeout: 100
+            }
+    );
+    const bodyObj = JSON.parse(res.body as string);
+    expect(res.statusCode).toBe(INPUT_ERROR);
+    expect(bodyObj.error).toStrictEqual({ message: 'Cannot echo "echo"' });
+  });
 });
