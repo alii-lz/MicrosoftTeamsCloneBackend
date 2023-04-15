@@ -53,24 +53,24 @@ describe('channelInvite', () => {
     expect(res.status).toBe(OK);
   });
 
-  // test('Invalid channelId', () => {
-  //   const res = requestChannelInviteV3(user1Token,channel1Id+1,user2Id)
-  //   expect(res.status).toBe(400);
-  // });
-  // test('Invalid uId', () => {
-  //   const res = requestChannelInviteV3(user1Token,channel1Id,user2Id+22)
-  //   expect(res.status).toBe(400);
-  // });
-  // test('uId already member', () => {
-  //   const res = requestChannelInviteV3(user1Token,channel1Id,user1Id)
-  //   expect(res.status).toBe(400);
-  // });
-  // test('Authorised user not a member', () => {
-  //   const res = requestChannelInviteV3(user2Token,channel1Id,user2Id)
-  //   expect(res.status).toBe(403);
-  // });
-  // test('Invalid token', () => {
-  //   const res = requestChannelInviteV3('abcdef',channel1Id,user2Id)
-  //   expect(res.status).toBe(403);
-  // });
+  test('Invalid channelId', () => {
+    const res = requestChannelInviteV3(user1Token,channel1Id+1,user2Id)
+    expect(res.status).toBe(400);
+  });
+  test('Invalid uId', () => {
+    const res = requestChannelInviteV3(user1Token,channel1Id,user2Id+22)
+    expect(res.status).toBe(400);
+  });
+  test('uId already member', () => {
+    const res = requestChannelInviteV3(user1Token,channel1Id,user1Id)
+    expect(res.status).toBe(400);
+  });
+  test('Authorised user not a member', () => {
+    const res = requestChannelInviteV3(user2Token,channel1Id,user2Id)
+    expect(res.status).toBe(403);
+  });
+  test('Invalid token', () => {
+    const res = requestChannelInviteV3('abcdef',channel1Id,user2Id)
+    expect(res.status).toBe(403);
+  });
 });
