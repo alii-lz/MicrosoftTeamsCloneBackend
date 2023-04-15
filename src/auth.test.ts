@@ -194,6 +194,8 @@ describe(' auth/Login/V2 failure tests', () => {
     try {
       requestClear();
       const loginResult = requestAuthLogin('rudie@gmail.com', 'soccerrr');
+      expect(loginResult.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(loginResult.status).toBe(INPUT_ERROR);
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }

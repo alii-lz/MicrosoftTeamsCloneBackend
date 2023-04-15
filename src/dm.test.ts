@@ -14,7 +14,7 @@ beforeEach(() => {
   user = requestAuthRegister('matthew@gmail.com', 'validPassword', 'matthew', 'ieong').returnObj;
   user2 = requestAuthRegister('ali@gmail.com', 'validPassword2', 'ali', 'amend').returnObj;
 });
-describe('success tests for /dm/create/v1', () => {
+describe('success tests for /dm/create/v2', () => {
   test('success case/ return object/ non-empty uids ', () => {
     const dmCreate = requestDmCreate(user.token, [user2.authUserId]);
 
@@ -93,7 +93,7 @@ describe('success tests for /dm/create/v1', () => {
   });
 });
 
-describe('failure tests for /dm/create/v1', () => {
+describe('failure tests for /dm/create/v2', () => {
   let user: any;
   let user2: any;
 
@@ -125,7 +125,7 @@ describe('failure tests for /dm/create/v1', () => {
   });
 });
 
-describe('tests for /dm/list/v1', () => {
+describe('tests for /dm/list/v2', () => {
   let user: any;
   let user2: any;
   let user3: any;
@@ -174,7 +174,7 @@ describe('tests for /dm/list/v1', () => {
   });
 });
 
-describe('tests for /dm/remove/v1', () => {
+describe('tests for /dm/remove/v2', () => {
   let user: any;
   let user2: any;
   let dm: any;
@@ -236,7 +236,7 @@ describe('tests for /dm/remove/v1', () => {
   });
 });
 
-describe('tests for /dm/leave/v1', () => {
+describe('tests for /dm/leave/v2', () => {
   let user: any;
   let user2: any;
   let dm: any;
