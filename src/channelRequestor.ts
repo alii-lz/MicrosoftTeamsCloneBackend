@@ -2,12 +2,12 @@ import request from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 
-export function channelDetailsV3(token: string, channelId: number) {
+export function requestChannelDetailsV3(token: string, channelId: number) {
   const res = request(
     'GET',
     SERVER_URL + '/channel/details/v3',
     {
-      headers: {
+      qs: {
         token: token,
       },
       json: {
@@ -18,7 +18,7 @@ export function channelDetailsV3(token: string, channelId: number) {
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
-export function channelJoinV3(token: string, channelId: number) {
+export function requestChannelJoinV3(token: string, channelId: number) {
   const res = request(
     'POST',
     SERVER_URL + '/channel/join/v3',
@@ -51,8 +51,7 @@ export function channelInviteV3(token: string, channelId: number, uId: number) {
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
-export function channelMessagesV3(token: string, channelId: number, start: number) {
-
+export function requestChannelMessagesV3(token: string, channelId: number, start: number) {
   const res = request(
     'GET',
     SERVER_URL + '/channel/messages/v3',

@@ -1,7 +1,7 @@
 import { requestAuthRegister } from './authRequesters';
 import { requestChannelsCreateV3 } from './channels.test';
 import { requestClear } from './clearRequester';
-import { channelDetailsV2, channelJoinV2 } from './channel';
+import { requestChannelDetailsV3, requestChannelJoinV3 } from './channelRequestor';
 
 const OK = 200;
 const INPUT_ERROR = 400;
@@ -11,7 +11,7 @@ let AuthUserId1: { token: string, authUserId: number };
 let AuthUserId2: { token: string, authUserId: number };
 let AuthUserId3: { token: string, authUserId: number };
 
-let ChannelId1: { channelId: number} ;
+let ChannelId1: { channelId: number };
 let ChannelId2: { channelId: number };
 let ChannelId3: { channelId: number };
 
@@ -35,7 +35,7 @@ describe('channel/details/v3 failure tests', () => {
 
   test('Test 1: Undefined token', () => {
     try {
-      const result = channelDetailsV2(undefined, ChannelId1.channelId);
+      const result = requestChannelDetailsV3(undefined, ChannelId1.channelId);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -45,7 +45,7 @@ describe('channel/details/v3 failure tests', () => {
 
   test('Test 2: Undefined channel', () => {
     try {
-      const result = channelDetailsV2(AuthUserId1.token, undefined);
+      const result = requestChannelDetailsV3(AuthUserId1.token, undefined);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -55,7 +55,7 @@ describe('channel/details/v3 failure tests', () => {
 
   test('Test 3: Invalid Token (not in storeData)', () => {
     try {
-      const result = channelDetailsV2('111', ChannelId1.channelId);
+      const result = requestChannelDetailsV3('111', ChannelId1.channelId);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -65,7 +65,7 @@ describe('channel/details/v3 failure tests', () => {
 
   test('Test 4: Invalid ChannelId (not in storeData)', () => {
     try {
-      const result = channelDetailsV2(AuthUserId1.token, 1010);
+      const result = requestChannelDetailsV3(AuthUserId1.token, 1010);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -75,7 +75,7 @@ describe('channel/details/v3 failure tests', () => {
 
   test('Test 5: AuthUserId is not a member of the channel', () => {
     try {
-      const result = channelDetailsV2(AuthUserId2.token, ChannelId3.channelId);
+      const result = requestChannelDetailsV3(AuthUserId2.token, ChannelId3.channelId);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(AUTHORIZATION_ERROR);
     } catch (error) {
@@ -103,7 +103,7 @@ describe('channel/details/v3 success tests', () => {
   });
 
   test('Test 1: Success', () => {
-    const result = channelDetailsV2(AuthUserId1.token, ChannelId1.channelId);
+    const result = requestChannelDetailsV3(AuthUserId1.token, ChannelId1.channelId);
     expect(result.returnObj).toStrictEqual({
       name: 'Quidditch League',
       isPublic: true,
@@ -130,7 +130,7 @@ describe('channel/details/v3 success tests', () => {
   });
 
   test('Test 2: Success', () => {
-    const result = channelDetailsV2(AuthUserId3.token, ChannelId3.channelId);
+    const result = requestChannelDetailsV3(AuthUserId3.token, ChannelId3.channelId);
     expect(result.returnObj).toStrictEqual({
       name: 'Hermione Fan Club',
       isPublic: true,
@@ -182,7 +182,7 @@ describe('channel/join/v3 failure tests', () => {
   });
   test('Test 1: Undefined token', () => {
     try {
-      const result = channelJoinV2(undefined, ChannelId1.channelId);
+      const result = requestChannelJoinV3(undefined, ChannelId1.channelId);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -192,7 +192,7 @@ describe('channel/join/v3 failure tests', () => {
 
   test('Test 2: Undefined channel', () => {
     try {
-      const result = channelJoinV2(AuthUserId1.token, undefined);
+      const result = requestChannelJoinV3(AuthUserId1.token, undefined);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -202,7 +202,7 @@ describe('channel/join/v3 failure tests', () => {
 
   test('Test 3: Invalid Token (not in storeData)', () => {
     try {
-      const result = channelJoinV2('111', ChannelId1.channelId);
+      const result = requestChannelJoinV3('111', ChannelId1.channelId);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -212,7 +212,7 @@ describe('channel/join/v3 failure tests', () => {
 
   test('Test 4: Invalid ChannelId (not in storeData)', () => {
     try {
-      const result = channelJoinV2(AuthUserId1.token, 1010);
+      const result = requestChannelJoinV3(AuthUserId1.token, 1010);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -222,7 +222,7 @@ describe('channel/join/v3 failure tests', () => {
 
   test('Test 5: AuthUser cannot join a private channel', () => {
     try {
-      const result = channelJoinV2(AuthUserId3.token, ChannelId2.channelId);
+      const result = requestChannelJoinV3(AuthUserId3.token, ChannelId2.channelId);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(AUTHORIZATION_ERROR);
     } catch (error) {
@@ -251,13 +251,13 @@ describe('channel/join/v3 success tests', () => {
     ChannelId3 = channelId3_return.returnObj;
   });
   test('Test 1: Success', () => {
-    const result = channelDetailsV2(AuthUserId2.token, ChannelId3.channelId);
+    const result = requestChannelJoinV3(AuthUserId2.token, ChannelId3.channelId);
     expect(result.returnObj).toStrictEqual({});
     expect(result.status).toBe(OK);
   });
 
   test('Test 2: Success', () => {
-    const result = channelDetailsV2(AuthUserId3.token, ChannelId1.channelId);
+    const result = requestChannelJoinV3(AuthUserId3.token, ChannelId1.channelId);
     expect(result.returnObj).toStrictEqual({});
     expect(result.status).toBe(OK);
   });

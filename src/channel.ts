@@ -5,11 +5,12 @@ import HTTPError from 'http-errors';
 
 import { getUser } from './getUser';
 
-export function channelDetailsV2(token: string, channelId: number): error | channelDetails {
+export function channelDetailsV3(token: string, channelId: number): error | channelDetails {
   const dataStore = getData();
   // No Arugment Case:
   if (token === undefined || token === null || channelId === undefined || channelId === null) {
     // return { error: 'Incorrect Arugment use' };
+    throw HTTPError(400, 'Incorrect Arugment use');
   }
   // No case: zero User or Channel
   if (Object.keys(dataStore.users).length < 1) {
@@ -106,7 +107,7 @@ export function channelDetailsV2(token: string, channelId: number): error | chan
 //     ],
 //   };
 /// ///////////////////////////////////////////////////////
-export function channelJoinV2(token: string, channelId: number): error | object {
+export function channelJoinV3(token: string, channelId: number): error | object {
   const dataStore = getData();
   // No Arugment Case:
   if (token === undefined || token === null || channelId === undefined || channelId === null) {
