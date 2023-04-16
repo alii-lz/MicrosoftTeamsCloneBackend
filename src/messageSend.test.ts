@@ -15,7 +15,7 @@ const SERVER_URL = `${url}:${port}`;
 There will not be not tests for the functions themselves because the http
 wrappers will return an error if something is wrong with the functions anyways.
 */
-// Start of message/send/v1 tests
+// Start of message/send/v2 tests
 let user1Token: string;
 let user1Id: number;
 let user2Token: string;
@@ -25,13 +25,13 @@ beforeEach(() => {
   clearV1();
   const user1 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user1@hotmail.com',
         password: 'p123445P',
-        nameFirst: 'A',
-        nameLast: 'S',
+        nameFirst: 'Arr',
+        nameLast: 'Sddd',
       }
     }
   );
@@ -41,10 +41,13 @@ beforeEach(() => {
   // make a channel
   const channel1 = request(
     'POST',
-    SERVER_URL + '/channels/create/v2',
+    SERVER_URL + '/channels/create/v3',
     {
-      json: {
+      headers: {
         token: user1Token,
+      },
+      json: {
+        // token: user1Token,
         name: 'Channel1',
         isPublic: true,
       }
@@ -55,13 +58,13 @@ beforeEach(() => {
   // make a user2
   const user2 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user2@hotmail.com',
         password: 'p123445P',
-        nameFirst: 'B',
-        nameLast: 'S',
+        nameFirst: 'ddddddd',
+        nameLast: 'Sddddd',
       }
     }
   );
@@ -74,10 +77,13 @@ describe('messageSendV1', () => {
   test('Success case - messageSend', () => {
     let res = request(
       'POST',
-      SERVER_URL + '/message/send/v1',
+      SERVER_URL + '/message/send/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           channelId: channel1Id,
           message: 'First message is in channel 1',
         }
@@ -89,10 +95,13 @@ describe('messageSendV1', () => {
     // Check if message is there.
     res = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           channelId: channel1Id,
           start: 0,
         }
@@ -114,85 +123,100 @@ describe('messageSendV1', () => {
   test('Invalid channelId', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/send/v1',
+      SERVER_URL + '/message/send/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           channelId: channel1Id + 1,
           message: 'First message is in channel 1',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid channelId.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Invalid channelId.' });
+    expect(res.statusCode).toBe(400);
   });
 
   test('Invalid token', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/send/v1',
+      SERVER_URL + '/message/send/v2',
       {
-        json: {
+        headers: {
           token: 'asbdasd',
+        },
+        json: {
+          // token: 'asbdasd',
           channelId: channel1Id,
           message: 'First message is in channel 1',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid token.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData.returnObj).toStrictEqual( 'Invalid token.' );
+    expect(res.statusCode).toBe(403);
   });
 
   test('valid channel but invalid authuserid', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/send/v1',
+      SERVER_URL + '/message/send/v2',
       {
-        json: {
+        headers: {
           token: user2Token,
+        },
+        json: {
+          // token: user2Token,
           channelId: channel1Id,
           message: 'First message is in channel 1',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'User is not part of this channel.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'User is not part of this channel.' });
+    expect(res.statusCode).toBe(403);
   });
 
   test('message less than one character', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/send/v1',
+      SERVER_URL + '/message/send/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           channelId: channel1Id,
           message: '',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Message too short.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Message too short.' });
+    expect(res.statusCode).toBe(400);
   });
 
   test('message over 1000 characters', () => {
     const res = request(
       'POST',
-      SERVER_URL + '/message/send/v1',
+      SERVER_URL + '/message/send/v2',
       {
-        json: {
+        headers: {
           token: user1Token,
+        },
+        json: {
+          // token: user1Token,
           channelId: channel1Id,
           message: 'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa',
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Message too long.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Message too long.' });
+    expect(res.statusCode).toBe(400);
   });
 });
