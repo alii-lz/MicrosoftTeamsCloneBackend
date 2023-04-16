@@ -5,7 +5,7 @@ import config from './config.json';
 import cors from 'cors';
 
 import {
-  channelDetailsV2, channelJoinV2,
+  channelDetailsV3, channelJoinV3,
   channelInviteV3, channelMessagesV3
 } from './channel';
 import { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 } from './dm';
@@ -107,14 +107,14 @@ app.get('/channel/details/v3', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const channelIdString = req.query.channelId as string;
   const channelId = parseInt(channelIdString);
-  return res.json(channelDetailsV2(token, channelId));
+  return res.json(channelDetailsV3(token, channelId));
 });
 
 app.post('/channel/join/v3', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const channelIdString = req.body.channelId as string;
   const channelId = parseInt(channelIdString);
-  return res.json(channelJoinV2(token, channelId));
+  return res.json(channelJoinV3(token, channelId));
 });
 
 app.get('/dm/details/v2', (req: Request, res: Response) => {

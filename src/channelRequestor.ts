@@ -7,7 +7,7 @@ export function requestChannelDetailsV3(token: string, channelId: number) {
     'GET',
     SERVER_URL + '/channel/details/v3',
     {
-      json: {
+      qs: {
         token: token,
         channelId: channelId,
       }

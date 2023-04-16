@@ -251,13 +251,13 @@ describe('channel/join/v3 success tests', () => {
     ChannelId3 = channelId3_return.returnObj;
   });
   test('Test 1: Success', () => {
-    const result = requestChannelDetailsV3(AuthUserId2.token, ChannelId3.channelId);
+    const result = requestChannelJoinV3(AuthUserId2.token, ChannelId3.channelId);
     expect(result.returnObj).toStrictEqual({});
     expect(result.status).toBe(OK);
   });
 
   test('Test 2: Success', () => {
-    const result = requestChannelDetailsV3(AuthUserId3.token, ChannelId1.channelId);
+    const result = requestChannelJoinV3(AuthUserId3.token, ChannelId1.channelId);
     expect(result.returnObj).toStrictEqual({});
     expect(result.status).toBe(OK);
   });
