@@ -120,3 +120,8 @@ export interface channels {
 export interface messageIDReturn {
   messageId: number,
 }
+
+// export interface timeOut
+
+// export interface timeOut {
+//   timeOut: 
