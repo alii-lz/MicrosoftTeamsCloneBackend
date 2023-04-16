@@ -1,7 +1,7 @@
 import { getData, setData } from './dataStore';
 import { getId } from './other';
 import { error, channelDetails, channelMessages, user } from './interfaces';
-import HttpError from 'http-errors';
+import HTTPError from 'http-errors';
 
 import { getUser } from './getUser';
 
@@ -9,13 +9,15 @@ export function channelDetailsV2(token: string, channelId: number): error | chan
   const dataStore = getData();
   // No Arugment Case:
   if (token === undefined || token === null || channelId === undefined || channelId === null) {
-    return { error: 'Incorrect Arugment use' };
+    // return { error: 'Incorrect Arugment use' };
   }
   // No case: zero User or Channel
   if (Object.keys(dataStore.users).length < 1) {
-    return { error: 'no User in dataStore' };
+    // return { error: 'no User in dataStore' };
+    throw HTTPError(400, 'no User in dataStore');
   } else if (Object.keys(dataStore.channels).length < 1) {
-    return { error: 'no channel in dataStore' };
+    // return { error: 'no channel in dataStore' };
+    throw HTTPError(400, 'no channel in dataStore');
   }
   // get User index from token
   const userIndex = getUser(token);
@@ -31,7 +33,8 @@ export function channelDetailsV2(token: string, channelId: number): error | chan
       break;
       // return error when it reaches the end of the list
     } else if (i === Object.keys(dataStore.users).length - 1) {
-      return { error: 'Invalid token' };
+      // return { error: 'Invalid token' };
+      throw HTTPError(400, 'Invalid token');
     }
   }
   // Invalid case: Invalid channelId argument
@@ -43,7 +46,8 @@ export function channelDetailsV2(token: string, channelId: number): error | chan
       break;
       // return error when it reaches the end of the list
     } else if (i === Object.keys(dataStore.channels).length - 1) {
-      return { error: 'Invalid channelId' };
+      // return { error: 'Invalid channelId' };
+      throw HTTPError(400, 'Invalid channelId');
     }
   }
   const authUserId = dataStore.users[userIndex].uId;
@@ -59,7 +63,8 @@ export function channelDetailsV2(token: string, channelId: number): error | chan
   if (i === dataStore.channels[i].allMembers.length) {
     // console.log(authUserId);
     // console.log(dataStore.users[i].uId);
-    return { error: 'User is not a member of the channel' };
+    // return { error: 'User is not a member of the channel' };
+    throw HTTPError(403, 'User is not a member of the channel');
   }
   // stores users and channels into an array(s)
   const ownerMembersArray: user[] = [];
@@ -105,18 +110,22 @@ export function channelJoinV2(token: string, channelId: number): error | object 
   const dataStore = getData();
   // No Arugment Case:
   if (token === undefined || token === null || channelId === undefined || channelId === null) {
-    return { error: 'Incorrect Arugment use' };
+    // return { error: 'Incorrect Arugment use' };
+    throw HTTPError(400, 'Incorrect Arugment use');
   }
   // No case: zero User or Channel
   if (Object.keys(dataStore.users).length < 1) {
-    return { error: 'no User in dataStore' };
+    // return { error: 'no User in dataStore' };
+    throw HTTPError(400, 'no User in dataStore');
   } else if (Object.keys(dataStore.channels).length < 1) {
-    return { error: 'no channel in dataStore' };
+    // return { error: 'no channel in dataStore' };
+    throw HTTPError(400, 'no channel in dataStore');
   }
   // get User index from token
   const userIndex = getUser(token);
   if (userIndex === -1) {
-    return { error: 'Invalid token' };
+    // return { error: 'Invalid token' };
+    throw HTTPError(400, 'Invalid token');
   }
   const authUserId = dataStore.users[userIndex].uId;
 
@@ -127,7 +136,8 @@ export function channelJoinV2(token: string, channelId: number): error | object 
       break;
       // return error when it reaches the end of the list
     } else if (i === Object.keys(dataStore.users).length - 1) {
-      return { error: 'Invalid authUserId' };
+      // return { error: 'Invalid authUserId' };
+      throw HTTPError(400, 'Invalid authUserId');
     }
   }
   // Invalid case: Invalid channelId argument
@@ -139,17 +149,20 @@ export function channelJoinV2(token: string, channelId: number): error | object 
       break;
       // return error when it reaches the end of the list
     } else if (i === Object.keys(dataStore.channels).length - 1) {
-      return { error: 'Invalid channelId' };
+      // return { error: 'Invalid channelId' };
+      throw HTTPError(400, 'Invalid channelId');
     }
   }
   // Private channel Case: cannot join private channel unless global owner
   if (channelPointer.isPublic === false && authUserId !== dataStore.users[0].uId) {
-    return { error: 'Cannot join private channel' };
+    // return { error: 'Cannot join private channel' };
+    throw HTTPError(403, 'Cannot join private channel');
   }
   // Member is in channel Case: returns error when member is already in channel
   for (const i in channelPointer.allMembers) {
     if (authUserId === channelPointer.allMembers[i].uId) {
-      return { error: 'Member is already in the channel' };
+      // return { error: 'Member is already in the channel' };
+      throw HTTPError(403, 'Member is already in the channel');
     }
   }
 
@@ -189,8 +202,8 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
   const data = getData();
   // These if statements check to see if the parameters exist.
   if (authUserId === null || channelId === null || uId === null) {
-    throw HttpError(400, 'Missing variables.' );
     // return ({ error: 'Please fill in all fields.' });
+    throw HTTPError(400, 'Please fill in all fields.');
   }
   let found1 = false;
   for (let i = 0; i < data.users.length; i++) {
@@ -200,8 +213,8 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
     }
   }
   if (found1 === false) {
-    throw HttpError(400, 'AUthUserId is invalid' );
-    // return ({ error: 'AUthUserId is invalid' });
+    // return ({ error: 'AUthUserId is not in function' });
+    throw HTTPError(400, 'AUthUserId is not in function');
   }
   let found2 = false;
   for (let i = 0; i < data.users.length; i++) {
@@ -211,9 +224,8 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
     }
   }
   if (!found2) {
-    throw HttpError(400, 'Invalid uId.' );
-
     // return ({ error: 'Invalid uId.' });
+    throw HTTPError(400, 'Invalid uId.');
   }
   let key = false;
   for (let a = 0; a < data.channels.length; a++) {
@@ -222,9 +234,8 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
     }
   }
   if (key === false) {
-    throw HttpError(400, 'Invalid channelId.' );
-
     // return ({ error: 'Please enter valid channelId.' });
+    throw HTTPError(400, 'Please enter valid channelId.');
   }
   // These if statements check to see if the Id's entered are already apart
   // of the group.
@@ -243,9 +254,8 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
     }
   }
   if (authIdInChannel === false) {
-    throw HttpError(403, 'User is not part of this channel.')
-
     // return ({ error: 'You are not part of this channel.' });
+    throw HTTPError(403, 'You are not part of this channel.');
   }
   /// ///////////////////////////////////
   let channelPointer;
@@ -254,16 +264,14 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
       channelPointer = data.channels[i];
       break;
     } else if (i === Object.keys(data.channels).length - 1) {
-      throw HttpError(400, 'Invalid channelId.' );
-
       // return { error: 'Invalid channelId' };
+      throw HTTPError(400, 'Invalid channelId');
     }
   }
   // Private channel Case: cannot join private channel unless global owner
   if (channelPointer.isPublic === false && authUserId !== data.users[0].uId) {
-    throw HttpError(403, 'Cannot join private channel')
-
-    return { error: 'Cannot join private channel' };
+    // return { error: 'Cannot join private channel' };
+    throw HTTPError(403, 'Cannot join private channel');
   }
 
   let uIdInChannel = false;
@@ -273,9 +281,8 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
     }
   }
   if (uIdInChannel === true) {
-    throw HttpError(403, 'Member already in channel.')
-
     // return ({ error: 'Member already in channel.' });
+    throw HTTPError(400, 'Member already in channel.');
   }
   // All error cases have been sorted. Function will continue beneath.
 
@@ -319,9 +326,8 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   const data = getData();
   // Check if the parameters have been entered.
   if (authUserId === null || channelId === null || start === null) {
-    throw HttpError(400, 'Missing variables.' );
-
     // return ({ error: 'Please fill in all fields.' });
+    throw HTTPError(400, 'Please fill in all fields.');
   }
   let foundChannel = false;
   // loop to see if channelId is valid
@@ -332,9 +338,8 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
     }
   }
   if (foundChannel === false) {
-    throw HttpError(400, 'Please enter valid channelId.' );
-
     // return ({ error: 'Please enter valid channelId.' });
+    throw HTTPError(400, 'Please enter valid channelId.');
   }
   // Check if the IDs are valid (must exist or are the correct type.)
   // If the type was incorrect, it will still be invalid because all IDs are integers.
@@ -355,9 +360,8 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   }
   // error checking for if authUserId is valid
   if (foundAuthUserId === false) {
-    throw HttpError(400, 'User not part of channel.' );
-
     // return { error: 'User not part of channel.' };
+    throw HTTPError(403, 'User not part of channel.');
   }
 
   // check if start is greater than the number of messages.
@@ -369,8 +373,8 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   if (data.channels[channelIndex].messages === undefined) {
     nullArray = true;
     if (start > 0) {
-      throw HttpError(400, 'Message number entered exceeds the number of messages in this channel.' );
       // return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
+      throw HTTPError(400, 'Message number entered exceeds the number of messages in this channel.');
     }
   }
   if (nullArray === false) {
@@ -379,8 +383,8 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
       ci++;
     }
     if (data.channels[ci].messages.length <= start && start !== 0) {
-      throw HttpError(400, 'Message number entered exceeds the number of messages in this channel.' );
-      // return ({ error: 'Message number entered exceeds the number of messages in this channel.' });
+      // return ({ error: 'Message number entered exceeds the number of messages in this channel. ' });
+      throw HTTPError(400, 'Message number entered exceeds the number of messages in this channel. ');
     }
     // authUserId not in channelId
     let foundauthinside = false;
@@ -399,9 +403,8 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
     }
     // error checking for if channelId is valid
     if (foundauthinside === false) {
-      throw HttpError(400, 'Invalid channelId.' );
-
       // return { error: 'channelId is invalid' };
+      throw HTTPError(400, 'channelId is invalid');
     }
     // Create end number and completesfunctions.
 
