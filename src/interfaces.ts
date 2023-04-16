@@ -21,13 +21,17 @@ export interface React{
   uIds: number[],
   isThisUserReacted: boolean
 }
+export interface react{
+  reactId: number,
+  uIds: number[],
+}
 export interface tempMessage {
   message: string,
   uId: number,
   messageId: number,
   timeSent: number
   isPinned: boolean,
-  reacts: React[]
+  reacts: react[],
 }
 export interface Channel{
   channelId: number,
