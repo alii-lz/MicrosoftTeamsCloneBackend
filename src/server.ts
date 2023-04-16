@@ -9,7 +9,7 @@ import {
   channelInviteV2, channelMessagesV2
 } from './channel';
 import { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 } from './dm';
-import { dmDetailsV1 } from './dmDetailsV2';
+import { dmDetailsV2 } from './dmDetailsV2';
 import { profileSetnameV2, profileSetemailV2, profileSethandleStrV2 }
   from './profileUsers';
 import { authRegisterV1, authLoginV1, authLogoutV1 } from './auth';
@@ -103,63 +103,45 @@ app.post('/dm/leave/v2', (req: Request, res: Response) => {
   return res.json(dmLeave(token, parseInt(dmId)));
 });
 
-// channelDetailsV2
-app.get('/channel/details/v2', (req: Request, res: Response) => {
+app.get('/channel/details/v3', (req: Request, res: Response) => {
   const token = req.query.token as string;
   const channelIdString = req.query.channelId as string;
   const channelId = parseInt(channelIdString);
-  const details = channelDetailsV2(token, channelId);
-
-  res.json(details);
+  return res.json(channelDetailsV2(token, channelId));
 });
 
-// channelJoinV2
-app.post('/channel/join/v2', (req: Request, res: Response) => {
+app.post('/channel/join/v3', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const channelIdString = req.body.channelId as string;
   const channelId = parseInt(channelIdString);
-  const channelJoin = channelJoinV2(token, channelId);
-
-  res.json(channelJoin);
+  return res.json(channelJoinV2(token, channelId));
 });
 
-// dmDetailsV1
 app.get('/dm/details/v2', (req: Request, res: Response) => {
   const token: string = req.query.token as string; // const token = req.query.token as string;
   // const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
   const dmId: number = parseInt(req.query.dmId as string);
   // const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
-  const dmDetails = dmDetailsV1(token, dmId);
-
-  res.json(dmDetails);
+  return res.json(dmDetailsV2(token, dmId));
 });
 
-// profileSetnameV1
 app.put('/user/profile/setname/v2', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const nameFirst = req.body.nameFirst as string;
   const nameLast = req.body.nameLast as string;
-  const setName = profileSetnameV2(token, nameFirst, nameLast);
-
-  res.json(setName);
+  return res.json(profileSetnameV2(token, nameFirst, nameLast));
 });
 
-// profileSetemailV1
 app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const email = req.body.email as string;
-  const setEmail = profileSetemailV2(token, email);
-
-  res.json(setEmail);
+  return res.json(profileSetemailV2(token, email));
 });
 
-// profileSethandleStrV1
-app.put('/user/profile/sethandle/v1', (req: Request, res: Response) => {
+app.put('/user/profile/sethandle/v2', (req: Request, res: Response) => {
   const token = req.body.token as string;
   const handleStr = req.body.handleStr as string;
-  const setHandle = profileSethandleStrV2(token, handleStr);
-
-  res.json(setHandle);
+  return res.json(profileSethandleStrV2(token, handleStr));
 });
 
 app.post('/channel/invite/v2', (req: Request, res: Response) => {

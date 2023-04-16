@@ -3,7 +3,7 @@ import { user } from './interfaces';
 import { getId } from './other';
 import HTTPError from 'http-errors';
 
-export function dmDetailsV1(token: string, dmId: number) {
+export function dmDetailsV2(token: string, dmId: number) {
   const dataStore = getData();
   // check if arugment is empty
   if (dmId === null || token === undefined) {

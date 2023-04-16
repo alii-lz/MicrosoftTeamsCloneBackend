@@ -1,7 +1,7 @@
 import { requestDmCreate, requestDmDetails } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
-// import { requestChannel } from 'channelRequesters';
 import { requestClear } from './clearRequester';
+
 const OK = 200;
 const INPUT_ERROR = 400;
 const AUTHORIZATION_ERROR = 403;
