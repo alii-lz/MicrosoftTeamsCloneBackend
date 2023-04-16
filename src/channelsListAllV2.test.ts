@@ -29,7 +29,7 @@ describe('tests for /channels/listall/v3', () => {
     user = JSON.parse(tempUser.getBody() as string);
 
     const tempChannel = request('POST', SERVER_URL + '/channels/create/v3', {
-      headers: { 
+      headers: {
         token: user.token,
       },
       json: {
