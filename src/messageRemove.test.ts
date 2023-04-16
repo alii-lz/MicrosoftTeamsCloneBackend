@@ -15,7 +15,7 @@ const SERVER_URL = `${url}:${port}`;
 There will not be not tests for the functions themselves because the http
 wrappers will return an error if something is wrong with the functions anyways.
 */
-// Start of message/remove/v1 tests
+// Start of message/remove/v2 tests
 let user1Token: string;
 let user1Id: number;
 let user2Token: string;
@@ -29,7 +29,7 @@ beforeEach(() => {
   clearV1();
   const user1 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user1@hotmail.com',
@@ -45,10 +45,13 @@ beforeEach(() => {
   // make a channel
   const channel1 = request(
     'POST',
-    SERVER_URL + '/channels/create/v2',
+    SERVER_URL + '/channels/create/v3',
     {
-      json: {
+      headers: {
         token: user1Token,
+      },
+      json: {
+        // token: user1Token,
         name: 'Channel1',
         isPublic: true,
       }
@@ -59,7 +62,7 @@ beforeEach(() => {
   // make a user2
   const user2 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user2@hotmail.com',
@@ -75,10 +78,13 @@ beforeEach(() => {
   // Make a message.
   const message0 = request(
     'POST',
-    SERVER_URL + '/message/send/v1',
+    SERVER_URL + '/message/send/v2',
     {
-      json: {
+      headers: {
         token: user1Token,
+      },
+      json: {
+        // token: user1Token,
         channelId: channel1Id,
         message: 'First message is in channel 1',
       }
@@ -89,10 +95,13 @@ beforeEach(() => {
 
   request(
     'POST',
-    SERVER_URL + '/channel/invite/v2',
+    SERVER_URL + '/channel/invite/v3',
     {
-      json: {
+      headers: {
         token: user1Token,
+      },
+      json: {
+        // token: user1Token,
         channelId: channel1Id,
         uId: user2Id,
       }
@@ -101,10 +110,13 @@ beforeEach(() => {
   // const inviteRes = JSON.parse(invite.getBody() as string);
   const nonOwnerComment = request(
     'POST',
-    SERVER_URL + '/message/send/v1',
+    SERVER_URL + '/message/send/v2',
     {
-      json: {
+      headers: {
         token: user2Token,
+      },
+      json: {
+        // token: user2Token,
         channelId: channel1Id,
         message: 'I am not an owner.',
       }
@@ -118,10 +130,13 @@ describe('messageRemoveV1', () => {
   test('Success case - MessageRemove', () => {
     const res = request(
       'DELETE',
-      SERVER_URL + '/message/remove/v1',
+      SERVER_URL + '/message/remove/v2',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           messageId: messageId,
         }
       }
@@ -132,10 +147,13 @@ describe('messageRemoveV1', () => {
     // Check if message is DELETED.
     const res2 = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           channelId: channel1Id,
           start: 0,
         }
@@ -159,49 +177,58 @@ describe('messageRemoveV1', () => {
   test('Invalid messageId', () => {
     const res = request(
       'DELETE',
-      SERVER_URL + '/message/remove/v1',
+      SERVER_URL + '/message/remove/v2',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           messageId: 10,
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid messageId.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Invalid messageId.' });
+    expect(res.statusCode).toBe(400);
   });
 
   test('Invalid token', () => {
     const res = request(
       'DELETE',
-      SERVER_URL + '/message/remove/v1',
+      SERVER_URL + '/message/remove/v2',
       {
-        qs: {
+        headers: {
           token: 'asdasdss',
+        },
+        qs: {
+          // token: 'asdasdss',
           messageId: messageId,
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid token.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Invalid token.' });
+    expect(res.statusCode).toBe(403);
   });
 
   test('valid messageId but authuserid not part of channel', () => {
     const res = request(
       'DELETE',
-      SERVER_URL + '/message/remove/v1',
+      SERVER_URL + '/message/remove/v2',
       {
-        qs: {
+        headers: {
           token: user2Token,
+        },
+        qs: {
+          // token: user2Token,
           messageId: messageId,
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'User is not a global owner. Cannot remove message.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'User is not a global owner. Cannot remove message.' });
+    expect(res.statusCode).toBe(403);
   });
 });
 
@@ -209,10 +236,13 @@ describe('Last test', () => {
   test('Global Owner deleting other messages', () => {
     const res = request(
       'DELETE',
-      SERVER_URL + '/message/remove/v1',
+      SERVER_URL + '/message/remove/v2',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           messageId: messageId2,
         }
       }
@@ -222,10 +252,13 @@ describe('Last test', () => {
     expect(res.statusCode).toBe(OK);
     const res2 = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           channelId: channel1Id,
           start: 0,
         }

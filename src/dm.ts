@@ -1,5 +1,5 @@
 
-import { error, Data } from './interfaces';
+import { error, Data, message, tempMessage } from './interfaces';
 import { getId } from './other';
 import { getData, setData } from './dataStore';
 import HTTPError from 'http-errors';
@@ -7,19 +7,17 @@ import HTTPError from 'http-errors';
 function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   const creatorUId: number = getId(token);
   if (creatorUId === -1) {
-    return { error: 'invalid token' };
+    throw HTTPError(403, 'token is invalid');
   }
 
   if (uIds.includes(creatorUId) || (new Set(uIds).size !== uIds.length)) {
-    return { error: 'uIds repeated' };
+    throw HTTPError(400, 'uIds repeated');
   }
 
   const database: Data = getData();
   for (const uId of uIds) {
     if (!(database.users.find(user => user.uId === uId))) {
-      return {
-        error: 'invalid uId(s)'
-      };
+      throw HTTPError(400, 'invalid uId(s)');
     }
   }
   const handles: string[] = [database.users[creatorUId - 1].handleStr];
@@ -48,9 +46,7 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
 function dmList(token: string) {
   const user = getId(token);
   if (user === -1) {
-    return {
-      error: 'Invalid token'
-    };
+    throw HTTPError(403, 'token is invalid');
   }
   const dataBase = getData();
   interface Dms{
@@ -76,26 +72,18 @@ function dmList(token: string) {
 function dmRemove(token: string, dmId: number) {
   const user = getId(token);
   if (user === -1) {
-    return {
-      error: 'invalid token'
-    };
+    throw HTTPError(403, 'token is invalid');
   }
   const dataBase: Data = getData();
   if (dmId > dataBase.dm.length) {
-    return {
-      error: 'invalid dmId'
-    };
+    throw HTTPError(400, 'invalid dmId');
   }
   const dmess = dataBase.dm[dmId - 1];
   if (!(dmess.exists)) {
-    return {
-      error: 'invalid dmId'
-    };
+    throw HTTPError(403, 'invalid dmId');
   }
   if (!(user === dmess.owner)) {
-    return {
-      error: 'no permission'
-    };
+    throw HTTPError(403, 'no permission');
   }
   dataBase.dm[dmId - 1].exists = false;
   setData(dataBase);
@@ -132,7 +120,39 @@ function dmLeave(token: string, dmId: number) {
   return {};
 }
 function dmMessagesV1 (token: string, dmId: number, start: number) {
-  console.log('missing function <><><><><>><><><><><>');
+  const user: number = getId(token);
+  if (user === -1){
+    throw HTTPError(403, 'Invalid token');
+  }
+  const dataBase: Data = getData();
+  const dm = dataBase.dm.find(dm => dm.dmId === dmId);
+  if(!dm){
+    throw HTTPError(400, 'invalid DmID');
+  };
+  if(start> dm.messages.length){
+    throw HTTPError(400, 'messages not found');
+  }
+  if (!dm.members.includes(user)){
+    throw HTTPError(403, 'user not in dm');
+  }
+  let end: number, lastIndex: number = 0;
+  if (start + 50 > dm.messages.length){
+    end = -1;
+    lastIndex = dm.messages.length;
+  } else{
+    end = start + 50;
+    lastIndex = end;
+  }
+  let messages: tempMessage[] = [];
+  for (let index = start; index < lastIndex; index++){
+    messages.push(dm.messages[index]);
+  }
+  return {
+    messages: messages,
+    start: start,
+    end: end
+  }
+  
 }
 
 export { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 };

@@ -4,9 +4,10 @@ import { getId } from './other';
 const data = getData();
 setData(data);
 import { error, messageIDReturn } from './interfaces';
+import HttpError from 'http-errors';
 
 /**
-  * messageSendV1 sends a messsage to a channel. The message is sent by the uId who owns the token.
+  * messageSendV2 sends a messsage to a channel. The message is sent by the uId who owns the token.
   *
   * @param {string} token - The token belonging to the user who wants to send the message. They must be apart of the channel.
   * @param {object} channelId - The Id for the channel which the user is trying send messages to.
@@ -15,16 +16,18 @@ import { error, messageIDReturn } from './interfaces';
   *
   * @returns {messageId} - Returns a number.
 */
-export function messageSendV1(token: string, channelId: number, message: string): messageIDReturn | error {
+export function messageSendV2(token: string, channelId: number, message: string): messageIDReturn | error {
   const data = getData();
   // Check if empty values were entered.
   if (token === '' || channelId === null) {
-    return { error: 'Missing variables.' };
+    throw HttpError(400, 'Missing variables.' );
+    // return { error: 'Missing variables.' };
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    return { error: 'Invalid token.' };
+    throw HttpError(403, 'Invalid token.' );
+    // return { error: 'Invalid token.' };
   }
   // check if channelId is valid.
   let channelIndex2 = 0;
@@ -33,14 +36,17 @@ export function messageSendV1(token: string, channelId: number, message: string)
     channelIndex2++;
   }
   if (channelIndex2 === totalChannelCount) {
-    return { error: 'Invalid channelId.' };
+    throw HttpError(400, 'Invalid channelId.' );
+    // return { error: 'Invalid channelId.' };
   }
   // check if message is over 1000 characters or if it is less than one.
   if (message.length >= 1000) {
-    return { error: 'Message too long.' };
+    throw HttpError(400, 'Message too long.' );
+    // return { error: 'Message too long.' };
   }
   if (message === '') {
-    return { error: 'Message too short.' };
+    throw HttpError(400, 'Message too short.' );
+    // return { error: 'Message too short.' };
   }
   // Check if user is part of this chanel.
   let channelUserIndex = 0;
@@ -50,7 +56,8 @@ export function messageSendV1(token: string, channelId: number, message: string)
     channelUserIndex++;
   }
   if (channelUserIndex === memberCount) {
-    return { error: 'User is not part of this channel.' };
+    throw HttpError(403, 'User is not part of this channel.')
+    // return { error: 'User is not part of this channel.' };
   }
   // Save the message and create an ID.
   const messageId = data.messageDetails.length;
@@ -90,7 +97,7 @@ export function messageSendV1(token: string, channelId: number, message: string)
 }
 
 /**
-  * messageEditV1 edits a messsage in a channel. The message is sent by the uId
+  * messageEditV2 edits a messsage in a channel. The message is sent by the uId
   * who owns the token or the uId is a global owner.
   *
   * @param {string} token - The token belonging to the user who wants to send the message. They must be apart of the channel.
@@ -100,16 +107,18 @@ export function messageSendV1(token: string, channelId: number, message: string)
   *
   * @returns {} - Returns nothing if successful.
 */
-export function messageEditV1(token: string, messageId: number, message: string): any | error {
+export function messageEditV2(token: string, messageId: number, message: string): any | error {
   const data = getData();
   // Check if empty values were entered.
   if (token === '' || messageId === null) {
-    return { error: 'Missing variables.' };
+    throw HttpError(400, 'Missing variables.' );
+    // return { error: 'Missing variables.' };
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    return { error: 'Invalid token.' };
+    throw HttpError(403, 'Invalid token.' );
+    // return { error: 'Invalid token.' };
   }
   // check if messageId is valid.
   let i = 0;
@@ -119,12 +128,14 @@ export function messageEditV1(token: string, messageId: number, message: string)
     }
   }
   if (i === data.messageDetails.length) {
-    return { error: 'Invalid messageId.' };
+    throw HttpError(400, 'Invalid messageId.' );
+    // return { error: 'Invalid messageId.' };
   }
 
   // check if message is over 1000 characters or if it is less than one.
   if (message.length >= 1000) {
-    return { error: 'Message too long.' };
+    throw HttpError(400, 'Message too long.' );
+    // return { error: 'Message too long.' };
   }
   if (message === '') {
     return {};
@@ -137,7 +148,8 @@ export function messageEditV1(token: string, messageId: number, message: string)
     userIndex++;
   }
   if (data.messageDetails[i].uId !== uId && data.users[userIndex].globalOwner === false) {
-    return { error: 'User is not a global owner. Cannot edit message.' };
+    throw HttpError(403, 'User is not a global owner. Cannot edit message.')
+    // return { error: 'User is not a global owner. Cannot edit message.' };
   }
 
   // Edit the message. user is either a global owner or is the original message sender.
@@ -159,7 +171,7 @@ export function messageEditV1(token: string, messageId: number, message: string)
 }
 
 /**
-  * messageRemoveV1 edits a messsage in a channel. The message is sent by the uId
+  * messageRemoveV2 edits a messsage in a channel. The message is sent by the uId
   * who owns the token or the uId is a global owner.
   *
   * @param {string} token - The token belonging to the user who wants to remove the message. They must be apart of the channel.
@@ -169,16 +181,19 @@ export function messageEditV1(token: string, messageId: number, message: string)
   *
   * @returns {} - Returns nothing if successful.
 */
-export function messageRemoveV1(token: string, messageId: number): any | error {
+export function messageRemoveV2(token: string, messageId: number): any | error {
   const data = getData();
   // Check for missing variables
   if (token === '' || messageId === null) {
-    return { error: 'Missing variables.' };
+    throw HttpError(400, 'Missing variables.' );
+    // return { error: 'Missing variables.' };
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    return { error: 'Invalid token.' };
+    throw HttpError(403, 'Invalid token.' );
+
+    // return { error: 'Invalid token.' };
   }
   // check if messageId is valid.
   let i = 0;
@@ -190,7 +205,8 @@ export function messageRemoveV1(token: string, messageId: number): any | error {
     i++;
   }
   if (i === numberOfMessages) {
-    return { error: 'Invalid messageId.' };
+    throw HttpError(400, 'Invalid messageId.' );
+    // return { error: 'Invalid messageId.' };
   }
 
   let userIndex = 0;
@@ -198,7 +214,8 @@ export function messageRemoveV1(token: string, messageId: number): any | error {
     userIndex++;
   }
   if (data.messageDetails[i].uId !== uId && data.users[userIndex].globalOwner === false) {
-    return { error: 'User is not a global owner. Cannot remove message.' };
+    throw HttpError(403, 'User is not a global owner. Cannot remove message.')
+    // return { error: 'User is not a global owner. Cannot remove message.' };
   }
   // Delete the message.
   // Need to find the location of the message.
@@ -222,7 +239,7 @@ export function messageRemoveV1(token: string, messageId: number): any | error {
 }
 
 /**
-  * messageSenddmV1 edits a messsage to a dm. The message is sent by the uId
+  * messageSenddmV2 edits a messsage to a dm. The message is sent by the uId
   * who owns the token and is a part of the dm or the uId is a global owner.
   *
   * @param {string} token - The token belonging to the user who wants to remove the message. They must be apart of the channel.
@@ -237,11 +254,13 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
   // Check if empty values were entered.
   if (token === '' || dmId === null) {
     return { error: 'Missing variables.' };
+    // throw HttpError(403, { error: 'Missing variables.' })
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    return { error: 'Invalid token.' };
+    throw HttpError(403, 'Invalid token.' );
+    // return { error: 'Invalid token.' };
   }
   // check if dmId is valid.
   let dmIndex = 0;
@@ -249,14 +268,18 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
     dmIndex++;
   }
   if (dmIndex === data.dm.length) {
-    return { error: 'Invalid dmId.' };
+    throw HttpError(400, 'Invalid dmId.' );
+    // return { error: 'Invalid dmId.' };
   }
   // Check if message size is ok
   if (message.length >= 1000) {
-    return { error: 'Message too long.' };
+    throw HttpError(400, 'Message too long.' );
+    // return { error: 'Message too long.' };
   }
   if (message === '') {
-    return { error: 'Message too short.' };
+    // return { error: 'Message too short.' };
+    throw HttpError(400, 'Message too short.' );
+
   }
   // Check if user is part of dm
   let dmUserIndex = 0;
@@ -264,16 +287,21 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
     dmUserIndex++;
   }
   if (dmUserIndex === data.dm[dmIndex].members.length) {
-    return { error: 'User is not part of DM.' };
+    throw HttpError(403, 'User is not part of DM.')
+
+    // return { error: 'User is not part of DM.' };
   }
   // sendDm and give it a number
   // Make an Id for the message.
   const messageId = data.messageDetails.length;
-  const newMessage = {
+  const time = new Date();
+  const newMessage: tempMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
-    timeSent: Date.now(),
+    timeSent: Math.floor(time.getTime()/1000),
+    isPinned: false,
+    reacts: []
   };
   // This will make it easier to find and delete in the future
   const messgaeDetailEntry = {

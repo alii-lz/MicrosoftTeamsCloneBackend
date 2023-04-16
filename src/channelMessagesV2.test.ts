@@ -18,7 +18,7 @@ beforeEach(() => {
   // Make the first User
   const user1 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user1@hotmail.com',
@@ -34,10 +34,13 @@ beforeEach(() => {
   // make a channel
   const channel1 = request(
     'POST',
-    SERVER_URL + '/channels/create/v2',
+    SERVER_URL + '/channels/create/v3',
     {
-      json: {
+      headers: {
         token: user1Token,
+      },
+      json: {
+        // token: user1Token,
         name: 'Channel1',
         isPublic: true,
       }
@@ -48,7 +51,7 @@ beforeEach(() => {
   // make a user2
   const user2 = request(
     'POST',
-    SERVER_URL + '/auth/register/v2',
+    SERVER_URL + '/auth/register/v3',
     {
       json: {
         email: 'user2@hotmail.com',
@@ -67,10 +70,13 @@ describe('channelInvite', () => {
   test('Success case - channelMessages', () => {
     const res = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           channelId: channel1Id,
           start: 0,
         }
@@ -89,65 +95,77 @@ describe('channelInvite', () => {
   test('Invalid ChannelId', () => {
     const res = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           channelId: channel1Id + 1,
           start: 0,
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Please enter valid channelId.' });
+    expect(res.statusCode).toBe(400);
   });
   test('start too big', () => {
     const res = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user1Token,
+        },
+        qs: {
+          // token: user1Token,
           channelId: channel1Id,
           start: 30000,
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Message number entered exceeds the number of messages in this channel.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Message number entered exceeds the number of messages in this channel.' });
+    expect(res.statusCode).toBe(400);
   });
   test('Invalid user', () => {
     const res = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: user2Token,
+        },
+        qs: {
+          // token: user2Token,
           channelId: channel1Id,
           start: 0,
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'User not part of channel.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'User not part of channel.' });
+    expect(res.statusCode).toBe(400);
   });
   test('Invalid token', () => {
     const res = request(
       'GET',
-      SERVER_URL + '/channel/messages/v2',
+      SERVER_URL + '/channel/messages/v3',
       {
-        qs: {
+        headers: {
           token: 'abcdefg',
+        },
+        qs: {
+          // token: 'abcdefg',
           channelId: channel1Id,
           start: 0,
         }
       }
     );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ error: 'Invalid token.' });
-    expect(res.statusCode).toBe(OK);
+    const returnData = JSON.parse(res.body as string);
+    // expect(returnData).toStrictEqual({ error: 'Invalid token.' });
+    expect(res.statusCode).toBe(403);
   });
 });

@@ -308,7 +308,7 @@ export function channelInviteV1(authUserId: number, channelId: number, uId: numb
 }
 
 /**
-  * channelMessagesV1 takes the first user Id, channelId and an integer to display the messages in a channel.
+  * channelMessagesV2 takes the first user Id, channelId and an integer to display the messages in a channel.
   *
   * @param {integer} authUserId - The user Id of the member who is already in the group and wants to view the messages.
   * @param {integer} channelId - The Id for the channel which authUserId is trying view messages from.
@@ -441,18 +441,20 @@ export function channelMessagesV1(authUserId: number, channelId: number, start: 
   }
 }
 
-export function channelInviteV2(token: string, channelId: number, uId: number): error | object {
+export function channelInviteV3(token: string, channelId: number, uId: number): error | object {
   const id = getId(token);
   if (id === -1) {
-    return { error: 'Invalid token.' };
+    throw HttpError(403, 'Invalid token.' );
+    // return { error: 'Invalid token.' };
   }
   return channelInviteV1(id, channelId, uId);
 }
 
-export function channelMessagesV2(token: string, channelId: number, start: number): error | channelMessages {
+export function channelMessagesV3(token: string, channelId: number, start: number): error | channelMessages {
   const id = getId(token);
   if (id === -1) {
-    return { error: 'Invalid token.' };
+    throw HttpError(403, 'Invalid token.' );
+    // return { error: 'Invalid token.' };
   }
   return channelMessagesV1(id, channelId, start);
 }
