@@ -1,6 +1,7 @@
 import { getData } from './dataStore';
 import { getId } from './other';
 import { error, user } from './interfaces';
+import HTTPError from 'http-errors';
 
 interface userTemp {
   uId: number,
@@ -24,12 +25,12 @@ interface users {
  * @throws {error} - returns an error if token is invalid
  *
 */
-function usersAllV1 (token : string) : error | users {
+function usersAllV2 (token : string) : error | users {
   const data = getData();
   const id = getId(token);
 
   if (id === -1) {
-    return { error: 'invalid token' };
+    throw HTTPError(403, 'token is invalid');
   }
 
   const users = data.users.map((user : user) => {
@@ -45,4 +46,4 @@ function usersAllV1 (token : string) : error | users {
   return { users: users };
 }
 
-export { usersAllV1 };
+export { usersAllV2 };
