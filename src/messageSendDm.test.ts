@@ -2,8 +2,7 @@
 import request from 'sync-request';
 import config from './config.json';
 import { requestAuthRegister, requestAuthLogin, requestAuthLogout } from './authRequesters';
-import { channelDetailsV3, channelJoinV3, channelInviteV3, channelMessagesV3 } from './channelRequestor';
-import { requestMessageSendV2, requestMessageEditV2, requestMessageSendDmV2 } from './messageFunctionRequestors'
+import { requestMessageSendDmV2 } from './messageFunctionRequestors'
 import { requestDmCreate } from './dmRequesters';
 import {
   clearV1,
