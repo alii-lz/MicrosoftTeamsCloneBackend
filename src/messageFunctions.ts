@@ -294,11 +294,14 @@ export function messageSenddmV2(token: string, dmId: number, message: string) {
   // sendDm and give it a number
   // Make an Id for the message.
   const messageId = data.messageDetails.length;
-  const newMessage = {
+  const time = new Date();
+  const newMessage: tempMessage = {
     messageId: messageId,
     uId: uId,
     message: message,
-    timeSent: Date.now(),
+    timeSent: Math.floor(time.getTime()/1000),
+    isPinned: false,
+    reacts: []
   };
   // This will make it easier to find and delete in the future
   const messgaeDetailEntry = {
