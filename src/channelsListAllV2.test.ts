@@ -3,7 +3,6 @@ import request from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
-const AUTHORIZATION_ERROR = 403;
 
 const ERROR = { error: expect.any(String) };
 
@@ -17,7 +16,7 @@ describe('tests for /channels/listall/v3', () => {
   let channel2: {channelId: number};
 
   beforeEach(() => {
-    const tempUser = request('POST', SERVER_URL + '/auth/register/v2',
+    const tempUser = request('POST', SERVER_URL + '/auth/register/v3',
       {
         json: {
           email: 'matthew@gmail.com',
@@ -29,9 +28,11 @@ describe('tests for /channels/listall/v3', () => {
 
     user = JSON.parse(tempUser.getBody() as string);
 
-    const tempChannel = request('POST', SERVER_URL + '/channels/create/v2', {
-      json: {
+    const tempChannel = request('POST', SERVER_URL + '/channels/create/v3', {
+      headers: { 
         token: user.token,
+      },
+      json: {
         name: 'channel1',
         isPublic: true
       }
@@ -39,9 +40,11 @@ describe('tests for /channels/listall/v3', () => {
 
     channel1 = JSON.parse(tempChannel.getBody() as string);
 
-    const tempChannel2 = request('POST', SERVER_URL + '/channels/create/v2', {
-      json: {
+    const tempChannel2 = request('POST', SERVER_URL + '/channels/create/v3', {
+      headers: {
         token: user.token,
+      },
+      json: {
         name: 'channel2',
         isPublic: false
       }
@@ -77,7 +80,7 @@ describe('tests for /channels/listall/v3', () => {
       const data = JSON.parse(res.getBody() as string);
 
       expect(data).toEqual(ERROR);
-      expect(res.statusCode).toBe(AUTHORIZATION_ERROR);
+      expect(res.statusCode).toBe(403);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
