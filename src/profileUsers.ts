@@ -2,7 +2,7 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 import { getUser } from './getUser';
 import validator from 'validator';
-import { isAlphanumerical } from 'is-alphanumerical'
+// import { isAlphanumerical } from 'is-alphanumerical'
 import HTTPError from 'http-errors';
 
 export function profileSetnameV2(token: string, nameFirst: string, nameLast: string) {
@@ -83,10 +83,13 @@ export function profileSethandleStrV2(token: string, handleStr: string) {
 
   // lowercase handleStr
   // handleStr = handleStr.toLowerCase();
-  if (!isAlphanumerical(handleStr)) {
-    // return { error: 'handleStr must be alphaNumeric' };
+  if(/^([a-zA-Z0-9])/.test(handleStr) == false){
     throw HTTPError(400, 'handleStr must be alphaNumeric');
   }
+  /// if (!handleStr.match("[A-Za-z0-9]")) {
+  //   // return { error: 'handleStr must be alphaNumeric' };
+  //   throw HTTPError(400, 'handleStr must be alphaNumeric');
+  // }
 
   // get userIndex from token
   const userId = getId(token);

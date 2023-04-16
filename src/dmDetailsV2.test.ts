@@ -11,8 +11,8 @@ let AuthUserId1: { token: string, authUserId: number };
 let AuthUserId2: { token: string, authUserId: number };
 let AuthUserId3: { token: string, authUserId: number };
 
-let dm1: { token: string, authUserId: number };
-let dm2: { token: string, authUserId: number };
+let dm1: { dmId: number };
+let dm2: { dmId: number };
 
 describe('/dm/details/v2 failure tests', () => {
   beforeEach(() => {

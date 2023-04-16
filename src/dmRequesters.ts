@@ -51,7 +51,7 @@ export function requestDmRemove(token: string, dmId: number) {
 export function requestDmDetails(token: string, dmId: number) {
   const res = request(
     'GET',
-    SERVER_URL + '/dm/details/v1',
+    SERVER_URL + '/dm/details/v2',
     {
       qs: {
         token: token,

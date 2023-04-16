@@ -5,9 +5,6 @@ import { getId } from './other';
 import { Channel, Data, user } from './interfaces';
 import  HTTPError  from 'http-errors';
 
-
-import HTTPError from 'http-errors';
-
 interface error {
   error: string;
 }

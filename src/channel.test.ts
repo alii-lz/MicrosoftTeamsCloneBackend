@@ -11,9 +11,9 @@ let AuthUserId1: { token: string, authUserId: number };
 let AuthUserId2: { token: string, authUserId: number };
 let AuthUserId3: { token: string, authUserId: number };
 
-let ChannelId1: { token: string, authUserId: number };
-let ChannelId2: { token: string, authUserId: number };
-let ChannelId3: { token: string, authUserId: number };
+let ChannelId1: { channelId: number} ;
+let ChannelId2: { channelId: number };
+let ChannelId3: { channelId: number };
 
 describe('channel/details/v3 failure tests', () => {
   beforeEach(() => {
