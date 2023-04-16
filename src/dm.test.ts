@@ -224,9 +224,9 @@ describe('tests for /dm/remove/v2', () => {
   });
   test('failure case/member not owner', () => {
     try {
-    const dmRemove = requestDmRemove(user2.token, dm.dmId);
-    expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
-    expect(dmRemove.status).toStrictEqual(403);
+      const dmRemove = requestDmRemove(user2.token, dm.dmId);
+      expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
+      expect(dmRemove.status).toStrictEqual(403);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
@@ -234,10 +234,10 @@ describe('tests for /dm/remove/v2', () => {
 
   test('failure case/ dmId does not refer to a valid dm', () => {
     try {
-    const invalidDmId = dm.dmId + 1;
-    const dmRemove = requestDmRemove(user.token, invalidDmId);
-    expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
-    expect(dmRemove.status).toStrictEqual(400);
+      const invalidDmId = dm.dmId + 1;
+      const dmRemove = requestDmRemove(user.token, invalidDmId);
+      expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
+      expect(dmRemove.status).toStrictEqual(400);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
@@ -245,10 +245,10 @@ describe('tests for /dm/remove/v2', () => {
 
   test('failure/ token is invalid', () => {
     try {
-    const invalidToken = user.token + user2.token;
-    const dmRemove = requestDmRemove(invalidToken, dm.dmId);
-    expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
-    expect(dmRemove.status).toStrictEqual(403);
+      const invalidToken = user.token + user2.token;
+      const dmRemove = requestDmRemove(invalidToken, dm.dmId);
+      expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
+      expect(dmRemove.status).toStrictEqual(403);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
@@ -256,10 +256,10 @@ describe('tests for /dm/remove/v2', () => {
 
   test('dmId is valid and the authorised user is no longer in the DM', () => {
     try {
-    requestDmLeave(user.token, dm.dmId);
-    const dmRemove = requestDmRemove(user.token, dm.dmId);
-    expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
-    expect(dmRemove.status).toStrictEqual(403);
+      requestDmLeave(user.token, dm.dmId);
+      const dmRemove = requestDmRemove(user.token, dm.dmId);
+      expect(dmRemove.returnObj.error).toStrictEqual(ERROR);
+      expect(dmRemove.status).toStrictEqual(403);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
