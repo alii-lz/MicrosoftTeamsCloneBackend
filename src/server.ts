@@ -17,8 +17,8 @@ import { clearV1 } from './other';
 import { messageSendV1, messageEditV1, messageRemoveV1, messageSenddmV2 } from './messageFunctions';
 import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels';
 import errorHandler from 'middleware-http-errors';
-import { channelRemoveOwnerV1 } from './channelRemoveOwner';
-import { usersAllV1 } from './usersAllV1';
+import { channelRemoveOwnerV2 } from './channelRemoveOwner';
+import { usersAllV2 } from './usersAllV1';
 import { userProfileV2 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
 import { channelLeaveV1 } from './channelLeave';
@@ -76,22 +76,23 @@ app.get('/channels/list/v3', (req: Request, res: Response) => {
   return res.json(channelsListV3(token));
 });
 
-app.post('/dm/create/v1', (req: Request, res: Response) => {
-  const { token, uIds } = req.body; // Original -> const { token, uIds } = req.body;
+app.post('/dm/create/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const { uIds } = req.body; // Original -> const { token, uIds } = req.body;
   // const uids = req.body.uids as number[];
   // console.log("<><>",req.body)
   // console.log(uIds)
   res.json(dmCreate(token, uIds));// Original -> return res.json(dmCreate(token, uIds));
 });
 
-app.get('/dm/list/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string;
+app.get('/dm/list/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
 
   return res.json(dmList(token));
 });
 
-app.delete('/dm/remove/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string;
+app.delete('/dm/remove/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
   const dmId = req.query.dmId as string;
   return res.json(dmRemove(token, parseInt(dmId)));
 });
@@ -202,16 +203,16 @@ app.get('/channels/listall/v3', (req: Request, res: Response) => {
   res.json(channelsListAllV3(token));
 });
 
-app.post('/channel/removeowner/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/channel/removeowner/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
   const uId = parseInt(req.body.uId as string);
-  res.json(channelRemoveOwnerV1(token, channelId, uId));
+  res.json(channelRemoveOwnerV2(token, channelId, uId));
 });
 
-app.get('/users/all/v1', (req: Request, res: Response) => {
-  const token = req.query.token as string;
-  res.json(usersAllV1(token));
+app.get('/users/all/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
+  res.json(usersAllV2(token));
 });
 
 app.post('/channel/addowner/v1', (req: Request, res: Response) => {

@@ -1,14 +1,17 @@
 import request from 'sync-request';
 import { port, url } from './config.json';
+import { json } from 'stream/consumers';
 const SERVER_URL = `${url}:${port}`;
 
 export function requestDmCreate(token: string, uIds: number[]) {
   const res = request(
     'POST',
-    SERVER_URL + '/dm/create/v1',
+    SERVER_URL + '/dm/create/v2',
     {
-      json: {
+      headers: {
         token: token,
+      },
+      json: {
         uIds: uIds,
       }
     }
@@ -19,9 +22,9 @@ export function requestDmCreate(token: string, uIds: number[]) {
 export function requestDmList(token: string) {
   const res = request(
     'GET',
-    SERVER_URL + '/dm/list/v1',
+    SERVER_URL + '/dm/list/v2',
     {
-      qs: {
+      headers: {
         token: token,
       }
     }
@@ -32,10 +35,12 @@ export function requestDmList(token: string) {
 export function requestDmRemove(token: string, dmId: number) {
   const res = request(
     'DELETE',
-    SERVER_URL + '/dm/remove/v1',
+    SERVER_URL + '/dm/remove/v2',
     {
-      qs: {
+      headers: {
         token: token,
+      },
+      qs: {
         dmId: dmId,
       }
     }
