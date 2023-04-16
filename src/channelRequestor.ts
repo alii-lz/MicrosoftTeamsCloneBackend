@@ -9,11 +9,13 @@ export function requestChannelDetailsV3(token: string, channelId: number) {
     {
       qs: {
         token: token,
+      },
+      json: {
         channelId: channelId,
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
 export function requestChannelJoinV3(token: string, channelId: number) {
@@ -21,28 +23,32 @@ export function requestChannelJoinV3(token: string, channelId: number) {
     'POST',
     SERVER_URL + '/channel/join/v3',
     {
-      json: {
+      headers: {
         token: token,
+      },
+      json: {
         channelId: channelId,
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
-export function requestChannelInviteV3(authUserId: number, channelId: number, uId: number) {
+export function channelInviteV3(token: string, channelId: number, uId: number) {
   const res = request(
     'POST',
     SERVER_URL + '/channel/invite/v3',
     {
+      headers: {
+        token: token,
+      },
       json: {
-        authUserId: authUserId,
         channelId: channelId,
         uId: uId,
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
 export function requestChannelMessagesV3(token: string, channelId: number, start: number) {
@@ -50,12 +56,14 @@ export function requestChannelMessagesV3(token: string, channelId: number, start
     'GET',
     SERVER_URL + '/channel/messages/v3',
     {
-      json: {
+      headers: {
         token: token,
+      },
+      qs: {
         channelId: channelId,
         start: start,
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }

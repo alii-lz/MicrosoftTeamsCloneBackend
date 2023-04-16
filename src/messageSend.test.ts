@@ -1,10 +1,10 @@
 // Written by Arden Sae-Ueng
 import request from 'sync-request';
 import config from './config.json';
-
-import {
-  clearV1,
-} from './other';
+import { requestAuthRegister } from './authRequesters';
+import { requestMessageSendV2 } from './messageFunctionRequestors'
+import { clearV1 } from './other';
+import { resetData } from './dataStore';
 
 const OK = 200;
 const port = config.port;
@@ -19,25 +19,14 @@ wrappers will return an error if something is wrong with the functions anyways.
 let user1Token: string;
 let user1Id: number;
 let user2Token: string;
-// let user2Id: number;
 let channel1Id: number;
 beforeEach(() => {
+  resetData();
   clearV1();
-  const user1 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v3',
-    {
-      json: {
-        email: 'user1@hotmail.com',
-        password: 'p123445P',
-        nameFirst: 'Arr',
-        nameLast: 'Sddd',
-      }
-    }
-  );
-  const user1data = JSON.parse(user1.getBody() as string);
-  user1Token = user1data.token;
-  user1Id = user1data.authUserId;
+  // Make user 1
+  const user1data = requestAuthRegister('user1@hotmail.com', 'p123445P', 'Arr', 'Sddd');
+  user1Token= user1data.returnObj.token;
+  user1Id = user1data.returnObj.authUserId;
   // make a channel
   const channel1 = request(
     'POST',
@@ -47,7 +36,6 @@ beforeEach(() => {
         token: user1Token,
       },
       json: {
-        // token: user1Token,
         name: 'Channel1',
         isPublic: true,
       }
@@ -55,45 +43,18 @@ beforeEach(() => {
   );
   const channel1data = JSON.parse(channel1.getBody() as string);
   channel1Id = channel1data.channelId;
-  // make a user2
-  const user2 = request(
-    'POST',
-    SERVER_URL + '/auth/register/v3',
-    {
-      json: {
-        email: 'user2@hotmail.com',
-        password: 'p123445P',
-        nameFirst: 'ddddddd',
-        nameLast: 'Sddddd',
-      }
-    }
-  );
-  const user2data = JSON.parse(user2.getBody() as string);
-  user2Token = user2data.token;
-  // user2Id = user2data.authUserId;
+  // Make second user
+  const user2data = requestAuthRegister('user2@hotmail.com', 'p123445P', 'ddddddd', 'Sddddd');
+  user2Token= user2data.returnObj.token;
 });
 
 describe('messageSendV1', () => {
   test('Success case - messageSend', () => {
-    let res = request(
-      'POST',
-      SERVER_URL + '/message/send/v2',
-      {
-        headers: {
-          token: user1Token,
-        },
-        json: {
-          // token: user1Token,
-          channelId: channel1Id,
-          message: 'First message is in channel 1',
-        }
-      }
-    );
-    const returnData = JSON.parse(res.getBody() as string);
-    expect(returnData).toStrictEqual({ messageId: 0 });
-    expect(res.statusCode).toBe(OK);
+    const channel1 = requestMessageSendV2(user1Token,channel1Id,'First message is in channel 1')
+    expect(channel1.returnObj).toStrictEqual({ messageId: 0 });
+    expect(channel1.status).toBe(OK);
     // Check if message is there.
-    res = request(
+    let res = request(
       'GET',
       SERVER_URL + '/channel/messages/v3',
       {
@@ -101,7 +62,6 @@ describe('messageSendV1', () => {
           token: user1Token,
         },
         qs: {
-          // token: user1Token,
           channelId: channel1Id,
           start: 0,
         }
@@ -114,6 +74,8 @@ describe('messageSendV1', () => {
         uId: user1Id,
         message: 'First message is in channel 1',
         timeSent: expect.any(Number),
+        isPinned: false,
+        reacts: [],
       }],
       start: 0,
       end: -1
@@ -121,102 +83,27 @@ describe('messageSendV1', () => {
   });
 
   test('Invalid channelId', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/message/send/v2',
-      {
-        headers: {
-          token: user1Token,
-        },
-        json: {
-          // token: user1Token,
-          channelId: channel1Id + 1,
-          message: 'First message is in channel 1',
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Invalid channelId.' });
-    expect(res.statusCode).toBe(400);
+    const channel1 = requestMessageSendV2(user1Token,(channel1Id+1),'First message is in channel 1')
+    expect(channel1.status).toBe(400);
   });
 
   test('Invalid token', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/message/send/v2',
-      {
-        headers: {
-          token: 'asbdasd',
-        },
-        json: {
-          // token: 'asbdasd',
-          channelId: channel1Id,
-          message: 'First message is in channel 1',
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData.returnObj).toStrictEqual( 'Invalid token.' );
-    expect(res.statusCode).toBe(403);
+    const channel1 = requestMessageSendV2('asbdasd',channel1Id,'First message is in channel 1')
+    expect(channel1.status).toBe(403);
   });
 
   test('valid channel but invalid authuserid', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/message/send/v2',
-      {
-        headers: {
-          token: user2Token,
-        },
-        json: {
-          // token: user2Token,
-          channelId: channel1Id,
-          message: 'First message is in channel 1',
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'User is not part of this channel.' });
-    expect(res.statusCode).toBe(403);
+    const channel1 = requestMessageSendV2(user2Token,channel1Id,'First message is in channel 1')
+    expect(channel1.status).toBe(403);
   });
 
   test('message less than one character', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/message/send/v2',
-      {
-        headers: {
-          token: user1Token,
-        },
-        json: {
-          // token: user1Token,
-          channelId: channel1Id,
-          message: '',
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Message too short.' });
-    expect(res.statusCode).toBe(400);
+    const channel1 = requestMessageSendV2(user1Token,channel1Id,'')
+    expect(channel1.status).toBe(400);
   });
 
   test('message over 1000 characters', () => {
-    const res = request(
-      'POST',
-      SERVER_URL + '/message/send/v2',
-      {
-        headers: {
-          token: user1Token,
-        },
-        json: {
-          // token: user1Token,
-          channelId: channel1Id,
-          message: 'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa',
-        }
-      }
-    );
-    const returnData = JSON.parse(res.body as string);
-    // expect(returnData).toStrictEqual({ error: 'Message too long.' });
-    expect(res.statusCode).toBe(400);
+    const channel1 = requestMessageSendV2(user1Token,channel1Id,'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa')
+    expect(channel1.status).toBe(400);
   });
 });
