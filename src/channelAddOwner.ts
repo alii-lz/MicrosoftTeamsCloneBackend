@@ -3,8 +3,10 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 
 export { Channel, user } from './interfaces';
+import  HttpError  from 'http-errors';
 
-export function channelAddOwnerV1(token: string, channelId: number, uId: number): object {
+export function channelAddOwnerV1(token: string, channelId: number, uId: number): Object {
+
   const data = getData();
 
   let channelIndex: number;
@@ -21,7 +23,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   }
 
   if (found === false) {
-    return { error: 'channelId does not refer to a valid channel' };
+    throw HttpError(400, 'channelId does not refer to a valid channel');
   }
 
   let mainUserIndex;
@@ -45,11 +47,11 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   }
 
   if (foundMainUser === false) {
-    return { error: 'token is invalid' };
+    throw HttpError(403, 'uId does not refer to a valid user');
   }
 
   if (foundUserToAdd === false) {
-    return { error: 'uId does not refer to a valid user' };
+    throw HttpError(400, 'uId does not refer to a valid user');
   }
 
   let userToAddTruth = false;
@@ -62,7 +64,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   }
 
   if (userToAddTruth === false) {
-    return { error: 'user to add is not a member of a channel' };
+    throw HttpError(400, 'uId refers to a user who is not a member of the channel');
   }
 
   // search if the user is already an owner
@@ -74,7 +76,7 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   }
 
   if (alreadyOwner === true) {
-    return { error: 'user is already a channel owner' };
+    throw HttpError(400, 'user is already a channel owner');
   }
 
   // check to see if user whos calling the function has permissions
@@ -89,11 +91,11 @@ export function channelAddOwnerV1(token: string, channelId: number, uId: number)
   }
 
   if (permission === false) {
-    return { error: 'authorised user does not have owner permissions in the channel' };
+    throw HttpError(403, 'authorised user does not have owner permissions in the channel');
   }
 
   if (data.users[mainUserIndex].globalOwner === false) {
-    return { error: 'authorised user does not have owner permissions in the channel' };
+    throw HttpError(403, 'authorised user does not have owner permissions in the channel');
   }
   // This does not work -- Arden Sae-Ueng
   // data.channels[channelIndex].owners.push(data.users[userToAddIndex]);

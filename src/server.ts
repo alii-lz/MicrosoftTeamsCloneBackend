@@ -19,9 +19,9 @@ import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels'
 import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV2 } from './channelRemoveOwner';
 import { usersAllV2 } from './usersAllV1';
-import { userProfileV2 } from './users';
+import { userProfileV3 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
-import { channelLeaveV1 } from './channelLeave';
+import { channelLeaveV2 } from './channelLeave';
 
 // Set up web app
 const app = express();
@@ -64,14 +64,12 @@ app.post('/auth/logout/v2', (req: Request, res: Response) => {
 });
 
 app.post('/channels/create/v3', (req: Request, res: Response) => {
-  
   const token = req.header('token');
   const { name, isPublic } = req.body;
   return res.json(channelsCreateV3(token, name, isPublic));
 });
 
 app.get('/channels/list/v3', (req: Request, res: Response) => {
-
   const token = req.header('token');
   return res.json(channelsListV3(token));
 });
@@ -202,23 +200,23 @@ app.get('/users/all/v2', (req: Request, res: Response) => {
   res.json(usersAllV2(token));
 });
 
-app.post('/channel/addowner/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/channel/addowner/v2', (req: Request, res: Response) => {
+	const token = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
   const uId = parseInt(req.body.uId as string);
-  res.json(channelAddOwnerV1(token, channelId, uId));
+  return res.json(channelAddOwnerV1(token, channelId, uId));
 });
 
-app.post('/channel/leave/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/channel/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
-  res.json(channelLeaveV1(token, channelId));
+  return res.json(channelLeaveV2(token, channelId));
 });
 
-app.get('/user/profile/v2', (req: Request, res: Response) => {
-  const token: string = req.query.token as string;
+app.get('/user/profile/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
   const uId = parseInt(req.query.uId as string);
-  res.json(userProfileV2(token, uId));
+  return res.json(userProfileV3(token, uId));
 });
 
 app.get('/dm/messages/v2', (req: Request, res: Response) => {
