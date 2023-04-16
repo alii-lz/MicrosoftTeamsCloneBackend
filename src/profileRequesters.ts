@@ -5,7 +5,7 @@ const SERVER_URL = `${url}:${port}`;
 export function requestProfileSetnameV2(token: string, nameFirst: string, nameLast: string) {
   const res = request(
     'PUT',
-    SERVER_URL + 'user/profile/setname/v2',
+    SERVER_URL + '/user/profile/setname/v2',
     {
       json: {
         token: token,
@@ -20,7 +20,7 @@ export function requestProfileSetnameV2(token: string, nameFirst: string, nameLa
 export function requestProfileSetemailV2(token: string, email: string) {
   const res = request(
     'PUT',
-    SERVER_URL + 'user/profile/setemail/v2',
+    SERVER_URL + '/user/profile/setemail/v2',
     {
       json: {
         token: token,
@@ -34,7 +34,7 @@ export function requestProfileSetemailV2(token: string, email: string) {
 export function requestSethandleStrV2(token: string, handleStr: string) {
   const res = request(
     'PUT',
-    SERVER_URL + 'user/profile/sethandle/v2',
+    SERVER_URL + '/user/profile/sethandle/v2',
     {
       json: {
         token: token,
