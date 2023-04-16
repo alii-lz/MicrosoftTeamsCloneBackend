@@ -117,13 +117,13 @@ app.post('/channel/join/v3', (req: Request, res: Response) => {
   return res.json(channelJoinV3(token, channelId));
 });
 
-app.get('/dm/details/v2', (req: Request, res: Response) => {
-  const token: string = req.query.token as string; // const token = req.query.token as string;
-  // const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
-  const dmId: number = parseInt(req.query.dmId as string);
-  // const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
-  return res.json(dmDetailsV2(token, dmId));
-});
+// app.get('/dm/details/v2', (req: Request, res: Response) => {
+//   const token: string = req.query.token as string; // const token = req.query.token as string;
+//   // const dmlIdString = req.query.channelId as string; // const dmId = req.query.dmId as string;
+//   const dmId: number = parseInt(req.query.dmId as string);
+//   // const dmId = parseInt(dmlIdString); // return res.json(dmDetailsV1(token, parseInt(dmId)));
+//   return res.json(dmDetailsV2(token, dmId));
+// });
 
 app.put('/user/profile/setname/v2', (req: Request, res: Response) => {
   const token = req.body.token as string;
@@ -226,6 +226,25 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
   const dmId: number = parseInt(req.query.dmId as string);
   const start: number = parseInt(req.query.start as string);
   res.json(dmMessagesV1(token, dmId, start));
+});
+
+app.get('/dm/messages/v2', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  const dmId: number = parseInt(req.query.dmId as string);
+  const start: number = parseInt(req.query.start as string);
+  res.json(dmMessagesV1(token, dmId, start));
+});
+
+app.post('message/react/v1', (req: Request, res: Response) => {
+  const { MessageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(reactV1(token, MessageId, reactId));
+});
+
+app.post('message/unreact/v1', (req: Request, res: Response) => {
+  const { MessageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(unreactV1(token, MessageId, reactId));
 });
 
 app.use(errorHandler());
