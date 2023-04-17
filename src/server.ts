@@ -22,6 +22,7 @@ import { usersAllV2 } from './usersAllV1';
 import { userProfileV2 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
 import { channelLeaveV1 } from './channelLeave';
+import { searchV1 } from './search';
 
 // Set up web app
 const app = express();
@@ -64,14 +65,12 @@ app.post('/auth/logout/v2', (req: Request, res: Response) => {
 });
 
 app.post('/channels/create/v3', (req: Request, res: Response) => {
-  
   const token = req.header('token');
   const { name, isPublic } = req.body;
   return res.json(channelsCreateV3(token, name, isPublic));
 });
 
 app.get('/channels/list/v3', (req: Request, res: Response) => {
-
   const token = req.header('token');
   return res.json(channelsListV3(token));
 });
@@ -151,7 +150,7 @@ app.post('/channel/invite/v3', (req: Request, res: Response) => {
 });
 
 app.get('/channel/messages/v3', (req: Request, res: Response) => {
-  //const token: string = req.query.token as string;
+  // const token: string = req.query.token as string;
   const token = req.header('token');
   const channelId: number = parseInt(req.query.channelId as string);
   const start: number = parseInt(req.query.start as string);
@@ -178,7 +177,7 @@ app.delete('/message/remove/v2', (req: Request, res: Response) => {
 });
 
 app.post('/message/senddm/v2', (req: Request, res: Response) => {
-  const {dmId, message } = req.body;
+  const { dmId, message } = req.body;
   const token = req.header('token');
   res.json(messageSenddmV2(token, dmId, message));
 });
@@ -233,6 +232,12 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
   const dmId: number = parseInt(req.query.dmId as string);
   const start: number = parseInt(req.query.start as string);
   res.json(dmMessagesV1(token, dmId, start));
+});
+
+app.get('/search/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  const queryStr = req.query.queryStr as string;
+  res.json(searchV1(token, queryStr));
 });
 
 app.post('message/react/v1', (req: Request, res: Response) => {
