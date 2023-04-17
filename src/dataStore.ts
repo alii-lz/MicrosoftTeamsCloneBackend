@@ -1,4 +1,3 @@
-
 import fs from 'fs';
 import { Data } from './interfaces';
 

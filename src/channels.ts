@@ -3,12 +3,11 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 
 import { Channel, Data, user } from './interfaces';
-import HTTPError from 'http-errors';
+import  HttpError  from 'http-errors';
 
 interface error {
   error: string;
 }
-
 interface channelId {
   channelId: number;
 }
@@ -20,7 +19,7 @@ interface channel {
 
 export function channelsCreateV3 (token: string, name: string, isPublic: boolean): error | channelId {
   if (getId(token) === -1) {
-    throw HTTPError(400, 'token doesnt refer to an existing user');
+    throw HttpError(403, 'token doesnt refer to an existing user');
   }
   return channelsCreateV1(getId(token), name, isPublic);
 }
@@ -37,9 +36,8 @@ export function channelsCreateV3 (token: string, name: string, isPublic: boolean
 function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): error | channelId {
   // error checking length of name
   if (name.length > 20 || name.length < 1) {
-    throw HTTPError(400, 'length of name is less than 1 or more than 20 characters');
+    throw HttpError(400, 'length of name is less than 1 or more than 20 characters');
   }
-
   let channelOwner: user;
   const data: Data = getData();
   let found = false;
@@ -95,7 +93,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
 export function channelsListV3 (token: string): error | {channels: channel[]} {
   const id = getId(token);
   if (id === -1) {
-    return { error: 'token is invalid' };
+    throw HttpError(403, 'token doesnt refer to an existing user');
   }
   return channelsListV1(id);
 }
@@ -200,7 +198,7 @@ export function channelsListAllV3 (token : string) : error | {channels: channel[
   // error checking for if token is valid
   if (id === -1) {
     // return { error: 'invalid token' };
-    throw HTTPError(403, 'invalid token');
+    throw HttpError(403, 'invalid token');
   }
 
   return channelsListAllV1(id);

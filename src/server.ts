@@ -19,17 +19,20 @@ import { channelsCreateV3, channelsListV3, channelsListAllV3 } from './channels'
 import errorHandler from 'middleware-http-errors';
 import { channelRemoveOwnerV2 } from './channelRemoveOwner';
 import { usersAllV2 } from './usersAllV1';
-import { userProfileV2 } from './users';
+import { userProfileV3 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
-import { channelLeaveV1 } from './channelLeave';
+import { channelLeaveV2 } from './channelLeave';
 
 import { notificationsGetV1 } from './notificationGet';
 import { request } from 'http';
 
 import { searchV1 } from './search';
+
 import { messagePinV1 } from './messagePin';
 import { messageUnpinV1 } from './messageUnpin';
 
+import { adminUserRemoveV1 } from './adminUserRemoveV1';
+import { adminUserPermissionChangeV1 } from './adminUserPermissionChange';
 
 // Set up web app
 const app = express();
@@ -80,6 +83,18 @@ app.post('/auth/passwordreset/reset/v1', (req: Request, res: Response) => {
   const resetCode = req.body.resetCode as string;
   const newPassword = req.body.newPassword as string;
   return res.json(authPasswordResetResetV1(resetCode, newPassword));
+});
+
+app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const uId: number = parseInt(req.query.uId as string);
+  return res.json(adminUserRemoveV1(token, uId));
+});
+
+app.post('/admin/userpermission/change/v1', (req: Request, res: Response) =>{
+  const token = req.header('token');
+  const { uId, permissionId } = req.body;
+  return res.json(adminUserPermissionChangeV1(token, uId, permissionId)); 
 });
 
 app.post('/channels/create/v3', (req: Request, res: Response) => {
@@ -220,27 +235,22 @@ app.get('/users/all/v2', (req: Request, res: Response) => {
 });
 
 app.post('/channel/addowner/v2', (req: Request, res: Response) => {
-  const token: string = req.header('token');
+	const token = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
   const uId = parseInt(req.body.uId as string);
-  res.json(channelAddOwnerV1(token, channelId, uId));
+  return res.json(channelAddOwnerV1(token, channelId, uId));
 });
 
-app.get('/notifications/get/v1', (req: Request, res: Response) => {
-  const token: string = req.header('token');
-  res.json(notificationsGetV1(token));
-});
-
-app.post('/channel/leave/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/channel/leave/v2', (req: Request, res: Response) => {
+  const token = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
-  res.json(channelLeaveV1(token, channelId));
+  return res.json(channelLeaveV2(token, channelId));
 });
 
-app.get('/user/profile/v2', (req: Request, res: Response) => {
-  const token: string = req.query.token as string;
+app.get('/user/profile/v3', (req: Request, res: Response) => {
+  const token = req.header('token');
   const uId = parseInt(req.query.uId as string);
-  res.json(userProfileV2(token, uId));
+  return res.json(userProfileV3(token, uId));
 });
 
 app.get('/dm/messages/v2', (req: Request, res: Response) => {
@@ -287,7 +297,6 @@ app.post('/message/unpin/v1', (req: Request, res: Response) => {
 //   res.json(unreactV1(token, MessageId, reactId));
 // });
 
-app.use(errorHandler());
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE

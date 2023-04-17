@@ -67,3 +67,38 @@ export function requestChannelMessagesV3(token: string, channelId: number, start
   );
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
+
+export function requestChannelAddOwnerV2(token: string, channelId: number, uId: number) {
+  const res = request(
+    'POST',
+    SERVER_URL + '/channel/addowner/v2',
+    {
+      json: {
+        channelId: channelId,
+        uId: uId
+      },
+      headers: {
+        token: token
+      },
+      timeout: 100
+    }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
+}
+
+export function requestChannelLeaveV2(token: string, channelId: number) {
+  const res = request(
+    'POST',
+    SERVER_URL + '/channel/leave/v2',
+    {
+      json: {
+        channelId: channelId
+      },
+      headers: {
+        token: token
+      },
+      timeout: 100
+    }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
+}
