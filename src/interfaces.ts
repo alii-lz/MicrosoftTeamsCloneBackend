@@ -60,6 +60,11 @@ export interface dm {
   exists: boolean,
   messages: tempMessage[],
 }
+export interface resetCode{
+  code: string,
+  valid: boolean,
+  uId: number
+}
 
 export interface Data {
   users: User[];
@@ -67,6 +72,7 @@ export interface Data {
   tokens: Token[];
   messageDetails: messageDetails[],
   dm: dm[]
+  resetCodes: resetCode[]
 
 }
 
