@@ -1,5 +1,5 @@
 
-import { error, Data, message, tempMessage } from './interfaces';
+import { error, Data, tempMessage } from './interfaces';
 import { getId } from './other';
 import { getData, setData } from './dataStore';
 import HTTPError from 'http-errors';

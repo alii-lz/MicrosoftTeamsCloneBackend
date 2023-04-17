@@ -501,7 +501,7 @@ describe('success tests for /dm/messages/v2', () => {
   test('success case/ start = length of messages', () => {
     const message = 'Test message';
     for (let i = 0; i < 50; i++) {
-      const msg = requestMessageSendDM(user.token, dm.dmId, message);
+      requestMessageSendDM(user.token, dm.dmId, message);
     }
     const start = 50;
     const end = -1;

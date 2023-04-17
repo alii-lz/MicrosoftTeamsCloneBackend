@@ -8,6 +8,7 @@ const initialData: Data = {
   tokens: [],
   dm: [],
   messageDetails: [],
+  resetCodes: []
 };
 
 function getData(): Data {
