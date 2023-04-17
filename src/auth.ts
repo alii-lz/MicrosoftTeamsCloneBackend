@@ -133,7 +133,7 @@ function authPasswordResetRequestV1(email: string) {
   });
 
   // Generate SMTP service account from ethereal.email
-  nodemailer.createTestAccount((err, account) => {
+  nodemailer.createTestAccount((err: Error | null, account: any) => {
     if (err) {
       console.error('Failed to create a testing account. ' + err.message);
       return process.exit(1);
@@ -161,7 +161,7 @@ function authPasswordResetRequestV1(email: string) {
       html: '<p>Use this code to reset password</p>'
     };
 
-    transporter.sendMail(message, (err, info) => {
+    transporter.sendMail(message, (err: Error | null, info: any) => {
       if (err) {
         console.log('Error occurred. ' + err.message);
         return process.exit(1);
