@@ -3,6 +3,16 @@ import { getId } from './other';
 import { getData } from './dataStore';
 import { error, tempMessage } from './interfaces';
 
+/**
+ * <returns a collection of messages in all of the channels/DMs that the user has joined that contain the query>
+ *
+ * @param {string} token - token of user who's calling the function
+ * @param {string} queryStr - string to search for in messages of channels/DMs that the user has joined
+ *
+ * @returns {messages: []} - returns an array of messages that contain the queryStr
+ *
+ * @throws {error} - returns an error if token is invalid or queryStr is less than 1 or over 1000 characters
+ */
 export function searchV1(token: string, queryStr: string): error | { messages : tempMessage[]} {
   const userId: number = getId(token);
   if (userId === -1) {

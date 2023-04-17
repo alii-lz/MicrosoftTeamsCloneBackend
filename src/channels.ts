@@ -3,7 +3,7 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 
 import { Channel, Data, user } from './interfaces';
-import  HTTPError  from 'http-errors';
+import HTTPError from 'http-errors';
 
 interface error {
   error: string;
@@ -42,7 +42,7 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
 
   let channelOwner: user;
   const data: Data = getData();
-  let found: boolean = false;
+  let found = false;
   // loop to see if authUserId is valid
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].uId === authUserId) {

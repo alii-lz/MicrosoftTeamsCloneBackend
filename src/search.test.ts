@@ -44,8 +44,8 @@ beforeEach(() => {
   dm1Id = dm1.dmId;
 });
 
-describe('search', () => {
-  test('success case: search for channel/dm message', () => {
+describe('tests for /search/v1', () => {
+  test('success case: search for channel/dm message that the user has joined that contain the query', () => {
     const channelMessage = requestMessageSendV2(userToken, channel1Id, 'helloStr1').returnObj;
     const dmMessage = requestMessageSendDmV2(userToken, dm1Id, 'helloStr2').returnObj;
 
