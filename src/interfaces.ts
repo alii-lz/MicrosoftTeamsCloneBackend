@@ -35,6 +35,13 @@ export interface tempMessage {
   isPinned: boolean,
   reacts: react[],
 }
+
+export interface standup {
+  isActive: boolean,
+  timeFinish: number,
+  messages: string[]
+}
+
 export interface Channel{
   channelId: number,
   name: string,
@@ -42,6 +49,7 @@ export interface Channel{
   owners: user[],
   allMembers: user[],
   messages: tempMessage[],
+  standup: standup
 }
 
 export interface Token {

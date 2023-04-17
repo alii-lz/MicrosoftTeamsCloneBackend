@@ -11,7 +11,7 @@ import { getId } from './other';
   *
   * @returns {user} - returns a user with uId, but without the password.
 */
-function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
+export function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
   const data = getData();
   let found = false;
   // loop to see if authUserId is valid
@@ -48,6 +48,7 @@ function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
   };
   return { user: userToReturn };
 }
+
 export function userProfileV3 (token: string, uId: number): error | {user: user} {
   const id = getId(token);
   if (id === -1) {
@@ -55,4 +56,24 @@ export function userProfileV3 (token: string, uId: number): error | {user: user}
   }
   return userProfileV1(id, uId);
 }
-export { userProfileV1 };
+
+export function userProfileUploadPhotoV1 (token: string, imgUrl: string, xStart: number, 
+  yStart: number, xEnd: number, yEnd: number): object {
+  const id = getId(token);
+ 
+  if (id === -1) {
+    throw HttpError(403, 'invalid token');
+  }
+
+  if (xEnd <= xStart) {
+    throw HttpError(400, 'invalid dimension');
+  }
+
+  if (yEnd <= yStart) {
+    throw HttpError(400, 'invalid dimension');
+  }
+
+  if (imgUrl.endsWith('JPG'))
+    throw HttpError(400, 'invalid dimension');
+  return {}
+}

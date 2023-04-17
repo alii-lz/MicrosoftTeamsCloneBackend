@@ -29,6 +29,7 @@ import { notificationsGetV1 } from './notificationGet';
 import { request } from 'http';
 
 import { searchV1 } from './search';
+import {standupStartV1, standupActiveV1, standupSendV1} from './standup';
 
 import { messagePinV1 } from './messagePin';
 import { messageUnpinV1 } from './messageUnpin';
@@ -319,6 +320,29 @@ app.post('/message/unpin/v1', (req: Request, res: Response) => {
 //   const token = req.header('token');
 //   res.json(unreactV1(token, MessageId, reactId));
 // });
+
+app.post('/standup/start/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  const channelId: number = parseInt(req.body.channelId as string);
+  const length: number = parseInt(req.body.length as string);
+
+  return res.json(standupStartV1(token, channelId, length));
+});
+
+app.get('/standup/active/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  const channelId: number = parseInt(req.query.channelId as string);
+
+  return res.json(standupActiveV1(token, channelId));
+});
+
+app.post('/standup/send/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  const channelId: number = parseInt(req.query.channelId as string);
+  const message = req.body.message;
+
+  return res.json(standupSendV1(token, channelId, message));
+});
 
 // start server
 const server = app.listen(PORT, HOST, () => {
