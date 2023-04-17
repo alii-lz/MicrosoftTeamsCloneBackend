@@ -3,6 +3,18 @@ import { getId } from './other';
 import { getData, setData } from './dataStore';
 import { error, message, Data } from './interfaces';
 
+/**
+ * <given a message within a channel or DM, removes its mark as "pinned">
+ * 
+ * @param {string} token - token of user who's calling the function
+ * @param {number} messageId - id of message to be unpinned
+ * 
+ * @returns {} - returns an empty object
+ * 
+ * @throws {error} - returns an error if token is invalid, message is already unpinned, 
+ *                   messageId refers to a valid message in a joined channel/DM and the authorised user does not have owner permissions in the channel/DM, 
+ *                   or messageId is not a valid message within a channel or DM that the authorised user is part of
+*/
 export function messageUnpinV1(token: string, messageId: number): error | {} {
   const userId: number = getId(token);
   if (userId === -1) {
