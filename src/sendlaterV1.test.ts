@@ -1,5 +1,5 @@
 import { sendlaterV1 } from './sendlaterRequestor.test'; 
-import { requestChannelsCreateV3 } from './channels.test';
+import { requestChannelsCreateV3 } from './channelsRequestor';
 import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';

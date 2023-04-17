@@ -1,6 +1,7 @@
-import request, {HttpVerb} from 'sync-request';
+import request from 'sync-request';
 import { requestClear } from './clearRequester';
 import { port, url } from './config.json';
+import { requestChannelsCreateV3, requestChannelsListV3 } from './channelsRequestor';
 
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
@@ -21,38 +22,6 @@ export function requestAuthRegister(email: string, password: string, nameFirst: 
         password: password,
         nameFirst: nameFirst,
         nameLast: nameLast,
-      },
-      timeout: 100
-    }
-  );
-  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
-}
-
-export function requestChannelsCreateV3(token: string, name: string, isPublic: boolean) {
-  const res = request(
-    'POST',
-    SERVER_URL + '/channels/create/v3',
-    {
-      json: {
-        name: name,
-        isPublic: isPublic
-      },
-      headers: {
-        token: token
-      },
-      timeout: 100
-    }
-  );
-  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
-}
-
-export function requestChannelsListV3(token: string) {
-  const res = request(
-    'GET',
-    SERVER_URL + '/channels/list/v3',
-    {
-      headers: {
-        token: token
       },
       timeout: 100
     }

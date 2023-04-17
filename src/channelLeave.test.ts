@@ -1,6 +1,8 @@
 import request from 'sync-request';
-import { requestChannelsCreateV3 } from './channels.test';
+import { requestChannelsCreateV3 } from './channelsRequestor';
+import  {requestChannelLeaveV2 } from './channelRequestor';
 import { port, url } from './config.json';
+
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
 const INPUT_ERROR = 400;
@@ -20,23 +22,6 @@ export function requestAuthRegister(email: string, password: string, nameFirst: 
         password: password,
         nameFirst: nameFirst,
         nameLast: nameLast,
-      },
-      timeout: 100
-    }
-  );
-  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
-}
-
-export function requestChannelLeaveV2(token: string, channelId: number) {
-  const res = request(
-    'POST',
-    SERVER_URL + '/channels/create/v3',
-    {
-      json: {
-        channelId: channelId
-      },
-      headers: {
-        token: token
       },
       timeout: 100
     }

@@ -1,5 +1,5 @@
 import { requestAuthRegister } from './authRequesters';
-import { requestChannelsCreateV3 } from './channels.test';
+import { requestChannelsCreateV3 } from './channelsRequestor';
 import { requestClear } from './clearRequester';
 import { requestChannelDetailsV3, requestChannelJoinV3 } from './channelRequestor';
 

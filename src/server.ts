@@ -245,7 +245,6 @@ app.post('message/unreact/v1', (req: Request, res: Response) => {
   res.json(unreactV1(token, MessageId, reactId));
 });
 
-app.use(errorHandler());
 // start server
 const server = app.listen(PORT, HOST, () => {
   // DO NOT CHANGE THIS LINE

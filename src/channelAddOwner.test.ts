@@ -1,6 +1,6 @@
 import request from 'sync-request';
-import { requestChannelInviteV3 } from './channelRequestor';
-import { requestChannelsCreateV3 } from './channels.test';
+import { requestChannelInviteV3, requestChannelAddOwnerV2 } from './channelRequestor';
+import { requestChannelsCreateV3 } from './channelsRequestor';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
@@ -18,25 +18,6 @@ export function requestAuthRegister(email: string, password: string, nameFirst: 
         password: password,
         nameFirst: nameFirst,
         nameLast: nameLast,
-      },
-      timeout: 100
-    }
-  );
-  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
-}
-
-
-export function requestChannelAddOwnerV2(token: string, channelId: number, uId: number) {
-  const res = request(
-    'POST',
-    SERVER_URL + '/channel/addowner/v2',
-    {
-      json: {
-        channelId: channelId,
-        uId: uId
-      },
-      headers: {
-        token: token
       },
       timeout: 100
     }
