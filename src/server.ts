@@ -27,6 +27,8 @@ import { notificationsGetV1 } from './notificationGet';
 import { request } from 'http';
 
 import { searchV1 } from './search';
+import { messagePinV1 } from './messagePin';
+import { messageUnpinV1 } from './messageUnpin';
 
 
 // Set up web app
@@ -217,8 +219,8 @@ app.get('/users/all/v2', (req: Request, res: Response) => {
   res.json(usersAllV2(token));
 });
 
-app.post('/channel/addowner/v1', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+app.post('/channel/addowner/v2', (req: Request, res: Response) => {
+  const token: string = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
   const uId = parseInt(req.body.uId as string);
   res.json(channelAddOwnerV1(token, channelId, uId));
@@ -259,6 +261,18 @@ app.get('/search/v1', (req: Request, res: Response) => {
   const token: string = req.header('token');
   const queryStr = req.query.queryStr as string;
   res.json(searchV1(token, queryStr));
+});
+
+app.post('/message/pin/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = parseInt(req.body.messageId as string);
+  res.json(messagePinV1(token, messageId));
+});
+
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = parseInt(req.body.messageId as string);
+  res.json(messageUnpinV1(token, messageId));
 });
 
 // app.post('message/react/v1', (req: Request, res: Response) => {
