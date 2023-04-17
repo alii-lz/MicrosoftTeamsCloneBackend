@@ -140,7 +140,7 @@ describe('/message/sendlater/v1 success tests', () => {
     channelId2 = channelId2_return.returnObj;
   });
 
-  test.only('Test 1: Success', () => {
+  test('Test 1: Success', () => {
     const result = requestSendlaterV1(AuthUserId1.token, channelId1.channelId, 'Hello', 2);
     expect(result.returnObj).toStrictEqual({
       messageId: expect.any(Number)

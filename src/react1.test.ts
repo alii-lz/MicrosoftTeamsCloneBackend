@@ -1,10 +1,11 @@
 
 import { reactV1 } from './reactRequestor';
 import { requestChannelsCreateV3 } from './channels.test';
-import { requestMessageSendV2 } from './messageFunctionRequestors'
+import { requestMessageSendV2, requestMessageSendDmV2 } from './messageFunctionRequestors'
 import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';
+import { messageSenddmV2 } from './messageFunctions';
 
 const OK = 200;
 const INPUT_ERROR = 400;
@@ -20,8 +21,11 @@ let dm2: { dmId: number };
 let ChannelId1: { channelId: number };
 let ChannelId2: { channelId: number };
 
-let messageId1: { messageId: number }
-let messageId2: { messageId: number }
+let messageId1: { messageId: number };
+let messageId2: { messageId: number };
+
+let dmMessageId1: { messageId: number };
+let dmMessageId2: { messageId: number };
 
 describe('/message/react/v1 failure tests', () => {
   beforeEach(() => {
@@ -169,7 +173,14 @@ describe('/message/react/v1 success case', () => {
     messageId1 = messageId1_return.returnObj;
     const messageId2_return = requestMessageSendV2(AuthUserId2.token, ChannelId1.channelId, 'Hermione Fan Club');
     messageId2 = messageId2_return.returnObj;
+
+    // send Dm
+    const dmMessageId1_return = requestMessageSendDmV2(AuthUserId1.token, dm1.dmId, 'Holla!');
+    dmMessageId1 = dmMessageId1_return.returnObj;
+    const dmMessageId2_return = requestMessageSendDmV2(AuthUserId2.token, dm2.dmId, 'Holla!');
+    dmMessageId2 = dmMessageId2_return.returnObj;
   });
+
 
   test('Test 1: Success', () => {
     console.log(ChannelId1.channelId);
@@ -180,7 +191,7 @@ describe('/message/react/v1 success case', () => {
   });
 
   test('Test 2: Success', () => {
-    const result = reactV1(AuthUserId2.token, dm2.dmId, 1);
+    const result = reactV1(AuthUserId2.token, dmMessageId2.messageId, 1);
     expect(result.returnObj).toStrictEqual({});
     expect(result.status).toBe(OK);
   });

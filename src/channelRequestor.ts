@@ -7,12 +7,12 @@ export function requestChannelDetailsV3(token: string, channelId: number) {
     'GET',
     SERVER_URL + '/channel/details/v3',
     {
-      qs: {
-        token: token,
+      headers: {
+        token: token
       },
-      json: {
-        channelId: channelId,
-      }
+      qs: {
+        channelId: channelId
+      },
     }
   );
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };

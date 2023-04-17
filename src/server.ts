@@ -23,7 +23,7 @@ import { userProfileV2 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
 import { channelLeaveV1 } from './channelLeave';
 import { sendlaterV1 } from './sendlater';
-import { reactV1 } from './react';
+import { reactV1, unreactV1 } from './react';
 
 // Set up web app
 const app = express();
@@ -106,7 +106,7 @@ app.post('/dm/leave/v2', (req: Request, res: Response) => {
 });
 
 app.get('/channel/details/v3', (req: Request, res: Response) => {
-  const token = req.query.token as string;
+  const token = req.header('token');
   const channelIdString = req.query.channelId as string;
   const channelId = parseInt(channelIdString);
   return res.json(channelDetailsV3(token, channelId));
@@ -238,16 +238,16 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
 });
 
 app.post('/message/react/v1', (req: Request, res: Response) => {
-  const { MessageId, reactId } = req.body;
+  const { messageId, reactId } = req.body;
   const token = req.header('token');
-  res.json(reactV1(token, MessageId, reactId));
+  res.json(reactV1(token, messageId, reactId));
 });
 
-// app.post('/message/unreact/v1', (req: Request, res: Response) => {
-//   const { MessageId, reactId } = req.body;
-//   const token = req.header('token');
-//   res.json(unreactV1(token, MessageId, reactId));
-// });
+app.post('/message/unreact/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(unreactV1(token, messageId, reactId));
+});
 
 app.post('/message/sendlater/v1', (req: Request, res: Response) => {
   const token = req.header('token');
