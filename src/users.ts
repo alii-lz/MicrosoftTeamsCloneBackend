@@ -1,9 +1,8 @@
+
 import { getData } from './dataStore';
-
 import { error, user } from './interfaces';
-
+import  HttpError  from 'http-errors';
 import { getId } from './other';
-
 /**
   * <returns information about user with given uId, but without the password>
   *
@@ -12,10 +11,8 @@ import { getId } from './other';
   *
   * @returns {user} - returns a user with uId, but without the password.
 */
-
-function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
+export function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
   const data = getData();
-
   let found = false;
   // loop to see if authUserId is valid
   for (let i = 0; i < data.users.length; i++) {
@@ -24,16 +21,12 @@ function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
       break;
     }
   }
-
   // error checking for if authUserId is valid
   if (found === false) {
     return { error: 'authUserId is invalid' };
   }
-
   found = false;
-
   let userToFind;
-
   // loop to see if uId is valid
   for (let i = 0; i < data.users.length; i++) {
     if (data.users[i].uId === uId) {
@@ -42,11 +35,9 @@ function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
       break;
     }
   }
-
   if (found === false) {
-    return { error: 'authUserId is invalid' };
+    throw HttpError(400, 'uId does not refer to a valid user');
   }
-
   // clones userToFind, but without their password
   const userToReturn = {
     uId: userToFind.uId,
@@ -55,16 +46,34 @@ function userProfileV1 (authUserId: number, uId: number): error | {user: user} {
     nameLast: userToFind.nameLast,
     handleStr: userToFind.handleStr,
   };
-
   return { user: userToReturn };
 }
 
-export function userProfileV2 (token: string, uId: number): error | {user: user} {
+export function userProfileV3 (token: string, uId: number): error | {user: user} {
   const id = getId(token);
   if (id === -1) {
-    return { error: 'token is invalid' };
+    throw HttpError(403, 'uId does not refer to a valid user');
   }
   return userProfileV1(id, uId);
 }
 
-export { userProfileV1 };
+export function userProfileUploadPhotoV1 (token: string, imgUrl: string, xStart: number, 
+  yStart: number, xEnd: number, yEnd: number): object {
+  const id = getId(token);
+ 
+  if (id === -1) {
+    throw HttpError(403, 'invalid token');
+  }
+
+  if (xEnd <= xStart) {
+    throw HttpError(400, 'invalid dimension');
+  }
+
+  if (yEnd <= yStart) {
+    throw HttpError(400, 'invalid dimension');
+  }
+
+  if (imgUrl.endsWith('JPG'))
+    throw HttpError(400, 'invalid dimension');
+  return {}
+}

@@ -2,12 +2,12 @@ import { getData, setData } from './dataStore';
 
 import { getId } from './other';
 
-import { Channel, user } from './interfaces';
+import { Channel, Data, user, standup } from './interfaces';
+import  HttpError  from 'http-errors';
 
 interface error {
   error: string;
 }
-
 interface channelId {
   channelId: number;
 }
@@ -17,14 +17,13 @@ interface channel {
   name: string
 }
 
-export function channelsCreateV2 (token: string, name: string, isPublic: boolean): error | channelId {
-  const id = getId(token);
 
-  if (id === -1) {
-    return { error: 'token is invalid' };
+
+export function channelsCreateV3 (token: string, name: string, isPublic: boolean): error | channelId {
+  if (getId(token) === -1) {
+    throw HttpError(403, 'token doesnt refer to an existing user');
   }
-
-  return channelsCreateV1(id, name, isPublic);
+  return channelsCreateV1(getId(token), name, isPublic);
 }
 
 /**
@@ -39,11 +38,10 @@ export function channelsCreateV2 (token: string, name: string, isPublic: boolean
 function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): error | channelId {
   // error checking length of name
   if (name.length > 20 || name.length < 1) {
-    return { error: 'name must be between 1 and 20 characters' };
+    throw HttpError(400, 'length of name is less than 1 or more than 20 characters');
   }
-
   let channelOwner: user;
-  const data = getData();
+  const data: Data = getData();
   let found = false;
   // loop to see if authUserId is valid
   for (let i = 0; i < data.users.length; i++) {
@@ -59,18 +57,17 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
     return { error: 'authUserId is invalid' };
   }
 
+  let newStandup: standup;
+
   // creates a unique channelId
-  let newChannelId: number;
-  do {
-    newChannelId = Math.floor(Math.random() * 10);
-  } while (data.channels.some((channel) => channel.channelId === newChannelId));
+  const newChannelId: number = data.channels.length + 1;
 
   const newChannel: Channel = {
 
     channelId: newChannelId,
     name: name,
     isPublic: isPublic,
-
+    messages: [],
     owners: [
       {
         uId: channelOwner.uId,
@@ -88,7 +85,8 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
         nameLast: channelOwner.nameLast,
         handleStr: channelOwner.handleStr
       }
-    ]
+    ],
+    standup: newStandup
   };
   // setting data
   data.channels.push(newChannel);
@@ -97,13 +95,11 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
   return { channelId: newChannel.channelId };
 }
 
-export function channelsListV2 (token: string): error | {channels: channel[]} {
+export function channelsListV3 (token: string): error | {channels: channel[]} {
   const id = getId(token);
-
   if (id === -1) {
-    return { error: 'token is invalid' };
+    throw HttpError(403, 'token doesnt refer to an existing user');
   }
-
   return channelsListV1(id);
 }
 
@@ -202,11 +198,12 @@ function channelsListAllV1(authUserId: number | string): error | {channels: chan
  *
  * @throws {error} - returns an error message if the token is invalid
 */
-export function channelsListAllV2 (token : string) : error | {channels: channel[]} {
+export function channelsListAllV3 (token : string) : error | {channels: channel[]} {
   const id = getId(token);
   // error checking for if token is valid
   if (id === -1) {
-    return { error: 'invalid token' };
+    // return { error: 'invalid token' };
+    throw HttpError(403, 'invalid token');
   }
 
   return channelsListAllV1(id);

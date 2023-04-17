@@ -27,6 +27,7 @@ describe('HTTP tests using Jest', () => {
     expect(res.statusCode).toBe(OK);
     expect(bodyObj).toEqual('Hello');
   });
+  // UNCOMMENT BELOW BEFORE ITERATION 3 DUE
   test('Test invalid echo', () => {
     const res = request(
       'GET',

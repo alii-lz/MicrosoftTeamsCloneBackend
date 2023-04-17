@@ -1,190 +1,141 @@
 import request from 'sync-request';
-
+import { requestChannelInviteV3, requestChannelAddOwnerV2 } from './channelRequestor';
+import { requestChannelsCreateV3 } from './channelsRequestor';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 const OK = 200;
-
+const INPUT_ERROR = 400;
+const AUTHORIZATION_ERROR = 403;
 const ERROR = { error: expect.any(String) };
+
+export function requestAuthRegister(email: string, password: string, nameFirst: string, nameLast: string) {
+  const res = request(
+    'POST',
+    SERVER_URL + '/auth/register/v3',
+    {
+      json: {
+        email: email,
+        password: password,
+        nameFirst: nameFirst,
+        nameLast: nameLast,
+      },
+      timeout: 100
+    }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
+}
 
 beforeEach(() => {
   request('DELETE', SERVER_URL + '/clear/v1', { json: {} });
 });
 
-describe('Tests for /channel/addowner/v1', () => {
-  let user: {token: string, authUserId: number};
-  let channel: {channelId: number};
-  let userToAdd : {token: string, authUserId: number};
+describe('Tests for /channel/addowner/v2', () => {
+  // let user: {token: string, authUserId: number};
+  // let channel: {channelId: number};
+  // let userToAdd : {token: string, authUserId: number};
+
+  let user: {status: number, returnObj: {token: string, authUserId: number}};
+  let channel: {status: number, returnObj: {channelId: number}};
+  let userToAdd: {status: number, returnObj: {token: string, authUserId: number}};
+  
 
   beforeEach(() => {
-    // creating the user
-    const tempUser = request('POST', SERVER_URL + '/auth/register/v2',
-      {
-        json: {
-          email: 'ali@gmail.com',
-          password: 'validPassword',
-          nameFirst: 'ali',
-          nameLast: 'ahmed'
-        }
-      });
-
-    user = JSON.parse(tempUser.getBody() as string);
-
-    // creating the channel
-    const tempChannel = request('POST', SERVER_URL + '/channels/create/v2', {
-      json: {
-        token: user.token,
-        name: 'ali',
-        isPublic: true
-      }
-    });
-
-    channel = JSON.parse(tempChannel.getBody() as string);
+    user = requestAuthRegister('ali@gmail.com', 'football', 'ali', 'ahmed');
+    channel = requestChannelsCreateV3(user.returnObj.token, 'validName', true);
 
     // creating the user that needs to be added as owner
-    const tempUser2 = request('POST', SERVER_URL + '/auth/register/v2',
-      {
-        json: {
-          email: 'jake@gmail.com',
-          password: 'validPassword',
-          nameFirst: 'jake',
-          nameLast: 'renzella'
-        }
-      }
-    );
+    userToAdd = requestAuthRegister('jake@gmail.com', 'basketball', 'jake', 'renzella');
 
-    userToAdd = JSON.parse(tempUser2.getBody() as string);
-
-    // adding the userToAdd into our channel
-    request('POST', SERVER_URL + '/channel/invite/v2',
-      {
-        json: {
-          token: user.token,
-          channelId: channel.channelId,
-          uId: userToAdd.authUserId
-        }
-      }
-    );
+    requestChannelInviteV3(user.returnObj.token, channel.returnObj.channelId, userToAdd.returnObj.authUserId);
   });
 
   test('success case', () => {
-    const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
-
-      json: {
-        token: user.token,
-        channelId: channel.channelId,
-        uId: userToAdd.authUserId
-      }
-    });
-
-    const data = JSON.parse(res.getBody() as string);
-
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual({});
+    
+    const result = requestChannelAddOwnerV2(user.returnObj.token, 
+      channel.returnObj.channelId, userToAdd.returnObj.authUserId);
+    expect(result.status).toBe(OK);
+    expect(result.returnObj).toStrictEqual({});
   });
 
   test('channelId does not refer to a valid channel', () => {
-    const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
+    try {
+      const result = requestChannelAddOwnerV2(user.returnObj.token, 
+        channel.returnObj.channelId + 100, userToAdd.returnObj.authUserId);
+  
+      expect(result.status).toBe(INPUT_ERROR);
+      expect(result.returnObj.error).toStrictEqual(expect.any(String));
 
-      json: {
-        token: user.token,
-        channelId: channel.channelId + 1,
-        uId: userToAdd.authUserId
-      }
-    });
-
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
+    } catch(error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('uId does not refer to a valid user', () => {
-    const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
+    try {
+      const result = requestChannelAddOwnerV2(user.returnObj.token, 
+        channel.returnObj.channelId, userToAdd.returnObj.authUserId + 20);
+  
+      expect(result.status).toBe(INPUT_ERROR);
+      expect(result.returnObj.error).toStrictEqual(expect.any(String));
 
-      json: {
-        token: user.token,
-        channelId: channel.channelId,
-        uId: userToAdd.authUserId + 1
-      }
-    });
+    } catch(error) {
+      expect(error).toBeInstanceOf(Error);
+    }
 
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
   });
   test('uId refers to a user who is not a member of the channel', () => {
-    // let notMember: {token: string, authUserId: number};
-    // Originally the top lin declared notMember. This did not pass linting.
-    const tempUser3 = request('POST', SERVER_URL + '/auth/register/v2',
-      {
-        json: {
-          email: 'tony@gmail.com',
-          password: 'validPassword',
-          nameFirst: 'tony',
-          nameLast: 'stark'
-        }
-      });
+    
+    try {
+      const tempUser = requestAuthRegister('temp@gmail.com', 'football', 'temp', 'temp');
+      const result = requestChannelAddOwnerV2(user.returnObj.token, 
+        channel.returnObj.channelId, tempUser.returnObj.authUserID);
 
-    const notMember = JSON.parse(tempUser3.getBody() as string);
+      expect(result.status).toBe(INPUT_ERROR);
+      expect(result.returnObj.error).toStrictEqual(expect.any(String));
 
-    const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
-
-      json: {
-        token: user.token,
-        channelId: channel.channelId,
-        uId: notMember.authUserId
-      }
-    });
-
-    const data = JSON.parse(res.getBody() as string);
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('uId refers to a user who is already an owner of the channel', () => {
-    const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
+    
+    try {
+      const result = requestChannelAddOwnerV2(user.returnObj.token, 
+        channel.returnObj.channelId, user.returnObj.authUserId);
 
-      json: {
-        token: user.token,
-        channelId: channel.channelId,
-        uId: user.authUserId
-      }
-    });
+      expect(result.status).toBe(INPUT_ERROR);
+      expect(result.returnObj.error).toStrictEqual(expect.any(String));
 
-    const data = JSON.parse(res.getBody() as string);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
 
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
   });
 
   test('the authorised user does not have owner permissions in the channel', () => {
-    const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
+    try {
+      const result = requestChannelAddOwnerV2(userToAdd.returnObj.token, 
+        channel.returnObj.channelId, userToAdd.returnObj.authUserId);
 
-      json: {
-        token: user.token,
-        channelId: channel.channelId,
-        uId: userToAdd.authUserId
-      }
-    });
+      expect(result.status).toBe(AUTHORIZATION_ERROR);
+      expect(result.returnObj.error).toStrictEqual(expect.any(String));
 
-    const data = JSON.parse(res.getBody() as string);
-
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('invalid token', () => {
-    const res = request('POST', SERVER_URL + '/channel/addowner/v1', {
 
-      json: {
-        token: 'RANDOM',
-        channelId: channel.channelId,
-        uId: userToAdd.authUserId
-      }
-    });
+    try {
+      const result = requestChannelAddOwnerV2(user.returnObj.token + 'a', 
+        channel.returnObj.channelId, userToAdd.returnObj.authUserId);
 
-    const data = JSON.parse(res.getBody() as string);
-
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
+      expect(result.status).toBe(AUTHORIZATION_ERROR);
+      expect(result.returnObj.error).toStrictEqual(expect.any(String));
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 });

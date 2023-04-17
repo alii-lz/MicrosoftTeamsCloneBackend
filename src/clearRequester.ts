@@ -8,7 +8,6 @@ export function requestClear() {
     SERVER_URL + '/clear/v1',
     {
       qs: {
-
       }
     }
   );

@@ -1,6 +1,8 @@
-import { requestAuthRegister, requestAuthLogin, requestAuthLogout } from './authRequesters';
+import { requestAuthRegister, requestAuthLogin, requestAuthLogout, requestAuthPasswordResetRequest } from './authRequesters';
 import { requestClear } from './clearRequester';
 const OK = 200;
+const INPUT_ERROR = 400;
+const AUTHORIZATION_ERROR = 403;
 
 describe('auth/authregisterV2 success tests', () => {
   beforeEach(() => {
@@ -15,6 +17,7 @@ describe('auth/authregisterV2 success tests', () => {
 
   test('Test 2: Successful registration/ Multiple users with same name but different mail addresses and passwords', () => {
     requestAuthRegister('tanish@gmail.com', 'football', 'Tanish', 'Tate');
+    requestAuthRegister('tanish3@gmail.com', 'basketball', 'Tanish', 'Tate');
     const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Tanish', 'Tate');
     expect(result.returnObj).toStrictEqual({ token: (expect.any(String)), authUserId: (expect.any(Number)) });
     expect(result.status).toBe(OK);
@@ -40,46 +43,74 @@ describe('auth/regiter/V2 failure tests', () => {
     requestClear();
   });
   test('Test 1: Unsuccessful registration/ invalid email/ should return error ', () => {
-    const result = requestAuthRegister('rudie', 'soccer', 'Rudie', 'Tate');
-    expect(result.returnObj).toEqual({ error: expect.any(String) });
-    expect(result.status).toBe(OK);
+    try {
+      const result = requestAuthRegister('rudie', 'soccer', 'Rudie', 'Tate');
+      expect(result.returnObj.error).toEqual({ error: expect.any(String) });
+      expect(result.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('Test 2: Unsuccessful registration/ already registered email', () => {
-    requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'Tate');
-    const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'Tate');
-    expect(result.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(result.status).toBe(OK);
+    try {
+      requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'Tate');
+      const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'Tate');
+      expect(result.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(result.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('Test 3 : Unsuccessful registration/ short password', () => {
-    const result = requestAuthRegister('rudie@gmail.com', 'meh', 'Rudie', 'Tate');
-    expect(result.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(result.status).toBe(OK);
+    try {
+      const result = requestAuthRegister('rudie@gmail.com', 'meh', 'Rudie', 'Tate');
+      expect(result.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(result.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('Test 4: Unsuccessful registration/ empty firstName', () => {
-    const result = requestAuthRegister('rudie@gmail.com', 'soccer', '', 'Tate');
-    expect(result.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(result.status).toBe(OK);
+    try {
+      const result = requestAuthRegister('rudie@gmail.com', 'soccer', '', 'Tate');
+      expect(result.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(result.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('Test 5: Unsuccessful registration/ empty lastName', () => {
-    const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', '');
-    expect(result.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(result.status).toBe(OK);
+    try {
+      const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', '');
+      expect(result.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(result.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('Test 6: Unsuccessful registration/ firstName bigger than 50 characters', () => {
-    const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'r'.repeat(51), 'Tate');
-    expect(result.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(result.status).toBe(OK);
+    try {
+      const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'r'.repeat(51), 'Tate');
+      expect(result.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(result.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('Test 7: Unsuccessful registration/ lastName longer than 50 characters', () => {
-    const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'T'.repeat(59));
-    expect(result.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(result.status).toBe(OK);
+    try {
+      const result = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'T'.repeat(59));
+      expect(result.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(result.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 });
 
@@ -140,15 +171,34 @@ describe(' auth/Login/V2 failure tests', () => {
   });
 
   test('Test 1: Unsuccessful login/ incorrect email', () => {
-    const loginResult = requestAuthLogin('rudieee@gmail.com', 'soccer');
-    expect(loginResult.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(loginResult.status).toBe(OK);
+    try {
+      const loginResult = requestAuthLogin('rudieee@gmail.com', 'soccer');
+      expect(loginResult.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(loginResult.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('Test 2: Unsuccessful login/ incorrect password', () => {
-    const loginResult = requestAuthLogin('rudie@gmail.com', 'soccerrr');
-    expect(loginResult.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(loginResult.status).toBe(OK);
+    try {
+      const loginResult = requestAuthLogin('rudie@gmail.com', 'soccerrr');
+      expect(loginResult.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(loginResult.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
+  });
+
+  test('Test 3: Unsuccessful login/ empty datastore', () => {
+    try {
+      requestClear();
+      const loginResult = requestAuthLogin('rudie@gmail.com', 'soccerrr');
+      expect(loginResult.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(loginResult.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 });
 
@@ -172,17 +222,73 @@ describe(' auth/Logout/V1 faiure tests', () => {
   });
 
   test('Test 1: logout failed / already logged out token ', () => {
-    requestAuthLogout(register.returnObj.token);
-    const logout = requestAuthLogout(register.returnObj.token);
-
-    expect(logout.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(logout.status).toBe(OK);
+    try {
+      requestAuthLogout(register.returnObj.token);
+      const logout = requestAuthLogout(register.returnObj.token);
+      expect(logout.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(logout.status).toBe(AUTHORIZATION_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('Test 2: logout failed / invalid token', () => {
-    const logout = requestAuthLogout(register.returnObj.token + 'a');
+    try {
+      const logout = requestAuthLogout(register.returnObj.token + 'a');
 
-    expect(logout.returnObj).toStrictEqual({ error: expect.any(String) });
-    expect(logout.status).toBe(OK);
+      expect(logout.returnObj.error).toStrictEqual({ error: expect.any(String) });
+      expect(logout.status).toBe(AUTHORIZATION_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
+  });
+});
+
+describe(' auth/passwordreset/request/V1 tests', () => {
+  let register: any;
+  beforeEach(() => {
+    requestClear();
+    register = requestAuthRegister('rudie@gmail.com', 'soccer', 'Rudie', 'Tate').returnObj;
+  });
+
+  test('Test 1: Request failed / not a registered email/ testing that all active user sessions are still active using logout ', () => {
+    // only active user session is the one from registration
+    const activeToken = register.token;
+    const request = requestAuthPasswordResetRequest('arden@gmail.com');
+    expect(requestAuthLogout(activeToken).status).toStrictEqual(OK);
+    expect(request.returnObj).toStrictEqual({ });
+    expect(request.status).toBe(OK);
+  });
+
+  test('Test 2: request successful / testing that all of the user"s sessions have been logged out', () => {
+    try {
+      const login = requestAuthLogin('rudie@gmail.com', 'soccer').returnObj;
+      const request = requestAuthPasswordResetRequest('rudie@gmail.com');
+      const logout = requestAuthLogout(login.token).returnObj;
+      const logout2 = requestAuthLogout(register.token).returnObj;
+      expect(logout.returnObj).toStrictEqual({ error: expect.any(String) });
+      expect(logout2.returnObj).toStrictEqual({ error: expect.any(String) });
+
+      expect(request.returnObj).toStrictEqual({});
+      expect(request.status).toStrictEqual(OK);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
+  });
+
+  test('Test 3: request successful / testing that only the correct user sessions have been logged out', () => {
+    try {
+      const register2 = requestAuthRegister('danny@gmail.com', 'soccer', 'danny', 'chan').returnObj;
+      const request = requestAuthPasswordResetRequest('rudie@gmail.com');
+      const logout = requestAuthLogout(register.token).returnObj;
+      const logout2 = requestAuthLogout(register2.token).returnObj;
+      expect(logout.status).toStrictEqual(AUTHORIZATION_ERROR);
+      expect(logout2.status).toStrictEqual(OK);
+
+      expect(request.returnObj).toStrictEqual({});
+      expect(request.status).toStrictEqual(OK);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 });

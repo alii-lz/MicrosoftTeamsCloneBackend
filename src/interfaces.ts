@@ -16,12 +16,32 @@ export interface user {
   email: string,
   handleStr: string,
 }
+// return format
+export interface React{
+  reactId: number,
+  uIds: number[],
+  isThisUserReacted: boolean
+}
+// how it is stored in dataStore
+export interface react{
+  reactId: number,
+  uIds: number[],
+}
 export interface tempMessage {
   message: string,
   uId: number,
   messageId: number,
   timeSent: number
+  isPinned: boolean,
+  reacts: react[],
 }
+
+export interface standup {
+  isActive: boolean,
+  timeFinish: number,
+  messages: string[]
+}
+
 export interface Channel{
   channelId: number,
   name: string,
@@ -29,6 +49,7 @@ export interface Channel{
   owners: user[],
   allMembers: user[],
   messages: tempMessage[],
+  standup: standup
 }
 
 export interface Token {
@@ -49,12 +70,35 @@ export interface dm {
   exists: boolean,
   messages: tempMessage[],
 }
+export interface resetCode{
+  code: string,
+  valid: boolean,
+  uId: number
+}
+
 export interface Data {
   users: User[];
   channels: Channel[];
   tokens: Token[];
-  messageDetails: messageDetails[],
-  dm: dm[]
+  messageDetails: messageDetails[];
+  dm: dm[];
+  indivNotification: indivNotification[],
+  resetCodes: resetCode[]
+}
+
+export interface timeout {
+  timeout: NodeJS.Timeout[];
+}
+
+export interface notification {
+  channelId: number,
+  dmId: number,
+  notificationMessage: string,
+}
+
+export interface indivNotification {
+  userId: number,
+  notification: notification[];
 }
 
 export interface error {
@@ -86,7 +130,7 @@ export interface channelDetailsWithMessages {
 }
 
 export interface channelMessages {
-  messages: any[],
+  messages: tempMessage[],
   start: number,
   end: number
 }
@@ -104,6 +148,6 @@ export interface channels {
   channels: channelsTemp[]
 }
 
-export interface emptyObject {
-  
+export interface messageIDReturn {
+  messageId: number,
 }

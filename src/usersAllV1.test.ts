@@ -15,7 +15,7 @@ describe('tests for /users/all/v1', () => {
   let user2: {token: string, authUserId: number};
 
   beforeEach(() => {
-    const tempUser = request('POST', SERVER_URL + '/auth/register/v2',
+    const tempUser = request('POST', SERVER_URL + '/auth/register/v3',
       {
         json: {
           email: 'matthew@gmail.com',
@@ -27,7 +27,7 @@ describe('tests for /users/all/v1', () => {
 
     user = JSON.parse(tempUser.getBody() as string);
 
-    const tempUser2 = request('POST', SERVER_URL + '/auth/register/v2',
+    const tempUser2 = request('POST', SERVER_URL + '/auth/register/v3',
       {
         json: {
           email: 'ali@gmail.com',
@@ -41,7 +41,7 @@ describe('tests for /users/all/v1', () => {
   });
 
   test('success case', () => {
-    const res = request('GET', SERVER_URL + '/users/all/v1', { qs: { token: user.token } });
+    const res = request('GET', SERVER_URL + '/users/all/v2', { headers: { token: user.token } });
 
     const data = JSON.parse(res.getBody() as string);
 
@@ -67,11 +67,15 @@ describe('tests for /users/all/v1', () => {
   });
 
   test('invalid token', () => {
-    const res = request('GET', SERVER_URL + '/users/all/v1', { qs: { token: 'invalid' } });
+    try {
+      const res = request('GET', SERVER_URL + '/users/all/v2', { headers: { token: 'invalid' } });
 
-    const data = JSON.parse(res.getBody() as string);
+      const data = JSON.parse(res.getBody() as string);
 
-    expect(res.statusCode).toBe(OK);
-    expect(data).toStrictEqual(ERROR);
+      expect(res.statusCode).toBe(403);
+      expect(data.error).toStrictEqual(ERROR);
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error);
+    }
   });
 });

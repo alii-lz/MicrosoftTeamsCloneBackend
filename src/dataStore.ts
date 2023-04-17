@@ -1,6 +1,5 @@
-
 import fs from 'fs';
-import { Data } from './interfaces';
+import { Data, timeout } from './interfaces';
 
 const initialData: Data = {
   users: [],
@@ -8,6 +7,12 @@ const initialData: Data = {
   tokens: [],
   dm: [],
   messageDetails: [],
+  resetCodes: [],
+  indivNotification: []
+};
+
+const timeoutStore: timeout = {
+  timeout: []
 };
 
 function getData(): Data {
@@ -26,8 +31,14 @@ function setData(newData: Data) {
 }
 
 function resetData() {
+  for (const i in timeoutStore.timeout) {
+    clearTimeout(timeoutStore.timeout[i]);
+  };
   fs.writeFileSync('data.json', JSON.stringify(initialData), { flag: 'w' });
   return {};
 }
 
-export { getData, setData, resetData };
+function getTimeout() {
+  return timeoutStore;
+}
+export { getData, setData, resetData, getTimeout };
