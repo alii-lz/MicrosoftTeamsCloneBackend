@@ -60,14 +60,21 @@ export interface dm {
   exists: boolean,
   messages: tempMessage[],
 }
+export interface resetCode{
+  code: string,
+  valid: boolean,
+  uId: number
+}
 
 export interface Data {
   users: User[];
   channels: Channel[];
   tokens: Token[];
   messageDetails: messageDetails[],
+<<<<<<< src/interfaces.ts
   dm: dm[],
   indivNotification: indivNotification[],
+  resetCodes: resetCode[]
 }
 
 export interface notification {
@@ -75,6 +82,10 @@ export interface notification {
   dmId: number,
   notificationMessage: string,
 }
+=======
+  dm: dm[]
+  
+>>>>>>> src/interfaces.ts
 
 export interface indivNotification {
   userId: number,
