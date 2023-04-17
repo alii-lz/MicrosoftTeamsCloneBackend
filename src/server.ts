@@ -21,6 +21,8 @@ import { channelRemoveOwnerV2 } from './channelRemoveOwner';
 import { usersAllV2 } from './usersAllV1';
 import { userProfileV3 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
+import { sendlaterV1 } from './sendlater';
+import { reactV1, unreactV1 } from './react';
 import { channelLeaveV2 } from './channelLeave';
 
 import { notificationsGetV1 } from './notificationGet';
@@ -136,14 +138,14 @@ app.post('/dm/leave/v2', (req: Request, res: Response) => {
 });
 
 app.get('/channel/details/v3', (req: Request, res: Response) => {
-  const token = req.query.token as string;
+  const token = req.header('token');
   const channelIdString = req.query.channelId as string;
   const channelId = parseInt(channelIdString);
   return res.json(channelDetailsV3(token, channelId));
 });
 
 app.post('/channel/join/v3', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   const channelIdString = req.body.channelId as string;
   const channelId = parseInt(channelIdString);
   return res.json(channelJoinV3(token, channelId));
@@ -158,20 +160,20 @@ app.get('/dm/details/v2', (req: Request, res: Response) => {
 });
 
 app.put('/user/profile/setname/v2', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   const nameFirst = req.body.nameFirst as string;
   const nameLast = req.body.nameLast as string;
   return res.json(profileSetnameV2(token, nameFirst, nameLast));
 });
 
 app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   const email = req.body.email as string;
   return res.json(profileSetemailV2(token, email));
 });
 
 app.put('/user/profile/sethandle/v2', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   const handleStr = req.body.handleStr as string;
   return res.json(profileSethandleStrV2(token, handleStr));
 });
@@ -267,6 +269,27 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 
+app.post('/message/react/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(reactV1(token, messageId, reactId));
+});
+
+app.post('/message/unreact/v1', (req: Request, res: Response) => {
+  const { messageId, reactId } = req.body;
+  const token = req.header('token');
+  res.json(unreactV1(token, messageId, reactId));
+});
+
+app.post('/message/sendlater/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const channelIdString = req.body.channelId as string;
+  const channelId = parseInt(channelIdString);
+  const message = req.body.message as string;
+  const timeSentString = req.body.timeSent as string;
+  const timeSent = parseInt(timeSentString);
+  return res.json(sendlaterV1(token, channelId, message, timeSent));
+});
 app.get('/search/v1', (req: Request, res: Response) => {
   const token: string = req.header('token');
   const queryStr = req.query.queryStr as string;

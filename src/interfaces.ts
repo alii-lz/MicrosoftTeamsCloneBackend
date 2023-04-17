@@ -16,11 +16,13 @@ export interface user {
   email: string,
   handleStr: string,
 }
+// return format
 export interface React{
   reactId: number,
   uIds: number[],
   isThisUserReacted: boolean
 }
+// how it is stored in dataStore
 export interface react{
   reactId: number,
   uIds: number[],
@@ -70,10 +72,14 @@ export interface Data {
   users: User[];
   channels: Channel[];
   tokens: Token[];
-  messageDetails: messageDetails[],
-  dm: dm[],
+  messageDetails: messageDetails[];
+  dm: dm[];
   indivNotification: indivNotification[],
   resetCodes: resetCode[]
+}
+
+export interface timeout {
+  timeout: NodeJS.Timeout[];
 }
 
 export interface notification {
@@ -137,8 +143,3 @@ export interface channels {
 export interface messageIDReturn {
   messageId: number,
 }
-
-// export interface timeOut
-
-// export interface timeOut {
-//   timeOut: 

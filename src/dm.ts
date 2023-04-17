@@ -1,4 +1,3 @@
-
 import { error, Data, tempMessage } from './interfaces';
 import { getId } from './other';
 import { getData, setData } from './dataStore';
