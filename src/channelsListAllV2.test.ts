@@ -79,7 +79,7 @@ describe('tests for /channels/listall/v3', () => {
 
       const data = JSON.parse(res.getBody() as string);
 
-      expect(data).toEqual(ERROR);
+      expect(data.error).toEqual(ERROR);
       expect(res.statusCode).toBe(403);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
