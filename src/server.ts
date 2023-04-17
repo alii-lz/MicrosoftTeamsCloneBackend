@@ -27,6 +27,10 @@ import { notificationsGetV1 } from './notificationGet';
 import { request } from 'http';
 
 import { searchV1 } from './search';
+
+import { messagePinV1 } from './messagePin';
+import { messageUnpinV1 } from './messageUnpin';
+
 import { adminUserRemoveV1 } from './adminUserRemoveV1';
 import { adminUserPermissionChangeV1 } from './adminUserPermissionChange';
 
@@ -267,6 +271,18 @@ app.get('/search/v1', (req: Request, res: Response) => {
   const token: string = req.header('token');
   const queryStr = req.query.queryStr as string;
   res.json(searchV1(token, queryStr));
+});
+
+app.post('/message/pin/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = parseInt(req.body.messageId as string);
+  res.json(messagePinV1(token, messageId));
+});
+
+app.post('/message/unpin/v1', (req: Request, res: Response) => {
+  const token = req.header('token');
+  const messageId = parseInt(req.body.messageId as string);
+  res.json(messageUnpinV1(token, messageId));
 });
 
 // app.post('message/react/v1', (req: Request, res: Response) => {
