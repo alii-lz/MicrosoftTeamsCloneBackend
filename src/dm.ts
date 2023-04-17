@@ -1,9 +1,19 @@
 
-import { error, Data, message, tempMessage } from './interfaces';
+import { error, Data, tempMessage } from './interfaces';
 import { getId } from './other';
 import { getData, setData } from './dataStore';
 import HTTPError from 'http-errors';
 
+/**
+ * <create a new dm and return its dmId>
+ *
+ * @param {string} token - token of user who's calling the function
+ * @param {number[]} uIds - array of uIds of users to be added to the dm but without the creator of the dm
+ *
+ * @returns {dmId: number} - returns the dmId of the newly created dm
+ *
+ * @throws {error} - returns an error if token is invalid, any uId in uIds does not refer to a valid user, or there are duplicate uId's in uIds
+*/
 function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   const creatorUId: number = getId(token);
   if (creatorUId === -1) {
@@ -43,6 +53,15 @@ function dmCreate(token: string, uIds: number[]): {dmId: number} | error {
   };
 }
 
+/**
+ * <returns the array of DMs that the user is a member of>
+ *
+ * @param {string} token - token of user who's calling the function
+ *
+ * @returns {dms: []} - returns an array of DMs that the user is a member of
+ *
+ * @throws {error} - returns an error if token is invalid
+*/
 function dmList(token: string) {
   const user = getId(token);
   if (user === -1) {
@@ -69,6 +88,18 @@ function dmList(token: string) {
   };
 }
 
+/**
+ * <removes an existing DM with ID dmId, so all members are no longer in the DM>
+ *
+ * @param {string} token - token of user who's calling the function
+ * @param {number} dmId - dmId of the DM to be removed
+ *
+ * @returns {} - returns an empty object
+ *
+ * @throws {error} - returns an error if token is invalid, dmId does not refer to a valid DM,
+ *                    dmId is valid and the authorised user is not the original DM creator,
+ *                    or dmId is valid and the authorised user is no longer in the DM
+*/
 function dmRemove(token: string, dmId: number) {
   const user = getId(token);
   if (user === -1) {
@@ -90,6 +121,17 @@ function dmRemove(token: string, dmId: number) {
   return {};
 }
 
+/**
+ * <given a DM with ID dmId, the authorised user is removed as a member of this DM>
+ *
+ * @param {string} token - token of user who's calling the function
+ * @param {number} dmId - dmId of the DM which the authorised user is removed as a member of
+ *
+ * @returns {} - returns an empty object
+ *
+ * @throws {error} - returns an error if token is invalid, dmId does not refer to a valid DM,
+ *                  or dmId is valid and the authorised user is not a member of the DM
+*/
 function dmLeave(token: string, dmId: number) {
   const user = getId(token);
   if (user === -1) {
@@ -119,40 +161,53 @@ function dmLeave(token: string, dmId: number) {
   setData(dataBase);
   return {};
 }
+
+/**
+ * <given a DM with ID dmId that the authorised user is a member of, returns up to 50 messages>
+ *
+ * @param {string} token - token of user who's calling the function
+ * @param {number} dmId - dmId of the DM which the authorised user is a member of
+ * @param {number} start - start index of the messages to be returned
+ *
+ * @returns {messages: []} - returns an array of messages
+ *
+ * @throws {error} - returns an error if token is invalid, dmId does not refer to a valid DM,
+ *                   start is greater than the total number of messages in the channel, or
+ *                   dmId is valid and the authorised user is not a member of the DM
+*/
 function dmMessagesV1 (token: string, dmId: number, start: number) {
   const user: number = getId(token);
-  if (user === -1){
+  if (user === -1) {
     throw HTTPError(403, 'Invalid token');
   }
   const dataBase: Data = getData();
   const dm = dataBase.dm.find(dm => dm.dmId === dmId);
-  if(!dm){
+  if (!dm) {
     throw HTTPError(400, 'invalid DmID');
-  };
-  if(start> dm.messages.length){
+  }
+  if (start > dm.messages.length) {
     throw HTTPError(400, 'messages not found');
   }
-  if (!dm.members.includes(user)){
+  if (!dm.members.includes(user)) {
     throw HTTPError(403, 'user not in dm');
   }
-  let end: number, lastIndex: number = 0;
-  if (start + 50 > dm.messages.length){
+  let end: number; let lastIndex = 0;
+  if (start + 50 > dm.messages.length) {
     end = -1;
     lastIndex = dm.messages.length;
-  } else{
+  } else {
     end = start + 50;
     lastIndex = end;
   }
-  let messages: tempMessage[] = [];
-  for (let index = start; index < lastIndex; index++){
+  const messages: tempMessage[] = [];
+  for (let index = start; index < lastIndex; index++) {
     messages.push(dm.messages[index]);
   }
   return {
     messages: messages,
     start: start,
     end: end
-  }
-  
+  };
 }
 
 export { dmCreate, dmLeave, dmList, dmRemove, dmMessagesV1 };

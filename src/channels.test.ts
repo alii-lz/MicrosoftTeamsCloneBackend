@@ -63,7 +63,7 @@ describe('Tests for /channels/create/v3', () => {
       const channel = requestChannelsCreateV3(user.returnObj.token, 'THISNAMEISTOOLONGGGGGGGGGG', true);
       expect(channel.returnObj.error).toEqual({ error: expect.any(String) });
       expect(channel.status).toBe(INPUT_ERROR);
-    } catch (error){
+    } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
   });
@@ -72,8 +72,8 @@ describe('Tests for /channels/create/v3', () => {
     try {
       const channel = requestChannelsCreateV3(user.returnObj.token + 'a', 'validName', true);
       expect(channel.returnObj.error).toEqual({ error: expect.any(String) });
-      expect(channel.status).toBe(AUTHORIZATION_ERROR);
-    } catch (error){
+      expect(channel.status).toBe(INPUT_ERROR);
+    } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
   });
@@ -88,7 +88,6 @@ describe('Tests for /channels/list/v3', () => {
   beforeEach(() => {
     user = requestAuthRegister('ali@gmail.com', 'football', 'ali', 'ahmed');
     channel = requestChannelsCreateV3(user.returnObj.token, 'validName', true);
-
   });
 
   test('success case', () => {

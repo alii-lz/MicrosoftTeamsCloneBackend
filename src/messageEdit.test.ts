@@ -3,7 +3,7 @@ import request from 'sync-request';
 import config from './config.json';
 import { requestAuthRegister } from './authRequesters';
 import { requestChannelMessagesV3 } from './channelRequestor';
-import { requestMessageSendV2, requestMessageEditV2 } from './messageFunctionRequestors'
+import { requestMessageSendV2, requestMessageEditV2 } from './messageFunctionRequestors';
 import {
   clearV1,
 } from './other';
@@ -28,7 +28,7 @@ let messageId: number;
 beforeEach(() => {
   clearV1();
   const user1data = requestAuthRegister('user1@hotmail.com', 'p123445P', 'Arr', 'Sddd');
-  user1Token= user1data.returnObj.token;
+  user1Token = user1data.returnObj.token;
   user1Id = user1data.returnObj.authUserId;
   // make a channel
   const channel1 = request(
@@ -49,18 +49,18 @@ beforeEach(() => {
   channel1Id = channel1data.channelId;
 
   const user2data = requestAuthRegister('user2@hotmail.com', 'p123445P', 'ddddddd', 'Sddddd');
-  user2Token= user2data.returnObj.token;
-  const m1 = requestMessageSendV2(user1Token,channel1Id,'First message is in channel 1')
+  user2Token = user2data.returnObj.token;
+  const m1 = requestMessageSendV2(user1Token, channel1Id, 'First message is in channel 1');
   messageId = m1.returnObj.messageId;
 });
 
 describe('messageEditV1', () => {
   test('Success case - messageEdit', () => {
-    const res = requestMessageEditV2(user1Token,0,'Edited message from channel 1')
+    const res = requestMessageEditV2(user1Token, 0, 'Edited message from channel 1');
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
     // Check if message is edited.
-    const res2 = requestChannelMessagesV3(user1Token,channel1Id,0)
+    const res2 = requestChannelMessagesV3(user1Token, channel1Id, 0);
     expect(res2.returnObj).toStrictEqual({
       messages: [{
         messageId: 0,
@@ -76,26 +76,26 @@ describe('messageEditV1', () => {
   });
 
   test('Invalid messageId', () => {
-    const res = requestMessageEditV2(user1Token,10,'Edited message from channel 1')
+    const res = requestMessageEditV2(user1Token, 10, 'Edited message from channel 1');
     expect(res.status).toBe(400);
   });
 
   test('Invalid token', () => {
-    const res = requestMessageEditV2('asdasdss',messageId,'Edited message from channel 1')
+    const res = requestMessageEditV2('asdasdss', messageId, 'Edited message from channel 1');
     expect(res.status).toBe(403);
   });
 
   test('valid messageId but invalid authuserid', () => {
-    const res = requestMessageEditV2(user2Token,messageId,'Edited message from channel 1')
+    const res = requestMessageEditV2(user2Token, messageId, 'Edited message from channel 1');
     expect(res.status).toBe(403);
   });
 
   test('message less than one character', () => {
-    const res = requestMessageEditV2(user1Token,messageId,'')
+    const res = requestMessageEditV2(user1Token, messageId, '');
     expect(res.returnObj).toStrictEqual({});
     expect(res.status).toBe(OK);
     // Message should be unedited.
-    const res2 = requestChannelMessagesV3(user1Token,channel1Id,0)
+    const res2 = requestChannelMessagesV3(user1Token, channel1Id, 0);
     expect(res2.returnObj).toStrictEqual({
       messages: [{
         messageId: 0,
@@ -111,7 +111,7 @@ describe('messageEditV1', () => {
   });
 
   test('message over 1000 characters', () => {
-    const res = requestMessageEditV2(user1Token,messageId,'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa')
+    const res = requestMessageEditV2(user1Token, messageId, 'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa');
     expect(res.status).toBe(400);
   });
 });

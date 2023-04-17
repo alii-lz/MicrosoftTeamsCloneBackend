@@ -60,14 +60,31 @@ export interface dm {
   exists: boolean,
   messages: tempMessage[],
 }
+export interface resetCode{
+  code: string,
+  valid: boolean,
+  uId: number
+}
 
 export interface Data {
   users: User[];
   channels: Channel[];
   tokens: Token[];
   messageDetails: messageDetails[],
-  dm: dm[]
+  dm: dm[],
+  indivNotification: indivNotification[],
+  resetCodes: resetCode[]
+}
 
+export interface notification {
+  channelId: number,
+  dmId: number,
+  notificationMessage: string,
+}
+
+export interface indivNotification {
+  userId: number,
+  notification: notification[];
 }
 
 export interface error {
