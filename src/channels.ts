@@ -2,7 +2,7 @@ import { getData, setData } from './dataStore';
 
 import { getId } from './other';
 
-import { Channel, Data, user } from './interfaces';
+import { Channel, Data, user, standup } from './interfaces';
 import  HttpError  from 'http-errors';
 
 interface error {
@@ -16,6 +16,8 @@ interface channel {
   channelId: number,
   name: string
 }
+
+
 
 export function channelsCreateV3 (token: string, name: string, isPublic: boolean): error | channelId {
   if (getId(token) === -1) {
@@ -55,6 +57,8 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
     return { error: 'authUserId is invalid' };
   }
 
+  let newStandup: standup;
+
   // creates a unique channelId
   const newChannelId: number = data.channels.length + 1;
 
@@ -81,7 +85,8 @@ function channelsCreateV1(authUserId: number, name: string, isPublic: boolean): 
         nameLast: channelOwner.nameLast,
         handleStr: channelOwner.handleStr
       }
-    ]
+    ],
+    standup: newStandup
   };
   // setting data
   data.channels.push(newChannel);

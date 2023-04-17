@@ -18,3 +18,26 @@ export function requestUserProfileV3(token: string, uId: number) {
   );
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
+
+export function requestUserProfileUploadPhotoV3(token: string, imgUrl: string, xStart: number, 
+  yStart: number, xEnd: number, yEnd: number) {
+
+  const res = request(
+    'POST',
+    SERVER_URL + '/user/profile/uploadphoto/v1',
+    {
+      json: {
+        imgUrl: imgUrl,
+        xStart: xStart,
+        yStart: yStart,
+        xEnd: xEnd,
+        yEnd: yEnd
+      },
+      headers: {
+        token: token
+      },
+      timeout: 100
+    }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
+}
