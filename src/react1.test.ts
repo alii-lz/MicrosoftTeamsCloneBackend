@@ -35,7 +35,7 @@ describe('/message/react/v1 failure tests', () => {
     // Initalize dms
     const dm1_return = requestDmCreate(AuthUserId1.token, [AuthUserId2.authUserId]);
     dm1 = dm1_return.returnObj;
-    const dm2_return = requestDmCreate(AuthUserId2.token, [AuthUserId2.authUserId]);
+    const dm2_return = requestDmCreate(AuthUserId2.token, [AuthUserId1.authUserId]);
     dm2 = dm2_return.returnObj;
 
     // Initalize channelId 
@@ -155,7 +155,7 @@ describe('/message/react/v1 success case', () => {
     // Initalize dms
     const dm1_return = requestDmCreate(AuthUserId1.token, [AuthUserId2.authUserId]);
     dm1 = dm1_return.returnObj;
-    const dm2_return = requestDmCreate(AuthUserId2.token, [AuthUserId2.authUserId]);
+    const dm2_return = requestDmCreate(AuthUserId2.token, [AuthUserId1.authUserId]);
     dm2 = dm2_return.returnObj;
 
     // Initalize channelId 
@@ -172,6 +172,8 @@ describe('/message/react/v1 success case', () => {
   });
 
   test('Test 1: Success', () => {
+    console.log(ChannelId1.channelId);
+    console.log(messageId1.messageId);
     const result = reactV1(AuthUserId1.token, messageId1.messageId, 1);
     expect(result.returnObj).toStrictEqual({});
     expect(result.status).toBe(OK);

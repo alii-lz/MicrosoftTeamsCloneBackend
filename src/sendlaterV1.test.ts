@@ -1,6 +1,6 @@
-import { sendlaterV1 } from './sendlaterRequestor.test'; 
+import { requestSendlaterV1 } from './sendlaterRequestor.test'; 
 import { requestChannelsCreateV3 } from './channels.test';
-import { requestDmCreate } from './dmRequesters';
+// import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';
 
@@ -11,8 +11,8 @@ const AUTHORIZATION_ERROR = 403;
 let AuthUserId1: { token: string, authUserId: number };
 let AuthUserId2: { token: string, authUserId: number };
 
-let dm1: { dmId: number };
-let dm2: { dmId: number };
+// let dm1: { dmId: number };
+// let dm2: { dmId: number };
 
 let channelId1: { channelId: number };
 let channelId2: { channelId: number };
@@ -35,7 +35,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 1: Undefined token', () => {
     try {
-      const result = sendlaterV1(undefined, channelId1.channelId, 'Hello', 1);
+      const result = requestSendlaterV1(undefined, channelId1.channelId, 'Hello', 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -45,7 +45,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 2: Undefined channelId', () => {
     try {
-      const result = sendlaterV1(AuthUserId1.token, undefined, 'Hello', 1);
+      const result = requestSendlaterV1(AuthUserId1.token, undefined, 'Hello', 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -55,7 +55,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 3: Undefined message', () => {
     try {
-      const result = sendlaterV1(AuthUserId1.token, channelId1.channelId, undefined, 1);
+      const result = requestSendlaterV1(AuthUserId1.token, channelId1.channelId, undefined, 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -65,7 +65,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 4: Undefined timeSent', () => {
     try {
-      const result = sendlaterV1(AuthUserId1.token, channelId1.channelId, 'Hello', undefined);
+      const result = requestSendlaterV1(AuthUserId1.token, channelId1.channelId, 'Hello', undefined);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -75,7 +75,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 5: invalid token', () => {
     try {
-      const result = sendlaterV1('-1', channelId1.channelId, 'Hello', 1);
+      const result = requestSendlaterV1('-1', channelId1.channelId, 'Hello', 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -85,7 +85,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 6: invalid channelId', () => {
     try {
-      const result = sendlaterV1(AuthUserId1.token, -1, 'Hello', 1);
+      const result = requestSendlaterV1(AuthUserId1.token, -1, 'Hello', 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -95,7 +95,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 7: invalid message', () => {
     try {
-      const result = sendlaterV1(AuthUserId1.token, channelId1.channelId, '', 1);
+      const result = requestSendlaterV1(AuthUserId1.token, channelId1.channelId, '', 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -105,7 +105,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 8: invalid timeSent, in the past', () => {
     try {
-      const result = sendlaterV1(AuthUserId1.token, channelId1.channelId, 'Hello', -1);
+      const result = requestSendlaterV1(AuthUserId1.token, channelId1.channelId, 'Hello', -1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -115,7 +115,7 @@ describe('/message/sendlater/v1 failure tests', () => {
 
   test('Test 9: token is not part of channel', () => {
     try {
-      const result = sendlaterV1(AuthUserId2.token, channelId1.channelId, 'Hello', 1);
+      const result = requestSendlaterV1(AuthUserId2.token, channelId1.channelId, 'Hello', 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(AUTHORIZATION_ERROR);
     } catch (error) {
@@ -140,8 +140,8 @@ describe('/message/sendlater/v1 success tests', () => {
     channelId2 = channelId2_return.returnObj;
   });
 
-  test('Test 1: Success', () => {
-    const result = sendlaterV1(AuthUserId1.token, channelId1.channelId, 'Hello', 2);
+  test.only('Test 1: Success', () => {
+    const result = requestSendlaterV1(AuthUserId1.token, channelId1.channelId, 'Hello', 2);
     expect(result.returnObj).toStrictEqual({
       messageId: expect.any(Number)
     });
@@ -149,7 +149,7 @@ describe('/message/sendlater/v1 success tests', () => {
   });
 
   test('Test 2: Success', () => {
-    const result = sendlaterV1(AuthUserId2.token, channelId2.channelId, 'Hello', 2);
+    const result = requestSendlaterV1(AuthUserId2.token, channelId2.channelId, 'Hello', 2);
     expect(result.returnObj).toStrictEqual({
       messageId: expect.any(Number)
     });

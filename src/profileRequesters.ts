@@ -7,8 +7,10 @@ export function requestProfileSetnameV2(token: string, nameFirst: string, nameLa
     'PUT',
     SERVER_URL + '/user/profile/setname/v2',
     {
+      headers: {
+        token: token
+      },
       json: {
-        token: token,
         nameFirst: nameFirst,
         nameLast: nameLast,
       }
@@ -22,6 +24,9 @@ export function requestProfileSetemailV2(token: string, email: string) {
     'PUT',
     SERVER_URL + '/user/profile/setemail/v2',
     {
+      headers:{
+        token: token,
+      },
       json: {
         token: token,
         email: email,
@@ -36,8 +41,10 @@ export function requestSethandleStrV2(token: string, handleStr: string) {
     'PUT',
     SERVER_URL + '/user/profile/sethandle/v2',
     {
-      json: {
+      headers:{
         token: token,
+      },
+      json: {
         handleStr: handleStr,
       }
     }

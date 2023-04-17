@@ -2,7 +2,7 @@ import request from 'sync-request';
 import { port, url } from './config.json';
 const SERVER_URL = `${url}:${port}`;
 
-export function sendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
+export function requestSendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
   const res = request(
     'POST',
     SERVER_URL + '/message/sendlater/v1',
@@ -17,6 +17,7 @@ export function sendlaterV1(token: string, channelId: number, message: string, t
       }
     }
   );
+  console.log(res);
   return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
 }
 

@@ -271,12 +271,6 @@ describe('channel/join/v3 success tests', () => {
 
 
 
-
-
-
-
-
-
 // import request from 'sync-request';
 // import { port, url } from './config.json';
 

@@ -22,6 +22,8 @@ import { usersAllV2 } from './usersAllV1';
 import { userProfileV2 } from './users';
 import { channelAddOwnerV1 } from './channelAddOwner';
 import { channelLeaveV1 } from './channelLeave';
+import { sendlaterV1 } from './sendlater';
+import { reactV1 } from './react';
 
 // Set up web app
 const app = express();
@@ -111,7 +113,7 @@ app.get('/channel/details/v3', (req: Request, res: Response) => {
 });
 
 app.post('/channel/join/v3', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   const channelIdString = req.body.channelId as string;
   const channelId = parseInt(channelIdString);
   return res.json(channelJoinV3(token, channelId));
@@ -126,20 +128,20 @@ app.get('/dm/details/v2', (req: Request, res: Response) => {
 });
 
 app.put('/user/profile/setname/v2', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   const nameFirst = req.body.nameFirst as string;
   const nameLast = req.body.nameLast as string;
   return res.json(profileSetnameV2(token, nameFirst, nameLast));
 });
 
 app.put('/user/profile/setemail/v2', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   const email = req.body.email as string;
   return res.json(profileSetemailV2(token, email));
 });
 
 app.put('/user/profile/sethandle/v2', (req: Request, res: Response) => {
-  const token = req.body.token as string;
+  const token = req.header('token');
   const handleStr = req.body.handleStr as string;
   return res.json(profileSethandleStrV2(token, handleStr));
 });
@@ -235,16 +237,26 @@ app.get('/dm/messages/v2', (req: Request, res: Response) => {
   res.json(dmMessagesV1(token, dmId, start));
 });
 
-app.post('message/react/v1', (req: Request, res: Response) => {
+app.post('/message/react/v1', (req: Request, res: Response) => {
   const { MessageId, reactId } = req.body;
   const token = req.header('token');
   res.json(reactV1(token, MessageId, reactId));
 });
 
-app.post('message/unreact/v1', (req: Request, res: Response) => {
-  const { MessageId, reactId } = req.body;
+// app.post('/message/unreact/v1', (req: Request, res: Response) => {
+//   const { MessageId, reactId } = req.body;
+//   const token = req.header('token');
+//   res.json(unreactV1(token, MessageId, reactId));
+// });
+
+app.post('/message/sendlater/v1', (req: Request, res: Response) => {
   const token = req.header('token');
-  res.json(unreactV1(token, MessageId, reactId));
+  const channelIdString = req.body.channelId as string;
+  const channelId = parseInt(channelIdString);
+  const message = req.body.message as string;
+  const timeSentString = req.body.timeSent as string;
+  const timeSent = parseInt(timeSentString);
+  return res.json(sendlaterV1(token, channelId, message, timeSent));
 });
 
 app.use(errorHandler());
