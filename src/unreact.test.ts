@@ -1,5 +1,4 @@
-
-import { reactV1 } from './reactRequestor';
+import { unreactV1 } from './reactRequestor';
 import { requestChannelsCreateV3 } from './channels.test';
 import { requestMessageSendV2 } from './messageFunctionRequestors'
 import { requestDmCreate } from './dmRequesters';
@@ -8,8 +7,6 @@ import { requestClear } from './clearRequester';
 
 const OK = 200;
 const INPUT_ERROR = 400;
-const AUTHORIZATION_ERROR = 403;
-
 
 let AuthUserId1: { token: string, authUserId: number };
 let AuthUserId2: { token: string, authUserId: number };
@@ -53,7 +50,7 @@ describe('/message/react/v1 failure tests', () => {
 
   test('Test 1: Undefined token', () => {
     try {
-      const result = reactV1(undefined, dm1.dmId, 1);
+      const result = unreactV1(undefined, dm1.dmId, 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -63,7 +60,7 @@ describe('/message/react/v1 failure tests', () => {
 
   test('Test 2: Undefined messageId', () => {
     try {
-      const result = reactV1(AuthUserId1.token, null, 1);
+      const result = unreactV1(AuthUserId1.token, null, 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -73,7 +70,7 @@ describe('/message/react/v1 failure tests', () => {
 
   test('Test 3: Undefined reactId', () => {
     try {
-      const result = reactV1(AuthUserId1.token, dm1.dmId, null);
+      const result = unreactV1(AuthUserId1.token, dm1.dmId, null);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -83,7 +80,7 @@ describe('/message/react/v1 failure tests', () => {
 
   test('Test 4: Invalid token', () => {
     try {
-      const result = reactV1('-1', dm1.dmId, 1);
+      const result = unreactV1('-1', dm1.dmId, 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -93,7 +90,7 @@ describe('/message/react/v1 failure tests', () => {
 
   test('Test 5: Invalid MessageId', () => {
     try {
-      const result = reactV1(AuthUserId1.token, -1, 1);
+      const result = unreactV1(AuthUserId1.token, -1, 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -103,7 +100,7 @@ describe('/message/react/v1 failure tests', () => {
 
   test('Test 6: Invalid MessageId', () => {
     try {
-      const result = reactV1(AuthUserId1.token, dm1.dmId, -1);
+      const result = unreactV1(AuthUserId1.token, dm1.dmId, -1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -113,7 +110,7 @@ describe('/message/react/v1 failure tests', () => {
 
   test('Test 7: token is not apart of messageId', () => {
     try {
-      const result = reactV1(AuthUserId2.token, dm1.dmId, 1);
+      const result = unreactV1(AuthUserId2.token, dm1.dmId, 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -123,7 +120,7 @@ describe('/message/react/v1 failure tests', () => {
 
   test('Test 8: not a valid reactId', () => {
     try {
-      const result = reactV1(AuthUserId1.token, messageId1.messageId, -1);
+      const result = unreactV1(AuthUserId1.token, messageId1.messageId, -1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -131,10 +128,10 @@ describe('/message/react/v1 failure tests', () => {
     }
   });
 
-  test('Test 9: already contains the Authid react', () => {
+  test('Test 9: no react to unreact from', () => {
     try {
-      const success = reactV1(AuthUserId1.token, messageId1.messageId, 1);
-      const result = reactV1(AuthUserId1.token, messageId1.messageId, 1);
+      const success = unreactV1(AuthUserId1.token, messageId1.messageId, 1);
+      const result = unreactV1(AuthUserId1.token, messageId1.messageId, 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -172,13 +169,13 @@ describe('/message/react/v1 success case', () => {
   });
 
   test('Test 1: Success', () => {
-    const result = reactV1(AuthUserId1.token, messageId1.messageId, 1);
+    const result = unreactV1(AuthUserId1.token, messageId1.messageId, 1);
     expect(result.returnObj).toStrictEqual({});
     expect(result.status).toBe(OK);
   });
 
   test('Test 2: Success', () => {
-    const result = reactV1(AuthUserId2.token, dm2.dmId, 1);
+    const result = unreactV1(AuthUserId2.token, dm2.dmId, 1);
     expect(result.returnObj).toStrictEqual({});
     expect(result.status).toBe(OK);
   });
