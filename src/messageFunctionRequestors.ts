@@ -17,13 +17,13 @@ export function requestMessageSendV2(token: string, channelId: number, message: 
         message: message,
       }
     }
-  )
-  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) }
+  );
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
 // Message Edit
 export function requestMessageEditV2(token: string, messageId: number, message: string) {
-  let res = request(
+  const res = request(
     'PUT',
     SERVER_URL + '/message/edit/v2',
     {
@@ -35,7 +35,7 @@ export function requestMessageEditV2(token: string, messageId: number, message: 
         message: message,
       }
     }
-  )
+  );
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 // Message Remove
@@ -51,7 +51,7 @@ export function requestMessageRemoveV2(token: string, messageId: number) {
         messageId: messageId,
       }
     }
-  )
+  );
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 // Message SendDm
@@ -68,6 +68,6 @@ export function requestMessageSendDmV2(token: string, dmId: number, message: str
         message: message,
       }
     }
-  )
+  );
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }

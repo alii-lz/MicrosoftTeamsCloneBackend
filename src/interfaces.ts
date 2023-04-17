@@ -71,9 +71,25 @@ export interface Data {
   channels: Channel[];
   tokens: Token[];
   messageDetails: messageDetails[],
-  dm: dm[]
+<<<<<<< src/interfaces.ts
+  dm: dm[],
+  indivNotification: indivNotification[],
   resetCodes: resetCode[]
+}
 
+export interface notification {
+  channelId: number,
+  dmId: number,
+  notificationMessage: string,
+}
+=======
+  dm: dm[]
+  
+>>>>>>> src/interfaces.ts
+
+export interface indivNotification {
+  userId: number,
+  notification: notification[];
 }
 
 export interface error {

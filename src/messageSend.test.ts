@@ -2,7 +2,7 @@
 import request from 'sync-request';
 import config from './config.json';
 import { requestAuthRegister } from './authRequesters';
-import { requestMessageSendV2 } from './messageFunctionRequestors'
+import { requestMessageSendV2 } from './messageFunctionRequestors';
 import { clearV1 } from './other';
 import { resetData } from './dataStore';
 
@@ -25,7 +25,7 @@ beforeEach(() => {
   clearV1();
   // Make user 1
   const user1data = requestAuthRegister('user1@hotmail.com', 'p123445P', 'Arr', 'Sddd');
-  user1Token= user1data.returnObj.token;
+  user1Token = user1data.returnObj.token;
   user1Id = user1data.returnObj.authUserId;
   // make a channel
   const channel1 = request(
@@ -45,16 +45,16 @@ beforeEach(() => {
   channel1Id = channel1data.channelId;
   // Make second user
   const user2data = requestAuthRegister('user2@hotmail.com', 'p123445P', 'ddddddd', 'Sddddd');
-  user2Token= user2data.returnObj.token;
+  user2Token = user2data.returnObj.token;
 });
 
 describe('messageSendV1', () => {
   test('Success case - messageSend', () => {
-    const channel1 = requestMessageSendV2(user1Token,channel1Id,'First message is in channel 1')
+    const channel1 = requestMessageSendV2(user1Token, channel1Id, 'First message is in channel 1');
     expect(channel1.returnObj).toStrictEqual({ messageId: 0 });
     expect(channel1.status).toBe(OK);
     // Check if message is there.
-    let res = request(
+    const res = request(
       'GET',
       SERVER_URL + '/channel/messages/v3',
       {
@@ -83,27 +83,27 @@ describe('messageSendV1', () => {
   });
 
   test('Invalid channelId', () => {
-    const channel1 = requestMessageSendV2(user1Token,(channel1Id+1),'First message is in channel 1')
+    const channel1 = requestMessageSendV2(user1Token, (channel1Id + 1), 'First message is in channel 1');
     expect(channel1.status).toBe(400);
   });
 
   test('Invalid token', () => {
-    const channel1 = requestMessageSendV2('asbdasd',channel1Id,'First message is in channel 1')
+    const channel1 = requestMessageSendV2('asbdasd', channel1Id, 'First message is in channel 1');
     expect(channel1.status).toBe(403);
   });
 
   test('valid channel but invalid authuserid', () => {
-    const channel1 = requestMessageSendV2(user2Token,channel1Id,'First message is in channel 1')
+    const channel1 = requestMessageSendV2(user2Token, channel1Id, 'First message is in channel 1');
     expect(channel1.status).toBe(403);
   });
 
   test('message less than one character', () => {
-    const channel1 = requestMessageSendV2(user1Token,channel1Id,'')
+    const channel1 = requestMessageSendV2(user1Token, channel1Id, '');
     expect(channel1.status).toBe(400);
   });
 
   test('message over 1000 characters', () => {
-    const channel1 = requestMessageSendV2(user1Token,channel1Id,'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa')
+    const channel1 = requestMessageSendV2(user1Token, channel1Id, 'aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaa aaaaaaaaaa');
     expect(channel1.status).toBe(400);
   });
 });
