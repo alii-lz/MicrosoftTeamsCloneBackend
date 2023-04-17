@@ -1,10 +1,9 @@
 import { getData, setData } from './dataStore';
-
 import { getId } from './other';
-
 export { Channel, user } from './interfaces';
+import  HttpError  from 'http-errors';
 
-export function channelLeaveV1 (token: string, channelId: number): object {
+export function channelLeaveV2 (token: string, channelId: number): object {
   const data = getData();
 
   let channelIndex: number;
@@ -21,7 +20,7 @@ export function channelLeaveV1 (token: string, channelId: number): object {
   }
 
   if (found === false) {
-    return { error: 'channelId does not refer to a valid channel' };
+    throw HttpError(400, 'channelId does not refer to a valid channel');
   }
 
   found = false;
@@ -35,7 +34,7 @@ export function channelLeaveV1 (token: string, channelId: number): object {
   }
 
   if (found === false) {
-    return { error: 'token is invalid' };
+    throw HttpError(403, 'token is does not refer to an existing/active user');
   }
 
   found = false;
@@ -52,7 +51,7 @@ export function channelLeaveV1 (token: string, channelId: number): object {
   }
 
   if (found === false) {
-    return { error: 'user is not a member of a channel' };
+    throw HttpError(403, 'user is not member of the channel');
   }
 
   // now remove the user from the channel.

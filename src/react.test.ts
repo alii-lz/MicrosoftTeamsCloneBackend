@@ -1,6 +1,6 @@
 
 import { reactV1 } from './reactRequestor';
-import { requestChannelsCreateV3 } from './channels.test';
+import { requestChannelsCreateV3 } from './channelsRequestor';
 import { requestMessageSendV2 } from './messageFunctionRequestors'
 import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
