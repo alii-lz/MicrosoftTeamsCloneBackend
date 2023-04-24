@@ -47,30 +47,30 @@ beforeEach(() => {
   requestChannelInviteV3(user1Token, channel1Id, user2Id);
 });
 // Should test for invalid token and invalid uId.
-// token should be from admin. 
-describe('admin/user/removeV1', ()=> {
-  test('invalid token', ()=> {
+// token should be from admin.
+describe('admin/user/removeV1', () => {
+  test('invalid token', () => {
     const res = requestAdminUserRemoveV1('ahhhh', user2Id);
     expect(res.status).toBe(403);
   });
 
-  test('AuthUser not a global owner', ()=> {
+  test('AuthUser not a global owner', () => {
     const res = requestAdminUserRemoveV1(user2Token, user1Id);
     expect(res.status).toBe(403);
   });
 
-  test('Invalid uId', ()=> {
+  test('Invalid uId', () => {
     const res = requestAdminUserRemoveV1(user1Token, 100000);
     expect(res.status).toBe(400);
   });
 
-  test('Deleting the only global owner', ()=> {
+  test('Deleting the only global owner', () => {
     const res = requestAdminUserRemoveV1(user1Token, user1Id);
     expect(res.status).toBe(400);
   });
 
-  test('Success', ()=> {
+  test('Success', () => {
     const res = requestAdminUserRemoveV1(user1Token, user2Id);
     expect(res.status).toBe(OK);
-  })
-})
+  });
+});

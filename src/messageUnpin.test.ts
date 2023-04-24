@@ -77,7 +77,7 @@ describe('tests for /message/unpin/v1', () => {
     const channelData = JSON.parse(unpinChannelMessage.body as string);
     expect(channelData).toStrictEqual({});
     expect(unpinChannelMessage.statusCode).toBe(OK);
-    
+
     const pinDmMessage = request(
       'POST',
       SERVER_URL + '/message/pin/v1',
@@ -112,34 +112,34 @@ describe('tests for /message/unpin/v1', () => {
     const channelMessage = requestMessageSendV2(userToken, channel1Id, 'helloStr1').returnObj;
 
     try {
-    const pinChannelMessage = request(
-      'POST',
-      SERVER_URL + '/message/pin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: channelMessage.messageId,
+      const pinChannelMessage = request(
+        'POST',
+        SERVER_URL + '/message/pin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: channelMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const unpinChannelMessage = request(
-      'POST',
-      SERVER_URL + '/message/unpin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: 100,
+      const unpinChannelMessage = request(
+        'POST',
+        SERVER_URL + '/message/unpin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: 100,
+          }
         }
-      }
-    );
-    const channelData = JSON.parse(unpinChannelMessage.getBody() as string);
-    expect(channelData).toStrictEqual(ERROR);
-    expect(unpinChannelMessage.statusCode).toBe(400);
+      );
+      const channelData = JSON.parse(unpinChannelMessage.getBody() as string);
+      expect(channelData).toStrictEqual(ERROR);
+      expect(unpinChannelMessage.statusCode).toBe(400);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
@@ -149,34 +149,34 @@ describe('tests for /message/unpin/v1', () => {
     const dmMessage = requestMessageSendDmV2(userToken, dm1Id, 'helloStr2').returnObj;
 
     try {
-    const pinDmMessage = request(
-      'POST',
-      SERVER_URL + '/message/pin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: dmMessage.messageId,
+      const pinDmMessage = request(
+        'POST',
+        SERVER_URL + '/message/pin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: dmMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const unpinDmMessage = request(
-      'POST',
-      SERVER_URL + '/message/unpin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: 100,
+      const unpinDmMessage = request(
+        'POST',
+        SERVER_URL + '/message/unpin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: 100,
+          }
         }
-      }
-    );
-    const dmData = JSON.parse(unpinDmMessage.getBody() as string);
-    expect(dmData).toStrictEqual(ERROR);
-    expect(unpinDmMessage.statusCode).toBe(400);
+      );
+      const dmData = JSON.parse(unpinDmMessage.getBody() as string);
+      expect(dmData).toStrictEqual(ERROR);
+      expect(unpinDmMessage.statusCode).toBe(400);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
@@ -186,48 +186,48 @@ describe('tests for /message/unpin/v1', () => {
     const channelMessage = requestMessageSendV2(userToken, channel1Id, 'helloStr1').returnObj;
 
     try {
-    const pinChannelMessage = request(
-      'POST',
-      SERVER_URL + '/message/pin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: channelMessage.messageId,
+      const pinChannelMessage = request(
+        'POST',
+        SERVER_URL + '/message/pin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: channelMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const unpinChannelMessage = request(
-      'POST',
-      SERVER_URL + '/message/unpin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: channelMessage.messageId,
+      const unpinChannelMessage = request(
+        'POST',
+        SERVER_URL + '/message/unpin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: channelMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const unpinChannelMessage2 = request(
-      'POST',
-      SERVER_URL + '/message/unpin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: channelMessage.messageId,
+      const unpinChannelMessage2 = request(
+        'POST',
+        SERVER_URL + '/message/unpin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: channelMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const channelData = JSON.parse(unpinChannelMessage2.getBody() as string);
-    expect(channelData).toStrictEqual(ERROR);
-    expect(unpinChannelMessage2.statusCode).toBe(400);
+      const channelData = JSON.parse(unpinChannelMessage2.getBody() as string);
+      expect(channelData).toStrictEqual(ERROR);
+      expect(unpinChannelMessage2.statusCode).toBe(400);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
@@ -237,48 +237,48 @@ describe('tests for /message/unpin/v1', () => {
     const dmMessage = requestMessageSendDmV2(userToken, dm1Id, 'helloStr2').returnObj;
 
     try {
-    const pinDmMessage = request(
-      'POST',
-      SERVER_URL + '/message/pin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: dmMessage.messageId,
+      const pinDmMessage = request(
+        'POST',
+        SERVER_URL + '/message/pin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: dmMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const unpinDmMessage = request(
-      'POST',
-      SERVER_URL + '/message/unpin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: dmMessage.messageId,
+      const unpinDmMessage = request(
+        'POST',
+        SERVER_URL + '/message/unpin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: dmMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const unpinDmMessage2 = request(
-      'POST',
-      SERVER_URL + '/message/unpin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: dmMessage.messageId,
+      const unpinDmMessage2 = request(
+        'POST',
+        SERVER_URL + '/message/unpin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: dmMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const dmData = JSON.parse(unpinDmMessage2.getBody() as string);
-    expect(dmData).toStrictEqual(ERROR);
-    expect(unpinDmMessage2.statusCode).toBe(400);
+      const dmData = JSON.parse(unpinDmMessage2.getBody() as string);
+      expect(dmData).toStrictEqual(ERROR);
+      expect(unpinDmMessage2.statusCode).toBe(400);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
@@ -288,35 +288,35 @@ describe('tests for /message/unpin/v1', () => {
     const channelMessage = requestMessageSendV2(userToken, channel1Id, 'helloStr1').returnObj;
 
     try {
-    const pinChannelMessage = request(
-      'POST',
-      SERVER_URL + '/message/pin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: channelMessage.messageId,
+      const pinChannelMessage = request(
+        'POST',
+        SERVER_URL + '/message/pin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: channelMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const unpinChannelMessage = request(
-      'POST',
-      SERVER_URL + '/message/unpin/v1',
-      {
-        headers: {
-          token: user2Token,
-        },
-        json: {
-          messageId: channelMessage.messageId,
+      const unpinChannelMessage = request(
+        'POST',
+        SERVER_URL + '/message/unpin/v1',
+        {
+          headers: {
+            token: user2Token,
+          },
+          json: {
+            messageId: channelMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const channelData = JSON.parse(unpinChannelMessage.getBody() as string);
-    expect(channelData).toStrictEqual(ERROR);
-    expect(unpinChannelMessage.statusCode).toBe(403);
+      const channelData = JSON.parse(unpinChannelMessage.getBody() as string);
+      expect(channelData).toStrictEqual(ERROR);
+      expect(unpinChannelMessage.statusCode).toBe(403);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }
@@ -326,35 +326,35 @@ describe('tests for /message/unpin/v1', () => {
     const dmMessage = requestMessageSendDmV2(userToken, dm1Id, 'helloStr2').returnObj;
 
     try {
-    const pinDmMessage = request(
-      'POST',
-      SERVER_URL + '/message/pin/v1',
-      {
-        headers: {
-          token: userToken,
-        },
-        json: {
-          messageId: dmMessage.messageId,
+      const pinDmMessage = request(
+        'POST',
+        SERVER_URL + '/message/pin/v1',
+        {
+          headers: {
+            token: userToken,
+          },
+          json: {
+            messageId: dmMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const unpinDmMessage = request(
-      'POST',
-      SERVER_URL + '/message/unpin/v1',
-      {
-        headers: {
-          token: user2Token,
-        },
-        json: {
-          messageId: dmMessage.messageId,
+      const unpinDmMessage = request(
+        'POST',
+        SERVER_URL + '/message/unpin/v1',
+        {
+          headers: {
+            token: user2Token,
+          },
+          json: {
+            messageId: dmMessage.messageId,
+          }
         }
-      }
-    );
+      );
 
-    const dmData = JSON.parse(unpinDmMessage.getBody() as string);
-    expect(dmData).toStrictEqual(ERROR);
-    expect(unpinDmMessage.statusCode).toBe(403);
+      const dmData = JSON.parse(unpinDmMessage.getBody() as string);
+      expect(dmData).toStrictEqual(ERROR);
+      expect(unpinDmMessage.statusCode).toBe(403);
     } catch (e) {
       expect(e).toBeInstanceOf(Error);
     }

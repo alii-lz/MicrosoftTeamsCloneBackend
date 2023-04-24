@@ -28,7 +28,7 @@ export function reactV1(token: string, messageId: number, reactId: number) {
   }
 
   if (i === dataStore.messageDetails.length) {
-    throw HTTPError(400, 'Invalid messageId.' );
+    throw HTTPError(400, 'Invalid messageId.');
     // return { error: 'Invalid messageId.' };
   }
 
@@ -50,18 +50,18 @@ export function reactV1(token: string, messageId: number, reactId: number) {
       messageIndexInChannel++;
     }
     if (dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts = []) {
-      let array: number[] = [];
+      const array: number[] = [];
       const react = {
         reactId: 1,
         uIds: array,
-      }
-      dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts.push(react)
+      };
+      dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts.push(react);
     } else {
       for (const m in dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts[0]) {
-        if (dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts[0].uIds[m]
-          === user) {
-            throw HTTPError(400, 'User already reacted' );
-          }
+        if (dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts[0].uIds[m] ===
+          user) {
+          throw HTTPError(400, 'User already reacted');
+        }
       }
     }
     dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts[0].uIds.push(user);
@@ -69,11 +69,11 @@ export function reactV1(token: string, messageId: number, reactId: number) {
     return {};
   } else { // dm
     let dmIndex = 0;
-    
+
     while (dataStore.dm[dmIndex].dmId !== dataStore.messageDetails[i].dmId) {
-      ///////////////
-      console.log(dataStore.dm[dmIndex].dmId)
-      console.log(dataStore.messageDetails[i].dmId)
+      /// ////////////
+      console.log(dataStore.dm[dmIndex].dmId);
+      console.log(dataStore.messageDetails[i].dmId);
       dmIndex++;
     }
     let messageIndexInDm = 0;
@@ -81,18 +81,18 @@ export function reactV1(token: string, messageId: number, reactId: number) {
       messageIndexInDm++;
     }
     if (dataStore.dm[dmIndex].messages[messageIndexInDm].reacts = []) {
-      let array: number[] = [];
+      const array: number[] = [];
       const react = {
         reactId: 1,
         uIds: array,
-      }
-      dataStore.dm[dmIndex].messages[messageIndexInDm].reacts.push(react)
+      };
+      dataStore.dm[dmIndex].messages[messageIndexInDm].reacts.push(react);
     } else {
       for (const m in dataStore.channels[dmIndex].messages[messageIndexInDm].reacts[0]) {
-        if (dataStore.dm[dmIndex].messages[messageIndexInDm].reacts[0].uIds[m]
-          === user) {
-            throw HTTPError(400, 'User already reacted' );
-          }
+        if (dataStore.dm[dmIndex].messages[messageIndexInDm].reacts[0].uIds[m] ===
+          user) {
+          throw HTTPError(400, 'User already reacted');
+        }
       }
     }
     dataStore.dm[dmIndex].messages[messageIndexInDm].reacts[0].uIds.push(user);
@@ -100,18 +100,6 @@ export function reactV1(token: string, messageId: number, reactId: number) {
     return {};
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 export function unreactV1(token: string, messageId: number, reactId: number) {
   const dataStore = getData();
@@ -138,7 +126,7 @@ export function unreactV1(token: string, messageId: number, reactId: number) {
   }
 
   if (i === dataStore.messageDetails.length) {
-    throw HTTPError(400, 'Invalid messageId.' );
+    throw HTTPError(400, 'Invalid messageId.');
     // return { error: 'Invalid messageId.' };
   }
 
@@ -163,20 +151,20 @@ export function unreactV1(token: string, messageId: number, reactId: number) {
     for (const uId of dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts[0].uIds) {
       if (uId === user) {
         let m = 0;
-        while(dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts[0].uIds[m]!= user){
-          m ++;
+        while (dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts[0].uIds[m] != user) {
+          m++;
         }
         dataStore.channels[channelIndex].messages[messageIndexInChannel].reacts[0].uIds.splice(m, 1);
         setData(dataStore);
         return {};
-        }
+      }
     }
-    throw HTTPError(400, 'User did not react in channel' );
+    throw HTTPError(400, 'User did not react in channel');
   } else { // dm
     let dmIndex = 0;
-    
+
     while (dataStore.dm[dmIndex].dmId !== dataStore.messageDetails[i].dmId) {
-      //////////////
+      /// ///////////
       dmIndex++;
     }
     let messageIndexInDm = 0;
@@ -186,15 +174,15 @@ export function unreactV1(token: string, messageId: number, reactId: number) {
 
     for (const uId of dataStore.dm[dmIndex].messages[messageIndexInDm].reacts[0].uIds) {
       if (uId === user) {
-          let m = 0;
-          while(dataStore.dm[dmIndex].messages[messageIndexInDm].reacts[0].uIds[m]!= user){
-            m ++;
-          }
-          dataStore.dm[dmIndex].messages[messageIndexInDm].reacts[0].uIds.splice(m, 1)
-          setData(dataStore);
-          return {};
+        let m = 0;
+        while (dataStore.dm[dmIndex].messages[messageIndexInDm].reacts[0].uIds[m] != user) {
+          m++;
         }
+        dataStore.dm[dmIndex].messages[messageIndexInDm].reacts[0].uIds.splice(m, 1);
+        setData(dataStore);
+        return {};
+      }
     }
-    throw HTTPError(400, 'User did not react in dm' );
+    throw HTTPError(400, 'User did not react in dm');
   }
 }

@@ -6,7 +6,6 @@ const OK = 200;
 const INPUT_ERROR = 400;
 const AUTHORIZATION_ERROR = 403;
 
-
 let AuthUserId1: { token: string, authUserId: number };
 let AuthUserId2: { token: string, authUserId: number };
 let AuthUserId3: { token: string, authUserId: number };

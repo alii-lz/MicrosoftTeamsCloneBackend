@@ -1,7 +1,7 @@
 import { getData, setData } from './dataStore';
 import { getId } from './other';
 export { Channel, user } from './interfaces';
-import  HttpError  from 'http-errors';
+import HttpError from 'http-errors';
 
 export function channelLeaveV2 (token: string, channelId: number): object {
   const data = getData();

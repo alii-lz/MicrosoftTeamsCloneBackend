@@ -19,7 +19,7 @@ describe('user/profile/setEmail/v2 failure testCases', () => {
 
   test('Test 1: Undefined token', () => {
     try {
-      const result = requestProfileSetemailV2(undefined, 'harvey.plotter@gmail.com')
+      const result = requestProfileSetemailV2(undefined, 'harvey.plotter@gmail.com');
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
     } catch (error) {
@@ -68,7 +68,6 @@ describe('user/profile/setEmail/v2 failure testCases', () => {
   });
 });
 
-
 describe('user/profile/setEmail/v2 success testCases', () => {
   beforeEach(() => {
     requestClear();
@@ -90,20 +89,6 @@ describe('user/profile/setEmail/v2 success testCases', () => {
     expect(result.status).toBe(OK);
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import request from 'sync-request';
 

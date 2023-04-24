@@ -33,7 +33,7 @@ function setData(newData: Data) {
 function resetData() {
   for (const i in timeoutStore.timeout) {
     clearTimeout(timeoutStore.timeout[i]);
-  };
+  }
   fs.writeFileSync('data.json', JSON.stringify(initialData), { flag: 'w' });
   return {};
 }

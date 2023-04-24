@@ -1,4 +1,4 @@
-import { requestSendlaterdmV1 } from './sendlaterRequestor.test'; 
+import { requestSendlaterdmV1 } from './sendlaterRequestor.test';
 import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';
@@ -25,7 +25,7 @@ describe('/message/sendlater/v1 failure tests', () => {
     const AuthUserId3_return = requestAuthRegister('hermione.granger@gmail.com', 'reading', 'Hermione', 'Granger');
     AuthUserId3 = AuthUserId3_return.returnObj;
 
-    // Initalize channelId 
+    // Initalize channelId
     const dm1_return = requestDmCreate(AuthUserId1.token, [AuthUserId2.authUserId]);
     dm1 = dm1_return.returnObj;
     const dm2_return = requestDmCreate(AuthUserId3.token, [AuthUserId2.authUserId]);
@@ -134,7 +134,7 @@ describe('/message/sendlater/v1 success tests', () => {
     const AuthUserId3_return = requestAuthRegister('hermione.granger@gmail.com', 'reading', 'Hermione', 'Granger');
     AuthUserId3 = AuthUserId3_return.returnObj;
 
-    // Initalize channelId 
+    // Initalize channelId
     const dm1_return = requestDmCreate(AuthUserId1.token, [AuthUserId2.authUserId]);
     dm1 = dm1_return.returnObj;
     const dm2_return = requestDmCreate(AuthUserId3.token, [AuthUserId2.authUserId]);

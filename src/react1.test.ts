@@ -1,7 +1,7 @@
 
 import { reactV1 } from './reactRequestor';
 import { requestChannelsCreateV3 } from './channelsRequestor';
-import { requestMessageSendV2, requestMessageSendDmV2 } from './messageFunctionRequestors'
+import { requestMessageSendV2, requestMessageSendDmV2 } from './messageFunctionRequestors';
 import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';
@@ -9,7 +9,6 @@ import { requestClear } from './clearRequester';
 const OK = 200;
 const INPUT_ERROR = 400;
 const AUTHORIZATION_ERROR = 403;
-
 
 let AuthUserId1: { token: string, authUserId: number };
 let AuthUserId2: { token: string, authUserId: number };
@@ -41,7 +40,7 @@ describe('/message/react/v1 failure tests', () => {
     const dm2_return = requestDmCreate(AuthUserId2.token, [AuthUserId1.authUserId]);
     dm2 = dm2_return.returnObj;
 
-    // Initalize channelId 
+    // Initalize channelId
     const channelId1_return = requestChannelsCreateV3(AuthUserId1.token, 'Quidditch League', true);
     ChannelId1 = channelId1_return.returnObj;
     const channelId2_return = requestChannelsCreateV3(AuthUserId2.token, 'Hermione Fan Club', true);
@@ -161,7 +160,7 @@ describe('/message/react/v1 success case', () => {
     const dm2_return = requestDmCreate(AuthUserId2.token, [AuthUserId1.authUserId]);
     dm2 = dm2_return.returnObj;
 
-    // Initalize channelId 
+    // Initalize channelId
     const channelId1_return = requestChannelsCreateV3(AuthUserId1.token, 'Quidditch League', true);
     ChannelId1 = channelId1_return.returnObj;
     const channelId2_return = requestChannelsCreateV3(AuthUserId2.token, 'Hermione Fan Club', true);
@@ -179,7 +178,6 @@ describe('/message/react/v1 success case', () => {
     const dmMessageId2_return = requestMessageSendDmV2(AuthUserId2.token, dm2.dmId, 'Holla!');
     dmMessageId2 = dmMessageId2_return.returnObj;
   });
-
 
   test('Test 1: Success', () => {
     console.log(ChannelId1.channelId);

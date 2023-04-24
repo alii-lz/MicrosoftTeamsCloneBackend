@@ -30,28 +30,28 @@ beforeEach(() => {
   user2Id = user2data.returnObj.authUserId;
 });
 
-describe('admin/user/removeV1', ()=> {
-  test('invalid token', ()=> {
+describe('admin/user/removeV1', () => {
+  test('invalid token', () => {
     const res = requestAdminUserPermissionChangeV1('ahhhh', user2Id, 1);
     expect(res.status).toBe(403);
   });
 
-  test('AuthUser not a global owner', ()=> {
+  test('AuthUser not a global owner', () => {
     const res = requestAdminUserPermissionChangeV1(user2Token, user2Id, 2);
     expect(res.status).toBe(403);
   });
 
-  test('Invalid uId', ()=> {
+  test('Invalid uId', () => {
     const res = requestAdminUserPermissionChangeV1(user1Token, 100000, 1);
     expect(res.status).toBe(400);
   });
 
-  test('Removing the only global owner', ()=> {
+  test('Removing the only global owner', () => {
     const res = requestAdminUserPermissionChangeV1(user1Token, user1Id, 2);
     expect(res.status).toBe(400);
   });
 
-  test('Already have that permission', ()=> {
+  test('Already have that permission', () => {
     const res = requestAdminUserPermissionChangeV1(user1Token, user1Id, 1);
     expect(res.status).toBe(400);
   });
@@ -61,8 +61,8 @@ describe('admin/user/removeV1', ()=> {
     expect(res.status).toBe(400);
   });
 
-  test('Success', ()=> {
+  test('Success', () => {
     const res = requestAdminUserPermissionChangeV1(user1Token, user2Id, 1);
     expect(res.status).toBe(OK);
-  })
-})
+  });
+});

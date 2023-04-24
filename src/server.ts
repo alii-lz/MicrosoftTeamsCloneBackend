@@ -29,7 +29,7 @@ import { notificationsGetV1 } from './notificationGet';
 import { request } from 'http';
 
 import { searchV1 } from './search';
-import {standupStartV1, standupActiveV1, standupSendV1} from './standup';
+import { standupStartV1, standupActiveV1, standupSendV1 } from './standup';
 
 import { messagePinV1 } from './messagePin';
 import { messageUnpinV1 } from './messageUnpin';
@@ -94,10 +94,10 @@ app.delete('/admin/user/remove/v1', (req: Request, res: Response) => {
   return res.json(adminUserRemoveV1(token, uId));
 });
 
-app.post('/admin/userpermission/change/v1', (req: Request, res: Response) =>{
+app.post('/admin/userpermission/change/v1', (req: Request, res: Response) => {
   const token = req.header('token');
   const { uId, permissionId } = req.body;
-  return res.json(adminUserPermissionChangeV1(token, uId, permissionId)); 
+  return res.json(adminUserPermissionChangeV1(token, uId, permissionId));
 });
 
 app.post('/channels/create/v3', (req: Request, res: Response) => {
@@ -238,7 +238,7 @@ app.get('/users/all/v2', (req: Request, res: Response) => {
 });
 
 app.post('/channel/addowner/v2', (req: Request, res: Response) => {
-	const token = req.header('token');
+  const token = req.header('token');
   const channelId = parseInt(req.body.channelId as string);
   const uId = parseInt(req.body.uId as string);
   return res.json(channelAddOwnerV1(token, channelId, uId));

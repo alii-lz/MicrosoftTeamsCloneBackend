@@ -25,7 +25,7 @@ export function adminUserPermissionChangeV1(token: string, uId: number, permissi
   if (data.users.length === userIndex) {
     throw HTTPError(400, 'This user does not exist.');
   }
-  // Check if that is the only global owner. 
+  // Check if that is the only global owner.
   let globalCheck = 0;
   let throwIndex = 0;
   const totalUsers = data.users.length;
@@ -49,7 +49,7 @@ export function adminUserPermissionChangeV1(token: string, uId: number, permissi
   if (permissionId === 2 && data.users[userIndex].globalOwner === false) {
     throw HTTPError(400, 'User already a global member.');
   }
-  // Actual function. 
+  // Actual function.
   if (data.users[userIndex].globalOwner === true) {
     data.users[userIndex].globalOwner = false;
   }
@@ -57,5 +57,5 @@ export function adminUserPermissionChangeV1(token: string, uId: number, permissi
     data.users[userIndex].globalOwner = true;
   }
   setData(data);
-  return ({})
+  return ({});
 }
