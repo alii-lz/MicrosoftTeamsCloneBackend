@@ -3,7 +3,7 @@ import { getData, setData } from './dataStore';
 import { getId } from './other';
 
 import { Channel, Data, user, standup } from './interfaces';
-import  HttpError  from 'http-errors';
+import HttpError from 'http-errors';
 
 interface error {
   error: string;
@@ -16,8 +16,6 @@ interface channel {
   channelId: number,
   name: string
 }
-
-
 
 export function channelsCreateV3 (token: string, name: string, isPublic: boolean): error | channelId {
   if (getId(token) === -1) {

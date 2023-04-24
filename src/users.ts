@@ -1,7 +1,7 @@
 
 import { getData } from './dataStore';
 import { error, user } from './interfaces';
-import  HttpError  from 'http-errors';
+import HttpError from 'http-errors';
 import { getId } from './other';
 /**
   * <returns information about user with given uId, but without the password>
@@ -57,10 +57,10 @@ export function userProfileV3 (token: string, uId: number): error | {user: user}
   return userProfileV1(id, uId);
 }
 
-export function userProfileUploadPhotoV1 (token: string, imgUrl: string, xStart: number, 
+export function userProfileUploadPhotoV1 (token: string, imgUrl: string, xStart: number,
   yStart: number, xEnd: number, yEnd: number): object {
   const id = getId(token);
- 
+
   if (id === -1) {
     throw HttpError(403, 'invalid token');
   }
@@ -73,7 +73,6 @@ export function userProfileUploadPhotoV1 (token: string, imgUrl: string, xStart:
     throw HttpError(400, 'invalid dimension');
   }
 
-  if (imgUrl.endsWith('JPG'))
-    throw HttpError(400, 'invalid dimension');
-  return {}
+  if (imgUrl.endsWith('JPG')) { throw HttpError(400, 'invalid dimension'); }
+  return {};
 }

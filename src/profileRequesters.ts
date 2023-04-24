@@ -24,7 +24,7 @@ export function requestProfileSetemailV2(token: string, email: string) {
     'PUT',
     SERVER_URL + '/user/profile/setemail/v2',
     {
-      headers:{
+      headers: {
         token: token,
       },
       json: {
@@ -41,7 +41,7 @@ export function requestSethandleStrV2(token: string, handleStr: string) {
     'PUT',
     SERVER_URL + '/user/profile/sethandle/v2',
     {
-      headers:{
+      headers: {
         token: token,
       },
       json: {

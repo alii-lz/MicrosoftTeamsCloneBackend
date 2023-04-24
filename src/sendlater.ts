@@ -4,23 +4,22 @@ import HTTPError from 'http-errors';
 import { messageSendV2 } from './messageFunctions';
 import { messageSenddmV2 } from './messageFunctions';
 
-
 export function sendlaterV1(token: string, channelId: number, message: string, timeSent: number) {
   const data = getData();
   // Check if empty values were entered.
   if (token === '' || token === undefined || channelId === undefined || timeSent === undefined) {
-    throw HTTPError(400, 'Missing variables.' );
+    throw HTTPError(400, 'Missing variables.');
     // return { error: 'Missing variables.' };
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    throw HTTPError(400, 'Invalid token.' );
+    throw HTTPError(400, 'Invalid token.');
     // return { error: 'Invalid token.' };
   }
 
   if (timeSent < 0) {
-    throw HTTPError(400, 'timeSent is in the past.' );
+    throw HTTPError(400, 'timeSent is in the past.');
   }
   // check if channelId is valid.
   let channelIndex2 = 0;
@@ -29,16 +28,16 @@ export function sendlaterV1(token: string, channelId: number, message: string, t
     channelIndex2++;
   }
   if (channelIndex2 === totalChannelCount) {
-    throw HTTPError(400, 'Invalid channelId.' );
+    throw HTTPError(400, 'Invalid channelId.');
     // return { error: 'Invalid channelId.' };
   }
   // check if message is over 1000 characters or if it is less than one.
   if (message.length >= 1000) {
-    throw HTTPError(400, 'Message too long.' );
+    throw HTTPError(400, 'Message too long.');
     // return { error: 'Message too long.' };
   }
   if (message === '') {
-    throw HTTPError(400, 'Message too short.' );
+    throw HTTPError(400, 'Message too short.');
     // return { error: 'Message too short.' };
   }
   // Check if user is part of this chanel.
@@ -49,7 +48,7 @@ export function sendlaterV1(token: string, channelId: number, message: string, t
     channelUserIndex++;
   }
   if (channelUserIndex === memberCount) {
-    throw HTTPError(403, 'User is not part of this channel.')
+    throw HTTPError(403, 'User is not part of this channel.');
     // return { error: 'User is not part of this channel.' };
   }
   let messageId;
@@ -62,7 +61,7 @@ export function sendlaterV1(token: string, channelId: number, message: string, t
   }, timeSent * 1000);
   timeoutData.timeout.push(timeOutId);
   setData(data);
-  console.log(messageId)
+  console.log(messageId);
   return messageId;
 }
 
@@ -70,18 +69,18 @@ export function sendlaterdmV1(token: string, dmId: number, message: string, time
   const data = getData();
   // Check if empty values were entered.
   if (token === '' || token === undefined || dmId === undefined || timeSent === undefined) {
-    throw HTTPError(400, 'Missing variables.' );
+    throw HTTPError(400, 'Missing variables.');
     // return { error: 'Missing variables.' };
   }
   // Check if the token is valid.
   const uId = getId(token);
   if (uId === -1) {
-    throw HTTPError(400, 'Invalid token.' );
+    throw HTTPError(400, 'Invalid token.');
     // return { error: 'Invalid token.' };
   }
 
   if (timeSent < 0) {
-    throw HTTPError(400, 'timeSent is in the past.' );
+    throw HTTPError(400, 'timeSent is in the past.');
   }
   // check if channelId is valid.
   let dmIndex2 = 0;
@@ -90,16 +89,16 @@ export function sendlaterdmV1(token: string, dmId: number, message: string, time
     dmIndex2++;
   }
   if (dmIndex2 === totaldmCount) {
-    throw HTTPError(400, 'Invalid dmId.' );
+    throw HTTPError(400, 'Invalid dmId.');
     // return { error: 'Invalid channelId.' };
   }
   // check if message is over 1000 characters or if it is less than one.
   if (message.length >= 1000) {
-    throw HTTPError(400, 'Message too long.' );
+    throw HTTPError(400, 'Message too long.');
     // return { error: 'Message too long.' };
   }
   if (message === '') {
-    throw HTTPError(400, 'Message too short.' );
+    throw HTTPError(400, 'Message too short.');
     // return { error: 'Message too short.' };
   }
   // Check if user is part of this chanel.
@@ -110,7 +109,7 @@ export function sendlaterdmV1(token: string, dmId: number, message: string, time
     dmUserIndex++;
   }
   if (dmUserIndex === memberCount) {
-    throw HTTPError(403, 'User is not part of this channel.')
+    throw HTTPError(403, 'User is not part of this channel.');
     // return { error: 'User is not part of this channel.' };
   }
   let messageId = messageSenddmV2(token, dmId, message);
@@ -123,6 +122,6 @@ export function sendlaterdmV1(token: string, dmId: number, message: string, time
   }, timeSent * 1000);
   timeoutData.timeout.push(timeOutId);
   setData(data);
-  console.log(messageId)
+  console.log(messageId);
   return messageId;
 }

@@ -34,7 +34,6 @@ beforeEach(() => {
 });
 
 describe('Tests for /channels/create/v3', () => {
-
   let user: {status: number, returnObj: {token: string, authUserId: number}};
   beforeEach(() => {
     user = requestAuthRegister('ali@gmail.com', 'football', 'ali', 'ahmed');
@@ -47,15 +46,13 @@ describe('Tests for /channels/create/v3', () => {
   });
 
   test('name length less than 1', () => {
-
-  try {
-    const channel = requestChannelsCreateV3(user.returnObj.token, '', true);
-    expect(channel.returnObj.error).toEqual(expect.any(String) );
-    expect(channel.status).toBe(INPUT_ERROR);
-  } catch (error){
-    expect(error).toBeInstanceOf(Error);
-  }
-
+    try {
+      const channel = requestChannelsCreateV3(user.returnObj.token, '', true);
+      expect(channel.returnObj.error).toEqual(expect.any(String));
+      expect(channel.status).toBe(INPUT_ERROR);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 
   test('name length more than 20', () => {
@@ -114,4 +111,3 @@ describe('Tests for /channels/list/v3', () => {
     }
   });
 });
-

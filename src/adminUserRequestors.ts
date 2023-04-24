@@ -16,7 +16,7 @@ export function requestAdminUserRemoveV1(token: string, uId: number) {
     }
   );
   return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
-};
+}
 
 export function requestAdminUserPermissionChangeV1(token: string, uId: number, permissionId: number) {
   const res = request(

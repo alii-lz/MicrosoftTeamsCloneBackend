@@ -83,7 +83,7 @@ export function profileSethandleStrV2(token: string, handleStr: string) {
 
   // lowercase handleStr
   // handleStr = handleStr.toLowerCase();
-  if(/^([a-zA-Z0-9])/.test(handleStr) == false){
+  if (/^([a-zA-Z0-9])/.test(handleStr) == false) {
     throw HTTPError(400, 'handleStr must be alphaNumeric');
   }
   /// if (!handleStr.match("[A-Za-z0-9]")) {

@@ -1,4 +1,4 @@
-import { requestSendlaterV1 } from './sendlaterRequestor.test'; 
+import { requestSendlaterV1 } from './sendlaterRequestor.test';
 import { requestDmCreate } from './dmRequesters';
 import { requestAuthRegister } from './authRequesters';
 import { requestClear } from './clearRequester';
@@ -26,7 +26,7 @@ describe('/message/sendlater/v1 failure tests', () => {
     const AuthUserId2_return = requestAuthRegister('ron.weasley@gmail.com', 'flying car', 'Ron', 'Weasley');
     AuthUserId2 = AuthUserId2_return.returnObj;
 
-    // Initalize channelId 
+    // Initalize channelId
     const channelId1_return = requestChannelsCreateV3(AuthUserId1.token, 'Quidditch League', true);
     channelId1 = channelId1_return.returnObj;
     const channelId2_return = requestChannelsCreateV3(AuthUserId2.token, 'Hermione Fan Club', true);
@@ -133,7 +133,7 @@ describe('/message/sendlater/v1 success tests', () => {
     const AuthUserId2_return = requestAuthRegister('ron.weasley@gmail.com', 'flying car', 'Ron', 'Weasley');
     AuthUserId2 = AuthUserId2_return.returnObj;
 
-    // Initalize channelId 
+    // Initalize channelId
     const channelId1_return = requestChannelsCreateV3(AuthUserId1.token, 'Quidditch League', true);
     channelId1 = channelId1_return.returnObj;
     const channelId2_return = requestChannelsCreateV3(AuthUserId2.token, 'Hermione Fan Club', true);

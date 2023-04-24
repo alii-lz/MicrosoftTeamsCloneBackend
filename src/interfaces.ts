@@ -151,3 +151,17 @@ export interface channels {
 export interface messageIDReturn {
   messageId: number,
 }
+
+export interface userStats {
+  channelsJoined: [{numChannelsJoined: number, timeStamp: number}],
+  dmsJoined: [{numDmsJoined: number, timeStamp: number}],
+  messagesSent: [{numMessagesSent: number, timeStamp: number}],
+  involvementRate: number
+}
+
+export interface workspaceStats {
+  channelsExist: [{numChannelsExist: number, timeStamp: number}],
+  dmsExist: [{numDmsExist: number, timeStamp: number}],
+  messagesExist: [{numMessagesExist: number, timeStamp: number}],
+  utilizationRate: number
+}

@@ -5,12 +5,12 @@ import { error, message, Data } from './interfaces';
 
 /**
  * <given a message within a channel or DM, marks it as "pinned">
- * 
+ *
  * @param {string} token - token of user who's calling the function
  * @param {number} messageId - id of message to be pinned
- * 
+ *
  * @returns {} - returns an empty object
- * 
+ *
  * @throws {error} - returns an error if token is invalid, message is already pinned,
  *                  messageId refers to a valid message in a joined channel/DM and the authorised user does not have owner permissions in the channel/DM,
  *                 or messageId is not a valid message within a channel or DM that the authorised user is part of

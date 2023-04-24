@@ -1,6 +1,6 @@
 import request from 'sync-request';
 import { requestChannelsCreateV3 } from './channelsRequestor';
-import  {requestChannelLeaveV2 } from './channelRequestor';
+import { requestChannelLeaveV2 } from './channelRequestor';
 import { port, url } from './config.json';
 
 const SERVER_URL = `${url}:${port}`;
@@ -34,19 +34,15 @@ beforeEach(() => {
 });
 
 describe('Tests for /channel/leave/v2', () => {
-
   let user: {status: number, returnObj: {token: string, authUserId: number}};
   let channel: {status: number, returnObj: {channelId: number}};
 
   beforeEach(() => {
-
     user = requestAuthRegister('ali@gmail.com', 'football', 'ali', 'ahmed');
     channel = requestChannelsCreateV3(user.returnObj.token, 'validName', true);
-
   });
 
   test('success case', () => {
-
     const result = requestChannelLeaveV2(user.returnObj.token, channel.returnObj.channelId);
 
     expect(result.status).toBe(OK);
@@ -54,12 +50,10 @@ describe('Tests for /channel/leave/v2', () => {
   });
 
   test('channelId does not refer to a valid channel', () => {
-
     try {
       const result = requestChannelLeaveV2(user.returnObj.token, channel.returnObj.channelId + 1);
       expect(result.status).toBe(INPUT_ERROR);
       expect(result.returnObj.error).toStrictEqual(expect.any(String));
-
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
@@ -76,11 +70,9 @@ describe('Tests for /channel/leave/v2', () => {
     } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
-
   });
 
   test('invalid token', () => {
-
     try {
       const result = requestChannelLeaveV2(user.returnObj.token + 'a', channel.returnObj.channelId);
       expect(result.status).toBe(AUTHORIZATION_ERROR);

@@ -29,14 +29,12 @@ export function requestAuthRegister(email: string, password: string, nameFirst: 
 }
 
 describe('Tests for /user/profile/v3', () => {
-
   let user: {status: number, returnObj: {token: string, authUserId: number}};
   beforeEach(() => {
     user = requestAuthRegister('ali@gmail.com', 'football', 'ali', 'ahmed');
   });
 
   test('success case', () => {
-
     const result = requestUserProfileV3(user.returnObj.token, user.returnObj.authUserId);
 
     expect(result.status).toBe(OK);
@@ -56,7 +54,7 @@ describe('Tests for /user/profile/v3', () => {
       const result = requestUserProfileV3(user.returnObj.token, user.returnObj.authUserId + 1);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(INPUT_ERROR);
-    } catch (error){
+    } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
   });
@@ -66,15 +64,13 @@ describe('Tests for /user/profile/v3', () => {
       const result = requestUserProfileV3(user.returnObj.token + 'a', user.returnObj.authUserId);
       expect(result.returnObj.error).toEqual({ error: expect.any(String) });
       expect(result.status).toBe(AUTHORIZATION_ERROR);
-    } catch (error){
+    } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
   });
 });
 
-
 describe('Tests for /user/profile/uploadphoto/v1', () => {
-
   let user: {status: number, returnObj: {token: string, authUserId: number}};
   beforeEach(() => {
     user = requestAuthRegister('ali@gmail.com', 'football', 'ali', 'ahmed');
@@ -86,45 +82,44 @@ describe('Tests for /user/profile/uploadphoto/v1', () => {
 
   test('not a jpg', () => {
     try {
-      const result = requestUserProfileUploadPhotoV3(user.returnObj.token, 
+      const result = requestUserProfileUploadPhotoV3(user.returnObj.token,
         ' http://localhost:5001/imgurl/adfnajnerkn23k4234.pdf', 0, 0, 10, 10);
 
       expect(result.status).toBe(INPUT_ERROR);
-
-    } catch (error){
+    } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
   });
 
   test('invalid token', () => {
     try {
-      const result = requestUserProfileUploadPhotoV3(user.returnObj.token + 'a', 
+      const result = requestUserProfileUploadPhotoV3(user.returnObj.token + 'a',
         'http://localhost:5001/imgurl/adfnajnerkn23k4234.jpg', 0, 0, 10, 10);
 
       expect(result.status).toBe(AUTHORIZATION_ERROR);
-    } catch (error){
+    } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
   });
 
   test('invalid dimension -- xEnd <= xStart', () => {
     try {
-      const result = requestUserProfileUploadPhotoV3(user.returnObj.token, 
+      const result = requestUserProfileUploadPhotoV3(user.returnObj.token,
         'http://localhost:5001/imgurl/adfnajnerkn23k4234.jpg', 0, 0, -1, 10);
 
       expect(result.status).toBe(INPUT_ERROR);
-    } catch (error){
+    } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
   });
 
   test('invalid dimension -- yEnd <= yStart', () => {
     try {
-      const result = requestUserProfileUploadPhotoV3(user.returnObj.token, 
+      const result = requestUserProfileUploadPhotoV3(user.returnObj.token,
         'http://localhost:5001/imgurl/adfnajnerkn23k4234.jpg', 0, 0, 10, -1);
 
       expect(result.status).toBe(INPUT_ERROR);
-    } catch (error){
+    } catch (error) {
       expect(error).toBeInstanceOf(Error);
     }
   });
