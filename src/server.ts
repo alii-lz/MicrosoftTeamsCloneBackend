@@ -36,6 +36,7 @@ import { messageUnpinV1 } from './messageUnpin';
 
 import { adminUserRemoveV1 } from './adminUserRemoveV1';
 import { adminUserPermissionChangeV1 } from './adminUserPermissionChange';
+import { userStatsV1, usersStatsV1 } from './stats';
 
 // Set up web app
 const app = express();
@@ -117,7 +118,7 @@ app.post('/dm/create/v2', (req: Request, res: Response) => {
   // const uids = req.body.uids as number[];
   // console.log("<><>",req.body)
   // console.log(uIds)
-  res.json(dmCreate(token, uIds));// Original -> return res.json(dmCreate(token, uIds));
+  return res.json(dmCreate(token, uIds));// Original -> return res.json(dmCreate(token, uIds));
 });
 
 app.get('/dm/list/v2', (req: Request, res: Response) => {
@@ -342,6 +343,16 @@ app.post('/standup/send/v1', (req: Request, res: Response) => {
   const message = req.body.message;
 
   return res.json(standupSendV1(token, channelId, message));
+});
+
+app.get('/user/stats/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  return res.json(userStatsV1(token));
+});
+
+app.get('/users/stats/v1', (req: Request, res: Response) => {
+  const token: string = req.header('token');
+  return res.json(usersStatsV1(token));
 });
 
 // start server

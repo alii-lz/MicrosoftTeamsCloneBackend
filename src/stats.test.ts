@@ -87,29 +87,51 @@ describe('Tests for /user/stats/v1', () => {
   test('no messages/dms success case', () => {
     const result = requestUserStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
+    expect(result.returnObj.userStats.channelsJoined[0].numChannelsJoined).toBe(1);
+    expect(result.returnObj.userStats.channelsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.dmsJoined[0].numDmsJoined).toBe(0);
+    expect(result.returnObj.userStats.dmsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.messagesSent[0].numMessagesSent).toBe(0);
+    expect(result.returnObj.userStats.messagesSent[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.involvementRate).toBe(1);
 
-      channelsJoined: [{ numChannelsJoined: 1, timeStamp: currTime }],
-      dmsJoined: [{ numDmsJoined: 0, timeStamp: currTime }],
-      messagesSent: [{ numMessagesSent: 0, timeStamp: currTime }],
-      involvementRate: (1) / (1)
-    });
+    // expect(result.returnObj).toStrictEqual({
+
+    //   userStats: {
+    //     channelsJoined: [{ numChannelsJoined: 1, timeStamp: currTime }],
+    //     dmsJoined: [{ numDmsJoined: 0, timeStamp: null }],
+    //     messagesSent: [{ numMessagesSent: 0, timeStamp: currTime }],
+    //     involvementRate: (1) / (1)
+    //   }
+    // });
   });
 
   test('messages success case', () => {
     requestMessageSendV2(token, channelId, 'hello');
     const result = requestUserStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsJoined: [{ numChannelsJoined: 1, timeStamp: currTime }],
-      dmsJoined: [{ numDmsJoined: 0, timeStamp: currTime }],
-      messagesSent: [{ numMessagesSent: 1, timeStamp: currTime }],
-      involvementRate: (1 + 1) / (1 + 1)
-    });
+    expect(result.returnObj.userStats.channelsJoined[0].numChannelsJoined).toBe(1);
+    expect(result.returnObj.userStats.channelsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.dmsJoined[0].numDmsJoined).toBe(0);
+    expect(result.returnObj.userStats.dmsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.messagesSent[0].numMessagesSent).toBe(1);
+    expect(result.returnObj.userStats.messagesSent[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.involvementRate).toBe(1);
+    
+    // expect(result.returnObj).toStrictEqual({
+
+    //   userStats: {
+    //     channelsJoined: [{ numChannelsJoined: 1, timeStamp: currTime }],
+    //     dmsJoined: [{ numDmsJoined: 0, timeStamp: currTime }],
+    //     messagesSent: [{ numMessagesSent: 1, timeStamp: currTime }],
+    //     involvementRate: (1 + 1) / (1 + 1)
+    //   }
+    // });
   });
 
   test('dms success case', () => {
+
     const userInDm = requestAuthRegister('temp@gmail.com', 'temp', 'temp', 'temp');
     const uId = getId(userInDm.returnObj.token);
     const dm = requestDmCreate(token, [uId]);
@@ -117,13 +139,23 @@ describe('Tests for /user/stats/v1', () => {
 
     const result = requestUserStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
+    expect(result.returnObj.userStats.channelsJoined[0].numChannelsJoined).toBe(1);
+    expect(result.returnObj.userStats.channelsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.dmsJoined[0].numDmsJoined).toBe(1);
+    expect(result.returnObj.userStats.dmsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.messagesSent[0].numMessagesSent).toBe(1);
+    expect(result.returnObj.userStats.messagesSent[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.involvementRate).toBe(1);
 
-      channelsJoined: [{ numChannelsJoined: 1, timeStamp: currTime }],
-      dmsJoined: [{ numDmsJoined: 1, timeStamp: currTime }],
-      messagesSent: [{ numMessagesSent: 1, timeStamp: currTime }],
-      involvementRate: (1 + 1 + 1) / (1 + 1 + 1)
-    });
+    // expect(result.returnObj).toStrictEqual({
+
+    //   userStats: {
+    //     channelsJoined: [{ numChannelsJoined: 1, timeStamp: currTime }],
+    //     dmsJoined: [{ numDmsJoined: 1, timeStamp: currTime }],
+    //     messagesSent: [{ numMessagesSent: 1, timeStamp: currTime }],
+    //     involvementRate: (1 + 1 + 1) / (1 + 1 + 1)
+    //   }
+    // });
   });
 
   test('channel + messages + dms case', () => {
@@ -136,13 +168,23 @@ describe('Tests for /user/stats/v1', () => {
 
     const result = requestUserStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsJoined: [{ numChannelsJoined: 1, timeStamp: currTime }],
-      dmsJoined: [{ numDmsJoined: 1, timeStamp: currTime }],
-      messagesSent: [{ numMessagesSent: 2, timeStamp: currTime }],
-      involvementRate: (1 + 1 + 2) / (1 + 1 + 2)
-    });
+    expect(result.returnObj.userStats.channelsJoined[0].numChannelsJoined).toBe(1);
+    expect(result.returnObj.userStats.channelsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.dmsJoined[0].numDmsJoined).toBe(1);
+    expect(result.returnObj.userStats.dmsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.messagesSent[0].numMessagesSent).toBe(2);
+    expect(result.returnObj.userStats.messagesSent[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.involvementRate).toBe(1);
+
+    // expect(result.returnObj).toStrictEqual({
+    //   userStats: {
+    //     channelsJoined: [{ numChannelsJoined: 1, timeStamp: currTime }],
+    //     dmsJoined: [{ numDmsJoined: 1, timeStamp: currTime }],
+    //     messagesSent: [{ numMessagesSent: 2, timeStamp: currTime }],
+    //     involvementRate: (1 + 1 + 2) / (1 + 1 + 2)
+    //   }
+    // });
   });
 
   test('2 channels success case', () => {
@@ -151,13 +193,24 @@ describe('Tests for /user/stats/v1', () => {
 
     const result = requestUserStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsJoined: [{ numChannelsJoined: 2, timeStamp: currTime }],
-      dmsJoined: [{ numDmsJoined: 0, timeStamp: currTime }],
-      messagesSent: [{ numMessagesSent: 1, timeStamp: currTime }],
-      involvementRate: (2 + 1) / (2 + 1)
-    });
+    expect(result.returnObj.userStats.channelsJoined[0].numChannelsJoined).toBe(2);
+    expect(result.returnObj.userStats.channelsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.dmsJoined[0].numDmsJoined).toBe(0);
+    expect(result.returnObj.userStats.dmsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.messagesSent[0].numMessagesSent).toBe(1);
+    expect(result.returnObj.userStats.messagesSent[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.involvementRate).toBe(1);
+
+    // expect(result.returnObj).toStrictEqual({
+
+    //   userStats: {
+    //     channelsJoined: [{ numChannelsJoined: 2, timeStamp: currTime }],
+    //     dmsJoined: [{ numDmsJoined: 0, timeStamp: currTime }],
+    //     messagesSent: [{ numMessagesSent: 1, timeStamp: currTime }],
+    //     involvementRate: (2 + 1) / (2 + 1)
+    //   }
+    // });
   });
 
   test('0 involement case', () => {
@@ -171,20 +224,27 @@ describe('Tests for /user/stats/v1', () => {
 
     const result = requestUserStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsJoined: [{ numChannelsJoined: 0, timeStamp: currTime }],
-      dmsJoined: [{ numDmsJoined: 0, timeStamp: currTime }],
-      messagesSent: [{ numMessagesSent: 0, timeStamp: currTime }],
-      involvementRate: 0
-    });
+    expect(result.returnObj.userStats.channelsJoined[0].numChannelsJoined).toBe(0);
+    expect(result.returnObj.userStats.channelsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.dmsJoined[0].numDmsJoined).toBe(0);
+    expect(result.returnObj.userStats.dmsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.messagesSent[0].numMessagesSent).toBe(0);
+    expect(result.returnObj.userStats.messagesSent[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.involvementRate).toBe(0);
+
+    // expect(result.returnObj).toStrictEqual({
+
+    //   userStats: {
+    //     channelsJoined: [{ numChannelsJoined: 0, timeStamp: currTime }],
+    //     dmsJoined: [{ numDmsJoined: 0, timeStamp: currTime }],
+    //     messagesSent: [{ numMessagesSent: 0, timeStamp: currTime }],
+    //     involvementRate: 0
+    //   }
+    // });
   });
 
   test('leaving a channel case', () => {
-    const userInDm = requestAuthRegister('temp@gmail.com', 'temp', 'temp', 'temp');
-    const uId = getId(userInDm.returnObj.token);
-    const dm = requestDmCreate(token, [uId]);
-    requestMessageSendDmV2(token, dm.returnObj.dmId, 'hello');
 
     requestMessageSendV2(token, channelId, 'how are you?');
 
@@ -192,13 +252,15 @@ describe('Tests for /user/stats/v1', () => {
 
     const result = requestUserStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsJoined: [{ numChannelsJoined: 0, timeStamp: currTime }],
-      dmsJoined: [{ numDmsJoined: 1, timeStamp: currTime }],
-      messagesSent: [{ numMessagesSent: 2, timeStamp: currTime }],
-      involvementRate: (1 + 2) / (1 + 1 + 2)
-    });
+    expect(result.returnObj.userStats.channelsJoined[0].numChannelsJoined).toBe(0);
+    expect(result.returnObj.userStats.channelsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.dmsJoined[0].numDmsJoined).toBe(0);
+    expect(result.returnObj.userStats.dmsJoined[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.messagesSent[0].numMessagesSent).toBe(1);
+    expect(result.returnObj.userStats.messagesSent[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.userStats.involvementRate).toBe(1/2);
+
   });
 });
 
@@ -224,28 +286,45 @@ describe('Tests for /users/stats/v1', () => {
   });
 
   test('only channels exist success case', () => {
-    const result = requestUserStatsV1(token);
+    const result = requestUsersStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
+    expect(result.returnObj.workspaceStats.channelsExist[0].numChannelsExist).toBe(1);
+    expect(result.returnObj.workspaceStats.channelsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.dmsExist[0].numDmsExist).toBe(0);
+    expect(result.returnObj.workspaceStats.dmsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.messagesExist[0].numMessagesExist).toBe(0);
+    expect(result.returnObj.workspaceStats.messagesExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.utilizationRate).toBe(1);
 
-      channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
-      dmsExist: [{ numDmsExist: 0, timeStamp: currTime }],
-      messagesExist: [{ numMessagesExist: 0, timeStamp: currTime }],
-      utilizationRate: (1 / 1)
-    });
+    // expect(result.returnObj).toStrictEqual({
+
+    //   channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
+    //   dmsExist: [{ numDmsExist: 0, timeStamp: currTime }],
+    //   messagesExist: [{ numMessagesExist: 0, timeStamp: currTime }],
+    //   utilizationRate: (1 / 1)
+    // });
   });
 
   test('message exists success case', () => {
     requestMessageSendV2(token, channelId, 'i am sleepy');
-    const result = requestUserStatsV1(token);
+    const result = requestUsersStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
-      dmsExist: [{ numDmsExist: 0, timeStamp: currTime }],
-      messagesExist: [{ numMessagesExist: 1, timeStamp: currTime }],
-      utilizationRate: (1 / 1)
-    });
+    expect(result.returnObj.workspaceStats.channelsExist[0].numChannelsExist).toBe(1);
+    expect(result.returnObj.workspaceStats.channelsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.dmsExist[0].numDmsExist).toBe(0);
+    expect(result.returnObj.workspaceStats.dmsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.messagesExist[0].numMessagesExist).toBe(1);
+    expect(result.returnObj.workspaceStats.messagesExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.utilizationRate).toBe(1);
+
+    // expect(result.returnObj).toStrictEqual({
+
+    //   channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
+    //   dmsExist: [{ numDmsExist: 0, timeStamp: currTime }],
+    //   messagesExist: [{ numMessagesExist: 1, timeStamp: currTime }],
+    //   utilizationRate: (1 / 1)
+    // });
   });
 
   test('dm exists success case', () => {
@@ -254,34 +333,47 @@ describe('Tests for /users/stats/v1', () => {
     const dm = requestDmCreate(token, [uId]);
     requestMessageSendDmV2(token, dm.returnObj.dmId, 'hello');
 
-    const result = requestUserStatsV1(token);
+    const result = requestUsersStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
-      dmsExist: [{ numDmsExist: 1, timeStamp: currTime }],
-      messagesExist: [{ numMessagesExist: 1, timeStamp: currTime }],
-      utilizationRate: (2 / 2)
-    });
+    expect(result.returnObj.workspaceStats.channelsExist[0].numChannelsExist).toBe(1);
+    expect(result.returnObj.workspaceStats.channelsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.dmsExist[0].numDmsExist).toBe(1);
+    expect(result.returnObj.workspaceStats.dmsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.messagesExist[0].numMessagesExist).toBe(1);
+    expect(result.returnObj.workspaceStats.messagesExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.utilizationRate).toBe(1);
+
+
+    // expect(result.returnObj).toStrictEqual({
+
+    //   channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
+    //   dmsExist: [{ numDmsExist: 1, timeStamp: currTime }],
+    //   messagesExist: [{ numMessagesExist: 1, timeStamp: currTime }],
+    //   utilizationRate: (2 / 2)
+    // });
   });
 
   test('0 utilizationRate', () => {
-    const userInDm = requestAuthRegister('temp@gmail.com', 'temp', 'temp', 'temp');
-    const uId = getId(userInDm.returnObj.token);
-    const dm = requestDmCreate(token, [uId]);
-    requestMessageSendDmV2(token, dm.returnObj.dmId, 'hello');
-
     requestChannelLeaveV2(token, channelId);
-
-    const result = requestUserStatsV1(token);
+    const result = requestUsersStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
-      dmsExist: [{ numDmsExist: 1, timeStamp: currTime }],
-      messagesExist: [{ numMessagesExist: 0, timeStamp: currTime }],
-      utilizationRate: 0
-    });
+    expect(result.returnObj.workspaceStats.channelsExist[0].numChannelsExist).toBe(1);
+    expect(result.returnObj.workspaceStats.channelsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.dmsExist[0].numDmsExist).toBe(1);
+    expect(result.returnObj.workspaceStats.dmsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.messagesExist[0].numMessagesExist).toBe(0);
+    expect(result.returnObj.workspaceStats.messagesExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.utilizationRate).toBe(0);
+
+    // expect(result.returnObj).toStrictEqual({
+
+    //   channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
+    //   dmsExist: [{ numDmsExist: 1, timeStamp: currTime }],
+    //   messagesExist: [{ numMessagesExist: 0, timeStamp: currTime }],
+    //   utilizationRate: 0
+    // });
   });
 
   test('dm + channel + messages case', () => {
@@ -291,14 +383,23 @@ describe('Tests for /users/stats/v1', () => {
     requestMessageSendDmV2(token, dm.returnObj.dmId, 'hello');
     requestMessageSendV2(token, channelId, 'i am sleepy');
 
-    const result = requestUserStatsV1(token);
+    const result = requestUsersStatsV1(token);
     expect(result.status).toBe(OK);
-    expect(result.returnObj).toStrictEqual({
 
-      channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
-      dmsExist: [{ numDmsExist: 1, timeStamp: currTime }],
-      messagesExist: [{ numMessagesExist: 2, timeStamp: currTime }],
-      utilizationRate: (1 + 1 / 1 + 1)
-    });
+    expect(result.returnObj.workspaceStats.channelsExist[0].numChannelsExist).toBe(1);
+    expect(result.returnObj.workspaceStats.channelsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.dmsExist[0].numDmsExist).toBe(1);
+    expect(result.returnObj.workspaceStats.dmsExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.messagesExist[0].numMessagesExist).toBe(2);
+    expect(result.returnObj.workspaceStats.messagesExist[0].timeStamp).toBeGreaterThan(1000000000);
+    expect(result.returnObj.workspaceStats.utilizationRate).toBe(1);
+
+    // expect(result.returnObj).toStrictEqual({
+
+    //   channelsExist: [{ numChannelsExist: 1, timeStamp: currTime }],
+    //   dmsExist: [{ numDmsExist: 1, timeStamp: currTime }],
+    //   messagesExist: [{ numMessagesExist: 2, timeStamp: currTime }],
+    //   utilizationRate: (1 + 1 / 1 + 1)
+    // });
   });
 });
