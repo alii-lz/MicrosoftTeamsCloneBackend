@@ -3,7 +3,7 @@ import HTTPError from 'http-errors';
 import { Data, notification } from './interfaces';
 import { getData } from './dataStore';
 
-export function notificationsGetV1(token: string): notification[] {
+export function notificationsGetV1(token: string): {notifications: []} {
   const data: Data = getData();
   const uId = getId(token);
   if (uId === -1) {
@@ -15,7 +15,7 @@ export function notificationsGetV1(token: string): notification[] {
     dataNotiUserIndex++;
   }
   if (dataNotiUserIndex === data.indivNotification.length) {
-    return ([]);
+    return {notifications: []};
   }
 
   // If user has no notifications, they wouldn't even be in the data base.
@@ -26,5 +26,6 @@ export function notificationsGetV1(token: string): notification[] {
       console.log(notiDisplay);
     }
   }
-  return notiDisplay;
+  //return notiDisplay;
+  return { notifications: [] };
 }

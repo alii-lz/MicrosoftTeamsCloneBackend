@@ -16,7 +16,7 @@ export function requestDmCreate(token: string, uIds: number[]) {
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
 export function requestDmList(token: string) {
@@ -29,7 +29,7 @@ export function requestDmList(token: string) {
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
 export function requestDmRemove(token: string, dmId: number) {
@@ -45,7 +45,7 @@ export function requestDmRemove(token: string, dmId: number) {
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
 export function requestDmDetails(token: string, dmId: number) {
@@ -59,7 +59,7 @@ export function requestDmDetails(token: string, dmId: number) {
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 export function requestDmLeave(token: string, dmId: number) {
   const res = request(
@@ -74,7 +74,7 @@ export function requestDmLeave(token: string, dmId: number) {
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 export function requestDmMessageV1(token: string, dmId: number, start: number) {
   const res = request(
@@ -90,7 +90,7 @@ export function requestDmMessageV1(token: string, dmId: number, start: number) {
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
 
 export function requestMessageSendDM(token: string, dmId: number, message: string) {
@@ -107,5 +107,5 @@ export function requestMessageSendDM(token: string, dmId: number, message: strin
       }
     }
   );
-  return { status: res.statusCode, returnObj: JSON.parse(res.getBody() as string) };
+  return { status: res.statusCode, returnObj: JSON.parse(res.body as string) };
 }
