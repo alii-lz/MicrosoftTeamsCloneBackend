@@ -11,7 +11,10 @@ Since there are no way to create messages, the following assumptions were made:
 
 
 
-
-
 ASSUMPTION FOR INPUT IN CHANNEL.TS.
 assume user only inputs valid types. i.e. doesnt input string for prefix id.
+
+
+LINK TO VIDEO: https://flip.com/s/WLBzq4RtPdET
+
+LINK TO FRONTEND FORK: https://gitlab.cse.unsw.edu.au/z5387428/project-frontend-ali
