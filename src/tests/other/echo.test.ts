@@ -1,0 +1,37 @@
+import request from "sync-request";
+import config from "../../config.json";
+
+const OK = 200;
+const INPUT_ERROR = 400;
+const port = config.port;
+const url = config.url;
+
+/*
+Iteration 2
+*/
+
+describe("HTTP tests using Jest", () => {
+    test("Test successful echo", () => {
+        const res = request("GET", `${url}:${port}/echo`, {
+            qs: {
+                echo: "Hello",
+            },
+            timeout: 100,
+        });
+        const bodyObj = JSON.parse(res.body as string);
+        expect(res.statusCode).toBe(OK);
+        expect(bodyObj).toEqual("Hello");
+    });
+    // UNCOMMENT BELOW BEFORE ITERATION 3 DUE
+    test("Test invalid echo", () => {
+        const res = request("GET", `${url}:${port}/echo`, {
+            qs: {
+                echo: "echo",
+            },
+            timeout: 100,
+        });
+        const bodyObj = JSON.parse(res.body as string);
+        expect(res.statusCode).toBe(INPUT_ERROR);
+        expect(bodyObj.error).toStrictEqual({ message: 'Cannot echo "echo"' });
+    });
+});

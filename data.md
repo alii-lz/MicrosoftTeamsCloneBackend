@@ -1,6 +1,5 @@
 ```javascript
 let data = {
-    // TODO: insert your data structure that contains
     globalowner = -1;
     user [
         {
@@ -20,7 +19,7 @@ let data = {
             message[],
             start: 1,
             end: 10,
-            
+
             ownerMembers[
                 {
                 ownerId: 43478283,
@@ -41,9 +40,7 @@ let data = {
             ],
         }
     ]
-     
+
     // users + channels here
 }
 ```
-
-[Optional] short description: 

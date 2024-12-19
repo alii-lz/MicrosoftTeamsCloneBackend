@@ -1,20 +1,22 @@
-import { resetData, getData } from './dataStore';
-import { Data } from './interfaces';
+import { resetData, getData } from "./dataStore";
+import { Data } from "./interfaces";
 
-function clearV1 (): object {
-  resetData();
-  return {};
+function clearV1(): object {
+    resetData();
+    return {};
 }
 
 // returns corresponding uId after taking a token. returns -1 if not found
 function getId(token: string): number {
-  const data: Data = getData();
-  const validToken = data.tokens.find((item) => (item.token === token && item.active === true));
-  if (!validToken) {
-    return -1;
-  }
-  const user = data.users.find((user) => user.tokens.includes(token));
-  return user.uId;
+    const data: Data = getData();
+    const validToken = data.tokens.find(
+        (item) => item.token === token && item.active === true
+    );
+    if (!validToken) {
+        return -1;
+    }
+    const user = data.users.find((user) => user.tokens.includes(token));
+    return user.uId;
 }
 
 export { clearV1, getId };
